@@ -1,6 +1,8 @@
 # basher
 An extensible collection of Bash configuration utilities designed to synchronize your development environment across multiple devices.
+
 Includes built-in support for secure handling of sensitive information.
+
 A simple `git pull` on each device will sync your bash env across devices!
 
 ![Basher Logo](basher_logo.png)
