@@ -1,0 +1,7 @@
+FUNCTIONS='~/.secrets/SUPER_SECRETS/super_secret_functions'
+FUNCTIONS=$(eval echo $FUNCTIONS)
+
+if [ -f $FUNCTIONS ]; then
+    source $FUNCTIONS
+fi
+

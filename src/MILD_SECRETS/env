@@ -1,0 +1,8 @@
+ENV="~/.secrets/SUPER_SECRETS/super_secret_env"
+ENV=$(eval echo $ENV)
+
+if [ -f $ENV ]; then
+    source $ENV
+else
+    echo "Could not find $ENV"
+fi

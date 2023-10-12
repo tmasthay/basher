@@ -1,0 +1,16 @@
+gho(){
+    cdi
+    ./reinstall_and_test.sh $1 $2
+    cd examples
+    python trial.py
+}
+
+clr(){
+    cdc
+    rm -rf data
+}
+
+ghoc(){
+    clr
+    gho
+}

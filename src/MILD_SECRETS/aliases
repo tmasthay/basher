@@ -1,0 +1,7 @@
+ALIASES="~/.secrets/SUPER_SECRETS/super_secret_aliases"
+ALIASES=$(eval echo $ALIASES)
+
+if [ -f $ALIASES ]; then
+    source $ALIASES
+fi
+

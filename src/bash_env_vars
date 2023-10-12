@@ -1,0 +1,14 @@
+~/.secrets/build_souper_secrets.sh
+source ~/.secrets/env_vars
+
+export SPACK_ROOT=~/spack
+export PATH=$SPACK_ROOT/bin:$PATH
+export REPO='~/Documents/repos'
+export ISL='~/Documents/repos/IslandOfMisfitToys'
+export DUMP="~/.bash_scripts/dumpsterfireproof"
+export CDMR_DEFAULT="~/plots_iomt"
+export USER_DEFINED_FUNCTIONS=$(cat ~/.bash_functions | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/')
+export DEEPWAVE_DEBUG='~/Documents/debug/deepwave'
+export BASHER='~/.bash_repos/basher'
+
+source ~/.platform/env_vars

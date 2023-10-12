@@ -1,0 +1,9 @@
+ENV_VARS="~/.secrets/SUPER_SECRETS/super_secret_env_vars"
+ENV_VARS=$(eval echo $ENV_VARS)
+
+if [ -f $ENV_VARS ]; then
+    source $ENV_VARS
+else
+    echo "Could not find $ENV_VARS"
+fi
+

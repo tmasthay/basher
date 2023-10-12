@@ -1,0 +1,516 @@
+~/.secrets/build_souper_secrets.sh
+source ~/.secrets/functions
+
+cecho() {
+    local no_newline=0
+    local color_value
+
+    # Check for -n option
+    if [ "$1" = "-n" ]; then
+        no_newline=1
+        shift
+    fi
+
+    # Check for --color= option
+    if [[ "$1" =~ ^--color= ]]; then
+        color_value="${1#*=}"  # Extract the value after the '=' sign
+        shift
+    else
+        color_value="red"
+    fi
+
+    local text="$@"
+    
+    case "$color_value" in
+        black)    tput setaf 0 ;;
+        red)      tput setaf 1 ;;
+        green)    tput setaf 2 ;;
+        yellow)   tput setaf 3 ;;
+        blue)     tput setaf 4 ;;
+        magenta)  tput setaf 5 ;;
+        cyan)     tput setaf 6 ;;
+        white)    tput setaf 7 ;;
+        rgb[0-5]_[0-5]_[0-5])
+            local r="${color_value:3:1}"
+            local g="${color_value:5:1}"
+            local b="${color_value:7:1}"
+            local code=$((16 + (36 * r) + (6 * g) + b))
+            tput setaf $code ;;
+        gray[0-9]|gray1[0-9]|gray2[0-3])
+            local gray_value="${color_value:4}"
+            local code=$((232 + gray_value))
+            tput setaf $code ;;
+        *)
+            echo "Unknown color: $color_value" >&2; return 1 ;;
+    esac
+
+    if [ $no_newline -eq 1 ]; then
+        echo -n "$text"
+    else
+        echo "$text"
+    fi
+
+    tput sgr0  # Reset text attributes to normal without clearing screen.
+}
+
+#see fonts
+see_fonts(){
+    fc-list | cut -f2 -d':' | sort -u
+}
+
+set_var() {
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: echo VAR_VALUE | set_var VAR_NAME"
+        return 1
+    fi
+
+    read -r VAR_CONTENT
+    eval "export $1=\"$VAR_CONTENT\""
+}
+
+#conda environment helpers
+prepend_env_var() {
+    # Check if the environment variable is already set
+    if [ -z "${!1}" ]; then
+        # If not, set the environment variable to the new value without a trailing colon
+        export $1=$2
+    else
+        # If yes, store the old value and prepend the new value with a colon separator
+        export OLD_$1=${!1}
+        export $1=$2:${!1}
+    fi
+}
+
+revert_env_var() {
+    local old_var="OLD_$1"
+    eval "export $1=\"\${$old_var}\""
+
+    # Unset the old value
+    unset OLD_$1
+}
+
+start_ssh(){
+    eval "$(ssh-agent -s)"
+}
+
+ssh_add_all(){
+    ssh-add $(find ~/.ssh -type f -name 'id_*' ! -name '*.pub')
+}
+
+matlab(){
+    LAST_DIR=$(pwd)
+    cd ~/MATLAB/Source
+    ~/MATLAB/R2023a/bin/matlab &
+    cd $LAST_DIR
+}
+
+pfs() {
+  local dir=$1
+  local pattern=$2
+  local regex=$3  # get the function's third argument
+  find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
+    echo "$file"
+    echo "$(printf '%.0s*' {1..80})"
+    # If regex is provided, use it to filter file contents
+    if [[ -n "$regex" ]]; then
+      grep -E "$regex" "$file" || echo "No match found for regex '$regex'"
+    else
+      cat "$file"
+    fi
+    echo "$(printf '%.0s*' {1..80})"
+  done
+}
+
+grb() {
+    find . -name '*.orig' -delete
+    find . -name '*LOCAL*' -delete
+    find . -name '*REMOTE*' -delete
+    find . -name '*BACKUP*' -delete
+    find . -name '*.~HEAD~' -delete
+    find . -name '*BASE*' -delete
+}
+
+kkp(){
+    TMP=$(sudo lsof -i :$1 | awk '{print $2}' | sed -n '2p')
+    echo "kill $TMP"
+    kill $TMP
+}
+
+
+vit(){
+    vim -c "vertical terminal" $1
+}
+
+gpu_mem() {
+  my_color=${1:-red}
+  timestamp=${2:-0}
+  
+  cecho -n "--color=$my_color" "$timestamp sec"
+  nvidia-smi --query-gpu=index,memory.used --format=csv,nounits,noheader | while IFS=", " read -r index memory; do
+    memory_gb=$(awk "BEGIN {printf \"%.2f\",${memory}/1024}")
+    cecho -n "--color=$my_color" "    GPU #${index}: ${memory_gb} GB"
+  done
+  echo 
+}
+
+mgpu(){
+    iterations=${3:-100}
+    sleep_time=${4:-5}
+    c1=${1:-red}
+    c2=${2:-green}
+    for ((i=0; i<iterations; i++)); do
+        if ((i % 2 == 0)); then
+            gpu_mem "$c1" $((i * sleep_time))
+        else
+            gpu_mem "$c2" $((i * sleep_time))
+        fi
+        sleep $sleep_time
+    done
+}
+
+jail_list(){
+    JAIL=${1:-"sshd"}
+    JAIL_LIST=$(sudo fail2ban-client status $JAIL | grep "Banned")
+    JAIL_LIST=$(echo $JAIL_LIST | awk '{for (i=5; i<=NF; i++) printf $i " "; print ""}')
+    echo $JAIL_LIST | tr ' ' '\n'
+}
+
+ban_ip(){
+    IP=$1
+    JAIL=${2:-"sshd"}
+    sudo fail2ban-client set $JAIL banip $IP
+}
+
+unban_ip(){
+    IP=$1
+    JAIL=${2:-"sshd"}
+    sudo fail2ban-client set $JAIL unbanip $IP
+}
+
+unban_ip_regex(){
+    local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
+    local JAIL=${2:-"sshd"}
+    local JAIL_LIST=$(jail_list $JAIL)
+    JAIL_LIST=$(echo $JAIL_LIST | tr ' ' '\n' | grep $REGEX)
+    for IP in $JAIL_LIST; do
+        echo "Unbanning $IP"
+        unban_ip $IP $JAIL 2> /dev/null > /dev/null
+    done
+}
+
+unban_first(){
+    JAIL=${1:-"sshd"}
+    unban_ip $(sudo fail2ban-client status $JAIL | grep "Banned" | awk '{print $5}')
+}
+
+
+
+cdmr(){
+    DIR=${1:-$CDMR_DEFAULT}
+    cd $DIR/$(ls $DIR -tr | tail -n 1)
+}
+
+ensure_ssh_agent() {
+    # Find all agent sockets based on the file structure
+    AGENT_SOCKETS=$(find /tmp/ssh-* -type d -exec find {} -name "agent.*" \;)
+
+    # Convert AGENT_SOCKETS into an array
+    SOCKET_ARRAY=($AGENT_SOCKETS)
+
+    # If there's no active agent socket
+    if [[ ${#SOCKET_ARRAY[@]} -eq 0 ]]; then
+        echo "No active SSH agent socket found. Starting one now..."
+        eval $(ssh-agent -s)
+        echo "SSH agent started with PID $SSH_AGENT_PID"
+        
+    # If there's exactly one agent socket
+    elif [[ ${#SOCKET_ARRAY[@]} -eq 1 ]]; then
+        export SSH_AUTH_SOCK=${SOCKET_ARRAY[0]}
+        echo "Bound to existing SSH agent at $SSH_AUTH_SOCK"
+        
+    # If there's more than one agent socket
+    else
+        echo "Warning: Multiple SSH agent sockets found (${#SOCKET_ARRAY[@]} sockets)."
+        echo "To kill all active ssh-agents and start afresh, run:"
+        echo "pkill -u $USER ssh-agent && ensure_ssh_agent"
+    fi
+    ssh_add_all
+}
+
+bpushm() {
+    PREV=$(pwd)
+    cd $BASHER
+    gau
+    gcm $1
+    gp
+    cd $PREV
+}
+
+bpush() {
+    PREV=$(pwd)
+    cd $BASHER
+    echo $(pwd)
+    gau
+    gc
+    gp
+    cd $PREV
+}
+
+bpull(){
+    PREV=$(pwd)
+    cd $BASHER
+    git pull
+    cd $PREV
+}
+
+dwre(){
+    RETEST=${1:-0}
+    REDOWNLOAD_DATA=${2:-0}
+    CURR_PATH=$(pwd)
+    cdi
+    ./reinstall_and_test.sh $RETEST $REDOWNLOAD_DATA
+    cd $CURR_PATH
+}
+
+tyc(){
+    CURR_PATH=${2:-.}
+    REGEX=${1:-"AnExpressionThatWillNeverMatchAnythingHOORAH.NOPE"}
+
+    if [[ "$REGEX" == ".*" || "$REGEX" == "*" ]]; then
+        echo "Cannot clean everything"
+        return
+    fi
+
+    RESULTS=$(find . -type f -name "$REGEX")
+    echo $RESULTS
+    find . -type f -name "$REGEX" -delete
+}
+
+sfunc(){
+    source ~/.bash_functions
+}
+
+salias(){
+    source ~/.bash_aliases
+}
+
+svars(){
+    source ~/.bash_env_vars
+}
+
+senv(){
+    source ~/.bash_env
+}
+
+shelp(){
+    source ~/.bash_source_helpers
+} 
+
+codeo(){
+    PATTERN=${1:-"*.jpg"}
+    CURR_PATH=${2:-.}
+    LIMIT=${3:-3}
+    RES=$(find . -type f -name "$PATTERN")
+    NUM_RES=$(echo $RES | wc -l)
+    if [[ $NUM_RES -eq 0 ]]; then
+        echo "No results found"
+        return
+    fi
+    if [[ $NUM_RES -gt $LIMIT ]]; then
+        echo "$NUM_RES results found. Opening only first $LIMIT"
+        RES=$(echo $RES | head -n $LIMIT)
+        return
+    fi
+    echo "Opening following files"
+    echo $RES
+    code $RES
+}
+
+#git functions
+gsg(){
+    KEEP=${1:-modified}
+    OMIT=${2:-.gitkeep}
+    git status -uno | grep -E "$KEEP" | grep -vE "$OMIT" | awk '{print $2}'
+}
+
+gag(){
+    ga $(gsg $1 $2)
+}
+
+ge(){
+    gau
+    gc
+    gp
+}
+
+gem(){
+    gau
+    gcm $1
+    gp
+}
+
+geg(){
+    gag $1 $2
+    gc
+    gp
+}
+
+ufw_bak(){
+    mkdir -p ~/.backups/ufw
+    if [ -f /etc/ufw/user.rules ]; then
+        sudo cp /etc/ufw/user.rules ~/.backups/ufw/user.rules
+        if [ $? -eq 0 ]; then
+            echo "Backup successful."
+        else
+            echo "Backup failed."
+        fi
+    else
+        echo "/etc/ufw/user.rules does not exist."
+    fi
+}   
+
+ufw_bak2(){
+    if [ -f ~/.backups/ufw/user.rules ]; then
+        sudo cp ~/.backups/ufw/user.rules ~/.backups/ufw/user.rules.bak
+        if [ $? -eq 0 ]; then
+            echo "Double backup successful."
+        else
+            echo "Double backup failed."
+        fi
+    else
+        echo "~/.backups/ufw/user.rules does not exist."
+    fi
+}
+
+ufw_restore(){
+    ufw_bak2
+    if [ -f ~/.backups/ufw/user.rules ]; then
+        sudo cp ~/.backups/ufw/user.rules /etc/ufw/user.rules
+        if [ $? -eq 0 ]; then
+            sudo ufw reload
+            echo "Restore and reload successful."
+        else
+            echo "Restore failed."
+        fi
+    else
+        echo "~/.backups/ufw/user.rules does not exist."
+    fi
+}
+
+ufw_swap_bak(){
+    # Create a temporary backup of the current 'user.rules'
+    sudo cp ~/.backups/ufw/user.rules ~/.backups/tmp.rules || { echo "Failed to create temp backup"; return 1; }
+
+    # Swap 'user.rules' and 'user.rules.bak'
+    sudo mv ~/.backups/ufw/user.rules.bak ~/.backups/ufw/user.rules || { echo "Failed to swap backups"; return 1; }
+
+    # Replace the backup with the temporary file
+    sudo mv ~/.backups/tmp.rules ~/.backups/ufw/user.rules.bak || { echo "Failed to finalize swap"; return 1; }
+}
+
+ufw_fsd_legacy() {
+    # Find the first rule with "SCALPEL_DENY", get its number and IP
+    local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY" | awk 'NR==1{print $2, $(NF-2)}' | tr -d '[]')
+    local rule_num=$(echo $rule_info | awk '{print $1}')
+    local from_ip=$(echo $rule_info | awk '{print $2}')
+
+    # Check if a rule was found
+    if [[ -z "$rule_num" ]]; then
+        echo "ufw_fsd found no SCALPEL_DENY directives."
+        return 1
+    else
+        # Delete the rule; use --force to bypass confirmation
+        sudo ufw --force delete $rule_num
+        echo "Deleted rule number $rule_num for IP $from_ip containing SCALPEL_DENY."
+    fi
+}
+
+ufw_fsd(){
+    local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
+    local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY")
+    rule_info=$(echo "$rule_info" | grep "$REGEX") 
+    rule_info=$(echo "$rule_info" | sed 's/\[[ ]*\([0-9][0-9]*\)\]/\1/g')
+    rule_info=$(echo "$rule_info" | awk '{print $1,$5}')
+    local rule_num=$(echo $rule_info | awk '{print $1}')
+    local from_ip=$(echo $rule_info | awk '{print $2}')
+
+    # Check if a rule was found
+    if [[ -z "$rule_num" ]]; then
+        echo "ufw_fsd found no SCALPEL_DENY directives matching REGEX='$REGEX'."
+        return 1
+    else
+        # Delete the rule; use --force to bypass confirmation
+        sudo ufw --force delete $rule_num
+        echo "Deleted rule number $rule_num for IP $from_ip containing SCALPEL_DENY."
+        return $from_ip
+    fi
+}
+
+ufw_all_scalpel() {
+    local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
+    # Run the backup function at the beginning
+    ufw_bak2
+    ufw_bak
+
+    # Loop until ufw_fsd returns 1
+    while true; do
+        ufw_fsd $REGEX
+        if [[ $? -eq 1 ]]; then
+            echo "All SCALPEL_DENY directives purged. To restore previous config, run ufw_restore."
+            return 0
+        fi
+    done
+}
+
+ufw_all_scalpel_unban() {
+    local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
+
+    ufw_all_scalpel $REGEX
+    unban_ip_regex $REGEX
+}
+
+# Function to unravel alias and replace environment variables
+unr_alias() {
+  alias_name=$1
+  alias_cmd=$(alias "$alias_name" 2>/dev/null | sed "s/alias $alias_name='//;s/'$//")
+  
+  # Replace environment variables
+  fully_expanded_cmd=$(echo "$alias_cmd" | envsubst)
+  
+  echo "$fully_expanded_cmd"
+}
+
+
+# Function to unravel an alias
+unr_alias() {
+    alias $1 2> /dev/null | sed -E "s/alias $1='(.*)'/\1/;s/\$[0-9]\{1,\}//g" | envsubst
+}
+
+atrm_all() {
+    num_calls=$(atq | wc -l)
+
+    for ((i=1; i<=num_calls; i++)); do
+      atrm $(atq | awk '{print $1}' | head -n 1)
+    done
+}
+
+jbr(){
+    REMOTE_DOMAIN=$1
+    HOST_PORT=${2:-8889}
+    REMOTE_PORT=${3:-8888}
+    ssh -N -f -L localhost:$HOST_PORT:localhost:$REMOTE_PORT $REMOTE_DOMAIN
+}
+
+jmr(){
+    PORT=${1:-8888}
+    jupyter notebook --no-browser --port=$PORT
+}
+
+gcp() {
+    git clean -ndfx
+}
+source ~/.platform/functions
+
+cde() {
+    cd "$(eval echo $1)"
+}

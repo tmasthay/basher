@@ -1,0 +1,57 @@
+#alias python
+alias python='python3'
+
+#Mac aliases
+alias pbcopy='xclip -select clipboard'
+
+#conda-related aliases
+alias cact='conda activate'
+alias cdct='conda deactivate'
+alias clst='conda env list'
+
+#git-related aliases
+alias gp='git push'
+alias ga='git add'
+alias gc='git commit'
+alias gau='git add -u'
+alias gst='git status'
+alias gsl='git status -uno'
+alias gb='git branch'
+alias gls='ls $(git ls-files)'
+alias gcm='git commit -m'
+alias gl='git log'
+alias gla='git log --oneline --graph --all'
+alias gch='git checkout'
+alias gcn='git clean -n'
+alias gdy='git difftool -y'
+
+#screensaver
+alias scrsv='xscreensaver-command -activate'
+
+#ssh
+alias start_agent='eval "$(ssh-agent -s)"'
+
+#vim
+alias vi='vim'
+
+#sudo store shortcut
+alias sudood='bash ~/.bash_scripts/sudood.sh'
+alias sdp='sudood'
+alias sur='su root'
+
+#alias a no-suspend command
+alias no_suspend='gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &'
+
+#alias for moving around
+alias cdi='cde $ISL'
+alias cdd='cde $DEEPWAVE_DEBUG'
+alias cdb='cde $BASHER'
+alias cdc='cde $CONDA_PREFIX'
+alias cdr='cde $REPO'
+
+#alias check_jail
+alias blist='sudo python $BASHER/src/py_scripts/check_jail.py'
+alias ufw_monitor='sudo python $BASHER/src/py_scripts/ufw_monitor.py'
+
+source ~/.platform/aliases
+
