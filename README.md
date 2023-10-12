@@ -10,6 +10,8 @@ A simple `git pull` on each device will sync your bash env across devices!
 Setup below
 ```
 cd /path/to/repo
+git clone https://github.com/tmasthay/basher.git
+cd basher
 cd src
 ./setup.sh
 ```
