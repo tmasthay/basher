@@ -20,9 +20,11 @@ You will find in `bash_{env, env_vars, functions, aliases}` some good starter ki
 
 ## Be a Basher!
 Do not be afraid to `bash` things up! 
-You will **not** break your environment if you change things! 
+
 Edit files with impunity just like any other repo and revert if things break!
+
 Your `~/.bashrc` file will be **instantly** synced since `setup.sh` sets up **soft symbolic links** to the repo.
+
 Finally, your `~/.bashrc` is only **appended** to, but still **back up your bashrc** just in case...I cannot afford a lawyer.
 
 ## Handling Different Platforms
