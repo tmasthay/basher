@@ -36,16 +36,20 @@ git checkout {linux, osx, windows, ...}
 ```
 
 
-Another way to use the `platform` is for specific workflows, e.g., something like
+Another way to use the `platform` is for specific workflows. 
+For example, say you are working in two different directories and
+    90% of your edits are in your current directory but 10% of the time you need to edit a small, helper repo. 
+You might have a workflow like the following.
 
 ```bash
 test() {
     PREV=$(pwd)
-    cd $REPO_PATH
-    pip uninstall repo_name
-    pip install .
+    cd $HELPER_REPO_PATH
+    pip install --force-reinstall .
+    cd unit_tests
+    pytest run_only_this_one_unit_test_for_now.py
     cd $PREV
-    python script_that_needs_updated_repo_functions.py
+}
 ```
 
 This will allow you to essentially dump temporary shorthands without mucking up your global bash environment setup.
@@ -59,8 +63,10 @@ information but if it's not there, it will exit **quietly**.
 2. SUPER_SECRETS/build_super_secrets.sh script that builds the environment variables, functions, etc. based on your sensitive info.
 3. SUPER_SECRETS/super_secret_{env,env_vars,aliases,functions} get written to by build_super_secrets.sh
 
-If you don't have sensitive info, omitting (1),(2), and (3) will not break this setup.
-If things are static, you can just define (3) and omit (2).
+If you don't have sensitive info, omitting (1),(2), and (3) will not break anything.
+
+If things your setup is static, you can just define (3) and omit (2).
+
 An example of something you might want to do with build_super_secrets.sh is to define a "base_env_vars" file and then do some accounting
   of an ssh_config file for you that way you have all the devices you usually connect to under private version control and can simply
   port your environment rather than fussing with it every time you need to setup a new device.
