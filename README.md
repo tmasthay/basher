@@ -35,6 +35,30 @@ mgpu color1 color2 num_iterations sleep_time_between_iterations
 #     sleep_time_between_iterations defaults to 5 seconds
 ```
 
+Here's a very brief description of what each function does.
+
+1. `cecho`: Prints text with specified colors.
+2. `see_fonts`: Lists available fonts.
+3. `set_var`: Sets environment variable.
+4. `prepend_env_var` and `revert_env_var`: Modifies environment variables.
+5. `start_ssh` and `ssh_add_all`: Manages SSH agents.
+6. `matlab`: Opens MATLAB.
+7. `pfs`: Prints file content with optional regex filtering.
+8. `grb`: Deletes Git-related temporary files.
+9. `kkp`: Kills a process based on port number.
+10. `vit`: Opens Vim with a vertical terminal.
+11. `gpu_mem` and `mgpu`: Monitor GPU memory usage.
+12. `jail_list, ban_ip, unban_ip, and unban_ip_regex`: Manage IPs with fail2ban.
+13. `cdmr`: Change to most recently modified directory.
+14. `ensure_ssh_agent`: Ensures an SSH agent is running.
+15. `bpushm, bpush, bpull`: Git operations for a specific directory.
+16. `dwre`: Specific function likely related to your development work.
+17. `tyc`: Deletes files matching a regex.
+18. `sfunc, salias, svars, senv, shelp`: Sources various bash configuration files.
+19. `codeo`: Opens files in Visual Studio Code.
+20. `gsg, gag, ge, gem, geg`: Git shortcuts.
+21. `ufw_bak, ufw_bak2, ufw_restore`: Backup and restore UFW rules.
+
 ## Be a Basher!
 Do not be afraid to `bash` things up! 
 
