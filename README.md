@@ -85,9 +85,9 @@ information but if it's not there, it will exit **quietly**.
     1. This is a script that builds the environment variables, functions, etc. based on your sensitive info.
     2. Should use that info to write to files described in (2).
   
-**NOTE**: Look at the `.gitignore` file. Any variable with snake or camel case of `super_secrets` will be ignored to make sure things do not get tracked. Make sure to only put
-sensitive info inside the `SUPER_SECRETS` directory! If you want to put those under private version control, either clone the repo there or use symbolic links! 
-
+**NOTE**: Look at the `.gitignore` file. Any variable with snake, camel case, or ALL_CAPS of `super_secrets` will be ignored to make sure things do not get tracked. 
+Make sure to only put sensitive info inside the `SUPER_SECRETS` directory! 
+If you want to put those under private version control, either clone the repo there or use symbolic links! 
 
 If you don't have sensitive info, omitting (1),(2), and (3) will not break anything.
 
