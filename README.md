@@ -28,12 +28,29 @@ Your `~/.bashrc` file will be **instantly** synced since `setup.sh` sets up **so
 Finally, your `~/.bashrc` is only **appended** to, but still **back up your bashrc** just in case...I cannot afford a lawyer.
 
 ## Handling Different Platforms
-Since you might have a different OS on your laptop versus desktop, this is where to put any platform-specific aliases.
-My suggestion (and what I personally do) is clone the repo on X device and make a branch X. 
-Another way to use these is for specific workflows where you change between 2-3 directories a lot; just dump aliases there without
-    mucking up your environment. Again, just do this is another branch with a descriptive name in case you need them again.
+Since you might have multiple platforms, edit the `platform` directory after a simple
 
-## Sensitive Information
+```bash
+git branch {linux, osx, windows, ...}
+git checkout {linux, osx, windows, ...}
+```
+
+
+Another way to use the `platform` is for specific workflows, e.g., something like
+
+```bash
+test() {
+    PREV=$(pwd)
+    cd $REPO_PATH
+    pip uninstall repo_name
+    pip install .
+    cd $PREV
+    python script_that_needs_updated_repo_functions.py
+```
+
+This will allow you to essentially dump temporary shorthands without mucking up your global bash environment setup.
+
+## Handling Sensitive Information
 The `MILD_SECRETS` directory does some simple accounting for you; as long as you know where it expects things to be, it should be able
 to integrate sensitive info into your bashrc. It expects three things; if it doesn't find these, then it will attempt to integrate the
 information but if it's not there, it will exit **quietly**.
