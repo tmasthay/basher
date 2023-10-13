@@ -5,6 +5,7 @@ import argparse
 import os
 from termcolor import colored
 from numpy.random import choice
+from tabulate import tabulate as tab
 import sys
 
 trusted_ips_path = os.path.abspath(
@@ -131,18 +132,34 @@ def get_jail_info(*, private_ip_ranges, special_ips):
 
 
 def report(*, heading, ips, char, color=None):
-    if color is None:
-        color = rc()
+    s = [80 * char, heading]
+    s.extend([f"    {ip}" for ip in ips])
+    s.extend([80 * char, "\n"])
+    s = "\n".join(s)
+    if color is not None:
+        s = colored(s, color)
+    return s
 
-    def printc(s, **kw):
-        print(colored(s, color), **kw)
 
-    printc(80 * char)
-    printc(heading)
-    for ip in ips:
-        printc(f"    {ip}")
-    printc(80 * char)
-    print("\n")
+def vtable(*args, colors=None, headers=None, **kw):
+    # Find the maximum length among all the lists
+    max_length = max(len(lst) for lst in args)
+
+    # Pad each list with None values so that they all have the same length
+    padded_args = [lst + [None] * (max_length - len(lst)) for lst in args]
+    if colors is not None:
+        padded_args = [
+            [None if e is None else colored(e, colors[i]) for e in lst]
+            for i, lst in enumerate(padded_args)
+        ]
+        if headers is not None:
+            headers = [colored(h, colors[i]) for i, h in enumerate(headers)]
+
+    # Transpose the list of lists to arrange them in columns rather than rows
+    transposed_args = list(zip(*padded_args))
+
+    # Create the table using tabulate
+    return tab(transposed_args, headers=headers, **kw)
 
 
 def report_jail(
@@ -152,29 +169,49 @@ def report_jail(
     recently_jailed,
     possible_hackers,
     potential_special,
+    colors=None,
+    **kw,
 ):
-    report(
-        heading="SUCCESSFUL LOGINS",
-        ips=potential_special,
-        char="-",
-        color='red',
+    # report(
+    #     heading="SUCCESSFUL LOGINS",
+    #     ips=potential_special,
+    #     char="-",
+    #     color='red',
+    # )
+    # report(heading="POTENTIAL LOCAL", ips=potential_local, char="*")
+    # report(heading="FULL JAIL LIST", ips=banned_ips, char="&")
+    # report(heading="RECENTLY JAILED", ips=recently_jailed, char="#")
+    # report(
+    #     heading=f"POTENTIAL HACKERS ({len(possible_hackers)})",
+    #     ips=possible_hackers,
+    #     char="@",
+    # )
+    headers = [
+        'SUCCESSFUL LOGINS',
+        'POTENTIAL LOCAL',
+        'FULL JAIL LIST',
+        'RECENTLY JAILED',
+        f'POTENTIAL HACKERS ({len(possible_hackers)})',
+    ]
+    if colors is None:
+        colors = [rc() for _ in range(len(headers))]
+        colors[0] = 'red'
+
+    table = vtable(
+        potential_special,
+        potential_local,
+        banned_ips,
+        recently_jailed,
+        possible_hackers,
+        headers=headers,
+        colors=colors,
+        **kw,
     )
-    report(heading="POTENTIAL LOCAL", ips=potential_local, char="*")
-    report(heading="FULL JAIL LIST", ips=banned_ips, char="&")
-    report(heading="RECENTLY JAILED", ips=recently_jailed, char="#")
-    report(
-        heading=f"POTENTIAL HACKERS ({len(possible_hackers)})",
-        ips=possible_hackers,
-        char="@",
-    )
+    print(table)
 
 
 def dialogue_jail(*, possible_hackers, interactive=True):
-    if len(possible_hackers) == 0:
-        print(80 * "=")
-        print("No potential hackers found.")
-        print(80 * "=")
-    else:
+    if len(possible_hackers) > 0:
         fail2ban_response = get_input(
             "Go through fail2ban purge dialogue?", interactive=interactive
         )
@@ -226,13 +263,31 @@ def get_firewall_candidates(*, jail):
     return firewalled_ips, jailed_but_not_firewalled
 
 
-def report_firewall(*, firewalled_ips, jailed_but_not_firewalled):
-    report(heading="CURRENTLY FIREWALLED", ips=firewalled_ips, char="%")
-    report(
-        heading=f"JAILED BUT NOT FIREWALLED ({len(jailed_but_not_firewalled)})",
-        ips=jailed_but_not_firewalled,
-        char="^",
+def report_firewall(
+    *, firewalled_ips, jailed_but_not_firewalled, colors=None, **kw
+):
+    # report(heading="CURRENTLY FIREWALLED", ips=firewalled_ips, char="%")
+    # report(
+    #     heading=f"JAILED BUT NOT FIREWALLED ({len(jailed_but_not_firewalled)})",
+    #     ips=jailed_but_not_firewalled,
+    #     char="^",
+    # )
+    headers = [
+        f'JAILED BUT NOT FIREWALLED ({len(jailed_but_not_firewalled)})',
+        "CURRENTLY FIREWALLED",
+    ]
+    if colors is None:
+        colors = [rc() for _ in range(len(headers))]
+        colors[0] = 'red'
+
+    table = vtable(
+        jailed_but_not_firewalled,
+        firewalled_ips,
+        headers=headers,
+        colors=colors,
+        **kw,
     )
+    print(table)
 
 
 def add_to_ufw(*, ip):
@@ -264,8 +319,6 @@ def dialogue_firewall(*, jailed_but_not_firewalled, interactive=True):
                 add_to_ufw(ip=jailed_ip)
         else:
             print("Exiting without firewalling any IPs.")
-    else:
-        print("No IPs to firewall.")
 
 
 def get_input(prompt, *, yes="y", no="n", interactive=True):
