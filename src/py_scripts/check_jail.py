@@ -1,6 +1,23 @@
 import re
 import subprocess
+from subprocess import check_output as co
 import argparse
+import os
+import sys
+
+trusted_ips_path = os.path.abspath(
+    os.path.join(__file__, '../../MILD_SECRETS/SUPER_SECRETS')
+)
+trusted_ips_file = (
+    co(f'find {trusted_ips_path} -name trusted_ips.py', shell=True)
+    .decode()
+    .strip()
+).split('\n')
+if len(trusted_ips_file) != 1:
+    raise ValueError(
+        f'Expected one trusted_ips.py file, found {len(trusted_ips_file)}'
+    )
+sys.path.append(os.path.dirname(trusted_ips_file[0]))
 from trusted_ips import trusted_ips
 
 
@@ -9,13 +26,17 @@ def ip_to_int(*, ip):
     return int("".join([f"{int(i):08b}" for i in ip.split(".")]), 2)
 
 
-def is_local_ip(*, ip, private_ip_ranges, special_ips):
+def is_local_ip(*, ip, private_ip_ranges):
     """Check if IP is in a specified range."""
     ip_int = ip_to_int(ip=ip)
     for start, end in private_ip_ranges:
         if ip_to_int(ip=start) <= ip_int <= ip_to_int(ip=end):
             return True
-    return ip in special_ips
+    return False
+
+
+def is_special_ip(*, ip, special_ips):
+    return ip_to_int(ip=ip) in [ip_to_int(ip=i) for i in special_ips]
 
 
 def get_ip_regex():
@@ -58,21 +79,22 @@ def get_banned_ips():
     return banned_ips
 
 
-def get_potential_local(*, ips, private_ip_ranges, special_ips):
+def get_trusted(*, ips, private_ip_ranges, special_ips):
     potential_local = [
         ip
         for ip in ips
-        if is_local_ip(
-            ip=ip, private_ip_ranges=private_ip_ranges, special_ips=special_ips
-        )
+        if is_local_ip(ip=ip, private_ip_ranges=private_ip_ranges)
     ]
-    return potential_local
+    potential_special = [
+        ip for ip in ips if is_special_ip(ip=ip, special_ips=special_ips)
+    ]
+    return potential_local, potential_special
 
 
 def get_jail_info(*, private_ip_ranges, special_ips):
     ips = get_ip_log()
     banned_ips = get_banned_ips()
-    potential_local = get_potential_local(
+    potential_local, potential_special = get_trusted(
         ips=ips, private_ip_ranges=private_ip_ranges, special_ips=special_ips
     )
     recently_jailed = [ip for ip in ips if ip in banned_ips]
@@ -85,43 +107,39 @@ def get_jail_info(*, private_ip_ranges, special_ips):
         "ips": ips,
         "banned_ips": banned_ips,
         "potential_local": potential_local,
+        "potential_special": potential_special,
         "recently_jailed": recently_jailed,
         "possible_hackers": possible_hackers,
     }
     return d
 
 
+def report(*, heading, ips, c):
+    print(80 * c)
+    print(heading)
+    for ip in ips:
+        print(ip)
+    print(80 * c)
+    print("\n")
+
+
 def report_jail(
-    *, potential_local, banned_ips, recently_jailed, possible_hackers
+    *,
+    potential_local,
+    banned_ips,
+    recently_jailed,
+    possible_hackers,
+    potential_special,
 ):
-    # Print Results
-    print("*" * 80)
-    print("POTENTIAL LOCAL")
-    for ip in potential_local:
-        print(ip)
-    print("*" * 80)
-    print("\n")
-
-    print(80 * "-")
-    print("FULL JAIL LIST")
-    for ip in banned_ips:
-        print(ip)
-    print(80 * "-")
-    print("\n")
-
-    print("#" * 80)
-    print("RECENTLY JAILED")
-    for ip in recently_jailed:
-        print(ip)
-    print("#" * 80)
-    print("\n")
-
-    print("@" * 80)
-    print("POTENTIAL HACKERS (CONSIDER JAILING IMMEDIATELY)")
-    for ip in possible_hackers:
-        print(ip)
-    print("@" * 80)
-    print("\n")
+    report(heading="POTENTIAL LOCAL", ips=potential_local, c="*")
+    report(heading="POTENTIAL SPECIAL", ips=potential_special, c="-")
+    report(heading="FULL JAIL LIST", ips=banned_ips, c="&")
+    report(heading="RECENTLY JAILED", ips=recently_jailed, c="#")
+    report(
+        heading=f"POTENTIAL HACKERS ({len(possible_hackers)})",
+        ips=possible_hackers,
+        c="@",
+    )
 
 
 def dialogue_jail(*, possible_hackers, interactive=True):
@@ -182,19 +200,12 @@ def get_firewall_candidates(*, jail):
 
 
 def report_firewall(*, firewalled_ips, jailed_but_not_firewalled):
-    print("%" * 80)
-    print("CURRENTLY FIREWALLED")
-    for ip in firewalled_ips:
-        print(ip)
-    print("%" * 80)
-    print("\n")
-
-    print("^" * 80)
-    print("JAILED BUT NOT FIREWALLED")
-    for ip in jailed_but_not_firewalled:
-        print(ip)
-    print("^" * 80)
-    print("\n")
+    report(heading="CURRENTLY FIREWALLED", ips=firewalled_ips, c="%")
+    report(
+        heading=f"JAILED BUT NOT FIREWALLED ({len(jailed_but_not_firewalled)})",
+        ips=jailed_but_not_firewalled,
+        c="^",
+    )
 
 
 def add_to_ufw(*, ip):
