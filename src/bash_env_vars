@@ -8,7 +8,6 @@ export REPO="$H/Documents/repos"
 export ISL="$H/Documents/repos/IslandOfMisfitToys"
 export DUMP="$H/.bash_scripts/dumpsterfireproof"
 export CDMR_DEFAULT="$H/plots_iomt"
-export USER_DEFINED_FUNCTIONS=$(cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/')
 export DEEPWAVE_DEBUG="$H/Documents/debug/deepwave"
 export BASHER="$H/.bash_repos/basher"
 
