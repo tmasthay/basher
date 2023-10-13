@@ -118,7 +118,9 @@ def get_jail_info(*, private_ip_ranges, special_ips):
     possible_hackers = [
         ip
         for ip in ips
-        if ip not in potential_local and ip not in recently_jailed
+        if ip not in potential_local
+        and ip not in recently_jailed
+        and ip not in potential_special
     ]
     d = {
         "ips": ips,
