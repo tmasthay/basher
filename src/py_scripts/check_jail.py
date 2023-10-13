@@ -4,6 +4,7 @@ from subprocess import check_output as co
 import argparse
 import os
 from termcolor import colored
+from numpy.random import choice
 import sys
 
 trusted_ips_path = os.path.abspath(
@@ -20,6 +21,20 @@ if len(trusted_ips_file) != 1:
     )
 sys.path.append(os.path.dirname(trusted_ips_file[0]))
 from trusted_ips import trusted_ips
+
+
+def rc():
+    colors = [
+        'grey',
+        'red',
+        'green',
+        'yellow',
+        'blue',
+        'magenta',
+        'cyan',
+        'white',
+    ]
+    return choice(colors)
 
 
 def ip_to_int(*, ip):
@@ -115,7 +130,10 @@ def get_jail_info(*, private_ip_ranges, special_ips):
     return d
 
 
-def report(*, heading, ips, char, color="red"):
+def report(*, heading, ips, char, color=None):
+    if color is None:
+        color = rc()
+
     def printc(s, **kw):
         print(colored(s, color), **kw)
 
@@ -135,14 +153,19 @@ def report_jail(
     possible_hackers,
     potential_special,
 ):
-    report(heading="POTENTIAL LOCAL", ips=potential_local, c="*")
-    report(heading="POTENTIAL SPECIAL", ips=potential_special, c="-")
-    report(heading="FULL JAIL LIST", ips=banned_ips, c="&")
-    report(heading="RECENTLY JAILED", ips=recently_jailed, c="#")
+    report(
+        heading="SUCCESSFUL LOGINS",
+        ips=potential_special,
+        char="-",
+        color='red',
+    )
+    report(heading="POTENTIAL LOCAL", ips=potential_local, char="*")
+    report(heading="FULL JAIL LIST", ips=banned_ips, char="&")
+    report(heading="RECENTLY JAILED", ips=recently_jailed, char="#")
     report(
         heading=f"POTENTIAL HACKERS ({len(possible_hackers)})",
         ips=possible_hackers,
-        c="@",
+        char="@",
     )
 
 
@@ -204,11 +227,11 @@ def get_firewall_candidates(*, jail):
 
 
 def report_firewall(*, firewalled_ips, jailed_but_not_firewalled):
-    report(heading="CURRENTLY FIREWALLED", ips=firewalled_ips, c="%")
+    report(heading="CURRENTLY FIREWALLED", ips=firewalled_ips, char="%")
     report(
         heading=f"JAILED BUT NOT FIREWALLED ({len(jailed_but_not_firewalled)})",
         ips=jailed_but_not_firewalled,
-        c="^",
+        char="^",
     )
 
 
