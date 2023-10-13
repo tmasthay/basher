@@ -544,6 +544,9 @@ gmd(){
     git merge $SRC
 }
 
+no_suspend(){
+    gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &
+}
 source ~/.platform/functions
 
 

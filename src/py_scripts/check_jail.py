@@ -3,6 +3,7 @@ import subprocess
 from subprocess import check_output as co
 import argparse
 import os
+from termcolor import colored
 import sys
 
 trusted_ips_path = os.path.abspath(
@@ -114,12 +115,15 @@ def get_jail_info(*, private_ip_ranges, special_ips):
     return d
 
 
-def report(*, heading, ips, c):
-    print(80 * c)
-    print(heading)
+def report(*, heading, ips, char, color="red"):
+    def printc(s, **kw):
+        print(colored(s, color), **kw)
+
+    printc(80 * char)
+    printc(heading)
     for ip in ips:
-        print(ip)
-    print(80 * c)
+        printc(f"    {ip}")
+    printc(80 * char)
     print("\n")
 
 

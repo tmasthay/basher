@@ -35,23 +35,20 @@ alias start_agent='eval "$(ssh-agent -s)"'
 alias vi='vim'
 
 #sudo store shortcut
-alias sudood='bash ~/.bash_scripts/sudood.sh'
+alias sudood="bash $H/.bash_scripts/sudood.sh"
 alias sdp='sudood'
 alias sur='su root'
 
-#alias a no-suspend command
-alias no_suspend='gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &'
-
 #alias for moving around
-alias cdi='cde $ISL'
-alias cdd='cde $DEEPWAVE_DEBUG'
-alias cdb='cde $BASHER'
-alias cdc='cde $CONDA_PREFIX'
-alias cdr='cde $REPO'
+alias cdi='cd $ISL'
+alias cdd='cd $DEEPWAVE_DEBUG'
+alias cdb='cd $BASHER'
+alias cdc='cd $CONDA_PREFIX'
+alias cdr='cd $REPO'
 
 #alias check_jail
-alias blist='sudo python $BASHER/src/py_scripts/check_jail.py'
-alias ufw_monitor='sudo python $BASHER/src/py_scripts/ufw_monitor.py'
+alias blist='sudo $(which python) $BASHER/src/py_scripts/check_jail.py'
+alias ufw_monitor='sudo $(which python) $BASHER/src/py_scripts/ufw_monitor.py'
 
 source ~/.platform/aliases
 
