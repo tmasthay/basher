@@ -248,7 +248,7 @@ bpushm() {
 
 bpush() {
     PREV=$(pwd)
-    cd $BASHER
+    cde $BASHER
     echo $(pwd)
     gau
     gc
@@ -509,8 +509,43 @@ jmr(){
 gcp() {
     git clean -ndfx
 }
-source ~/.platform/functions
+
+exp(){
+    eval echo $1
+}
 
 cde() {
-    cd "$(eval echo $1)"
+    cd "$(exp $1)"
 }
+
+ups(){
+    local TMP_BASHER=$(exp $BASHER)
+    python $TMP_BASHER/src/py_scripts/ups.py
+}
+
+gmu(){
+    TARGET=${1:-"main"}
+    CURR=$(git rev-parse --abbrev-ref HEAD)
+    git pull
+    git checkout $TARGET
+    git pull
+    git merge $CURR
+    git push
+    git checkout $CURR
+}
+
+gmd(){
+    SRC=${1:-"main"}
+    CURR=$(git rev-parse --abbrev-ref HEAD)
+    git pull
+    git checkout $SRC
+    git pull
+    git checkout $CURR
+    git merge $SRC
+}
+
+source ~/.platform/functions
+
+
+
+
