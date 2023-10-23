@@ -26,3 +26,9 @@ cddp(){
     cdi
     cd misfit_toys/examples/ddp
 }
+
+go(){
+    cddp
+    gho
+    python driver.py
+}
