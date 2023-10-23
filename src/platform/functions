@@ -1,8 +1,15 @@
 gho(){
+    PREV=$(pwd)
     cdi
     ./reinstall_and_test.sh $1 $2
-    cd examples
-    python trial.py
+    cd $PREV
+}
+
+ghh(){
+    gho
+    cdi
+    cd misfit_toys/examples/ddp
+    python ddp_driver.py
 }
 
 clr(){

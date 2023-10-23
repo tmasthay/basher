@@ -552,6 +552,10 @@ cver(){
     cat setup.py | grep "version"
 }
 
+cemu(){
+    ups; gem $1; gmu
+}
+
 user_funcs(){
     cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/'
 }
