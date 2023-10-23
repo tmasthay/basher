@@ -548,6 +548,10 @@ no_suspend(){
     gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &
 }
 
+cver(){
+    cat setup.py | grep "version"
+}
+
 user_funcs(){
     cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/'
 }
