@@ -21,3 +21,8 @@ ghoc(){
     clr
     gho
 }
+
+cddp(){
+    cdi
+    cd misfit_toys/examples/ddp
+}
