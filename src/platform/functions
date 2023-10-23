@@ -32,3 +32,10 @@ go(){
     gho
     python driver.py
 }
+
+kdata(){
+    PREV=$(pwd)
+    cdc
+    rm -rf BENCHMARK
+    cd $PREV
+}
