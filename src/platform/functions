@@ -21,3 +21,21 @@ ghoc(){
     clr
     gho
 }
+
+cddp(){
+    cdi
+    cd misfit_toys/examples/ddp
+}
+
+go(){
+    cddp
+    gho
+    python driver.py
+}
+
+kdata(){
+    PREV=$(pwd)
+    cdc
+    rm -rf BENCHMARK
+    cd $PREV
+}
