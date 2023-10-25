@@ -9,8 +9,8 @@ from masthay_helpers.global_helpers import ctab, cprint, cstr, bstr
 
 
 def main():
-    help_clr = 'green'
-    col_colors = ['red', 'magenta', 'yellow']
+    dmr = '--'
+
     # Default rich keyword arguments
     rich_kwargs = {
         'theme': None,
@@ -24,13 +24,11 @@ def main():
     }
 
     if sys.argv[1].replace('-', '').lower() in ['h', 'help']:
-        cprint(
-            (
-                'USAGE: rpython [rich_kwargs] [RICH_END]'
-                ' module[.main_function="main"] [cmd_line_args]\n'
-            ),
-            help_clr,
-        )
+        help_clr = 'green'
+        col_colors = ['red', 'magenta', 'yellow']
+        headers = ['Argument', 'Type', 'rpython Default']
+        example_clr = 'cyan'
+
         sig = inspect.signature(install)
 
         table_data = []
@@ -51,25 +49,33 @@ def main():
                 )
             table_data.append([arg_name, type_hint, default_value])
 
-        table = ctab(
-            table_data,
-            colors=['red', 'magenta', 'yellow'],
-            headers=["Argument", "Type", "rpython Default"],
-        )
+        table = ctab(table_data, colors=col_colors, headers=headers)
         table = '\n'.join([8 * ' ' + e for e in table.split('\n')])
         table = bstr(
-            cstr('USAGE: rpython [rich_kwargs] [RICH_END] ', help_clr),
-            cstr('module[.main_function="main"] [cmd_line_args]\n', help_clr),
-            cstr('    rich_kwargs empty -> can omit RICH_END\n', help_clr),
+            cstr(f'USAGE: rpython [rich_kwargs] [{dmr}] ', help_clr),
+            cstr('module[.main_function="main"] [cmd_line_args]\n\n', help_clr),
+            cstr(
+                (
+                    f'    If rich_kwargs is empty, the "{dmr}" separator can be'
+                    ' omitted.\n\n'
+                ),
+                help_clr,
+            ),
+            cstr('    Options for rich_kwargs:\n\n', help_clr),
             table,
+            cstr('\n\n    Examples:\n', help_clr),
+            cstr(
+                '        rpython width=80 -- my_module.main_dummy arg1 arg2\n',
+                example_clr,
+            ),
         )
         print(table)
 
         return
 
     # Check for the presence of the RICH_END marker
-    if 'RICH_END' in sys.argv:
-        idx_rich_end = sys.argv.index('RICH_END')
+    if dmr in sys.argv:
+        idx_rich_end = sys.argv.index(dmr)
         rich_kwargs = sys.argv[1:idx_rich_end]
 
         # Create the dictionary for keyword arguments from command line
