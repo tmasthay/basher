@@ -5,10 +5,12 @@ import os
 import inspect
 import re
 from tabulate import tabulate as tab
-from masthay_helpers.global_helpers import ctab, cprint, cstr
+from masthay_helpers.global_helpers import ctab, cprint, cstr, bstr
 
 
 def main():
+    help_clr = 'green'
+    col_colors = ['red', 'magenta', 'yellow']
     # Default rich keyword arguments
     rich_kwargs = {
         'theme': None,
@@ -27,7 +29,7 @@ def main():
                 'USAGE: rpython [rich_kwargs] [RICH_END]'
                 ' module[.main_function="main"] [cmd_line_args]\n'
             ),
-            'cyan',
+            help_clr,
         )
         sig = inspect.signature(install)
 
@@ -55,7 +57,12 @@ def main():
             headers=["Argument", "Type", "rpython Default"],
         )
         table = '\n'.join([8 * ' ' + e for e in table.split('\n')])
-        table = cstr('    rich_kwargs below\n', 'cyan') + table
+        table = bstr(
+            cstr('USAGE: rpython [rich_kwargs] [RICH_END] ', help_clr),
+            cstr('module[.main_function="main"] [cmd_line_args]\n', help_clr),
+            cstr('    rich_kwargs empty -> can omit RICH_END\n', help_clr),
+            table,
+        )
         print(table)
 
         return
