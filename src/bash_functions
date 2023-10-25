@@ -556,6 +556,10 @@ cemu(){
     ups; gem $1; gmu
 }
 
+rpython(){
+    python $BASHER/src/py_scripts/rich_python.py $@
+}
+
 user_funcs(){
     cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/'
 }
