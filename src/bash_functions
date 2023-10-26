@@ -665,6 +665,10 @@ wgrep(){
     python $BASHER/src/py_scripts/wgrep.py $@
 }
 
+wch(){
+    cd $(git rev-parse --show-toplevel)/worktrees/$1
+}
+
 source ~/.platform/functions
 
 
