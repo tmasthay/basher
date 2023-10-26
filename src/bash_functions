@@ -609,6 +609,62 @@ agmo(){
 #         git diff HEAD..@{u} 
 # }
 
+create_worktrees() {
+    # Get the absolute path to the root of the repo
+    REPO_ROOT=$(git rev-parse --show-toplevel)
+
+    # Create the worktrees directory if it doesn't exist
+    mkdir -p "$REPO_ROOT/worktrees"
+
+    # Get a list of all remote branches excluding the current branch
+    branches=$(git branch -r | sed 's/origin\///g' | sed '/HEAD/d' | tr -d ' ')
+
+    # Get the name of the current branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+    # Iterate over each branch
+    for branch in $branches; do
+        # Skip the loop iteration if this is the current branch
+        if [[ "$branch" == "$current_branch" ]]; then
+            continue
+        fi
+        
+        # Replace slashes with underscores in branch name for directory naming
+        safe_branch_name=$(echo "$branch" | tr '/' '_')
+
+        # Construct the path to where the worktree for this branch would be
+        worktree_path="$REPO_ROOT/worktrees/$safe_branch_name"
+
+        # Check if a worktree already exists for this branch
+        if [[ ! -d "$worktree_path" ]]; then
+            # No worktree exists, so create a new one for this branch
+            git worktree add "$worktree_path" "$branch"
+        else
+            # A worktree already exists for this branch
+            echo "Worktree already exists for branch $branch at $worktree_path"
+        fi
+    done
+}
+
+
+abgrep(){
+    REGEX=$1
+    branches=$(git branch -r | sed 's/origin\///g' | sed '/HEAD/d' | tr -d ' ')
+
+    curr_branch=$(git branch | grep "*" | sed 's/* //g')
+    for branch in $branches; do
+        git checkout $branch
+        echo "Checking $branch"
+        grep -r $REGEX
+        echo '\n\n\n\n\n'
+    done
+    git checkout $curr_branch
+}
+
+wgrep(){
+    python $BASHER/src/py_scripts/wgrep.py $@
+}
+
 source ~/.platform/functions
 
 
