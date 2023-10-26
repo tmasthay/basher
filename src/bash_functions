@@ -563,6 +563,52 @@ rpython(){
 user_funcs(){
     cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/'
 }
+
+all_git(){
+    CMD=$1
+    ROOT=${2:-$REPO}
+    directories=$(find "$ROOT" -type d -name ".git" -exec dirname {} \;)
+
+    # Iterate over each directory
+    for dir in $directories; do
+        cd "$dir" || continue  # Change to the directory, or skip to the next iteration if cd fails
+        eval "$CMD"  # Pull the latest changes
+    done
+}
+
+agfetch(){
+    all_git '
+        git fetch origin;
+        res=$(git log HEAD..origin/HEAD --oneline);
+        if [[ -z "$res" ]]; then
+            echo "$dir -- ALREADY UP TO DATE";
+        else
+            echo "$dir -- MERGEABLE: Run git merge origin to update";
+        fi
+    ' "$1"
+}
+
+agpull(){
+    all_git 'git pull' $1
+}
+
+agsee(){
+    all_git 'echo "$dir"' $1
+}
+
+agmo(){
+    all_git 'git merge origin' $1
+}
+
+# see_repos(){
+#     ROOT=${1:-$REPO}
+#     directories=$(find $ROOT -type d -name ".git" -exec dirname {} \;)
+#     for dir in $directories; do
+#         cd "$dir" || continue
+#         git fetch origin
+#         git diff HEAD..@{u} 
+# }
+
 source ~/.platform/functions
 
 
