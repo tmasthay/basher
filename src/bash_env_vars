@@ -10,5 +10,6 @@ export DUMP="$H/.bash_scripts/dumpsterfireproof"
 export CDMR_DEFAULT="$H/plots_iomt"
 export DEEPWAVE_DEBUG="$H/Documents/debug/deepwave"
 export BASHER="$H/.bash_repos/basher"
+export RICH_TRACEBACK="1"
 
 source $H/.platform/env_vars
