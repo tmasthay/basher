@@ -561,8 +561,14 @@ rpython(){
 }
 
 user_funcs(){
-    cat "$H/.bash_functions" | grep ".*()[ ]*{" | sed 's/\(.*\)[ ]*([ ]*)[ ]*{/\1/'
+    BASH_FUNCS=$(cat "$HOME/.bash_functions")
+    PLATFORM_FUNCS=$(cat "$HOME/.platform/functions")
+    grep_regex='.*()[ ]*{'
+    sed_regex='s/\(.*\)[ ]*([ ]*)[ ]*\{/\1/'
+    echo "$BASH_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex"
+    echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex"
 }
+
 
 all_git(){
     CMD=$1
@@ -667,6 +673,26 @@ wgrep(){
 
 wch(){
     cd $(git rev-parse --show-toplevel)/worktrees/$1
+}
+
+pips(){
+    python -m site --user-site
+}
+
+efuncs(){
+    code $HOME/.bash_functions
+}
+
+ealias(){
+    code $HOME/.bash_aliases
+}
+
+evars(){
+    code $HOME/.bash_env_vars
+}
+
+eenv(){
+    code $HOME/.bash_env
 }
 
 source ~/.platform/functions
