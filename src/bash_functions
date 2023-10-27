@@ -676,10 +676,20 @@ wch(){
 }
 
 pips(){
-    python -m site --user-site
+    PKG=${1:-"site"}
+    GO=${2:-0}
+    CURR=$(python -c "import $PKG; import os; print(os.path.dirname($PKG.__file__))" 2> /dev/null)
+
+    if [ "$GO" -eq 1 ]; then
+        cd $CURR
+    else
+        echo $CURR
+    fi
 }
 
-efuncs(){
+
+
+efunc(){
     code $HOME/.bash_functions
 }
 
