@@ -10,12 +10,13 @@ if filename.lower() != 'none':
     else:
         file = open(filename, 'wt')
 
-    console = Console(file=file, force_terminal=True)
+    dummy_width = 320
+    console = Console(file=file, force_terminal=True, width=dummy_width)
     install(
         console=console,
         show_locals=True,
         word_wrap=True,
-        width=1000,
-        locals_max_string=1000,
-        locals_max_length=1000,
+        locals_max_string=dummy_width,
+        locals_max_length=dummy_width,
+        width=dummy_width,
     )

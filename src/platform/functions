@@ -39,3 +39,10 @@ kdata(){
     rm -rf BENCHMARK
     cd $PREV
 }
+
+mtd(){
+    dwre
+    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples
+    python download_data.py
+}
+
