@@ -42,7 +42,29 @@ kdata(){
 
 mtd(){
     dwre
-    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples
+    # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples
+    cd $(pips)
+    cd site-packages/misfit_toys/examples
     python download_data.py
 }
+
+lll(){
+    dwre
+    rm /tmp/session.ans
+    script -O /tmp/session.ans
+}
+
+rexit () {
+    cact dw
+    cd $(pips)
+    cd site-packages/misfit_toys/examples
+    python download_data.py
+
+    exit
+}
+
+gg(){
+    echo "gdown $1" | sed 's/view?.*//' | sed 's/file\/d\//uc?id=/'
+}
+
 
