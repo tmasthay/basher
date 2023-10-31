@@ -1,7 +1,7 @@
 gho(){
     PREV=$(pwd)
     cdi
-    ./reinstall_and_test.sh $1 $2
+    source reinstall_and_test.sh $1 $2
     cd $PREV
 }
 
