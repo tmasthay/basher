@@ -24,6 +24,7 @@ alias gla='git log --oneline --graph --all'
 alias gch='git checkout'
 alias gcn='git clean -n'
 alias gdy='git difftool -y'
+alias glc='git log --oneline --graph --decorate --all'
 
 #screensaver
 alias scrsv='xscreensaver-command -activate'
