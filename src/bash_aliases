@@ -25,6 +25,7 @@ alias gch='git checkout'
 alias gcn='git clean -n'
 alias gdy='git difftool -y'
 alias glc='git log --oneline --graph --decorate --all'
+alias gcg='git config --global --get'
 
 #screensaver
 alias scrsv='xscreensaver-command -activate'
