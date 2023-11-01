@@ -67,4 +67,7 @@ gg(){
     echo "gdown $1" | sed 's/view?.*//' | sed 's/file\/d\//uc?id=/'
 }
 
+cdn(){
+    cdi misfit_toys/examples/ddp/$1
+}
 

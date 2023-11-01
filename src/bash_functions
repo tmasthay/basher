@@ -734,6 +734,17 @@ cdr(){
     cd $REPO/$1
 }
 
+eplat(){
+    code $BASHER/src/platform/$1
+}
+
+mhr(){
+    PREV=$(pwd)
+    cdr masthay_helpers
+    source reinstall.sh
+    cd $PREV
+}
+
 source ~/.platform/functions
 
 
