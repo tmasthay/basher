@@ -503,7 +503,8 @@ jbr(){
 
 jmr(){
     PORT=${1:-8888}
-    jupyter notebook --no-browser --port=$PORT
+    MODE=${2:-"lab"}
+    jupyter $MODE --no-browser --port=$PORT
 }
 
 gcp() {
@@ -704,6 +705,16 @@ evars(){
 eenv(){
     code $HOME/.bash_env
 }
+
+gr(){
+    git reset $@
+}
+
+rcb(){
+    git reset $1 origin/$(git rev-parse --abbrev-ref HEAD)
+}
+alias grh='git reset --hard'
+alias rcb='git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)'
 
 source ~/.platform/functions
 
