@@ -714,6 +714,26 @@ rcb(){
     git reset $1 origin/$(git rev-parse --abbrev-ref HEAD)
 }
 
+cdi(){
+    cd $ISL/$1
+}
+
+cdd(){
+    cd $DEEPWAVE_DEBUG/$1
+}
+
+cdb(){
+    cd $BASHER/$1
+}
+
+cdc(){
+    cd $CONDA_PREFIX/$1
+}
+
+cdr(){
+    cd $REPO/$1
+}
+
 source ~/.platform/functions
 
 
