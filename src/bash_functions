@@ -676,7 +676,7 @@ wch(){
     cd $(git rev-parse --show-toplevel)/worktrees/$1
 }
 
-pips(){
+pipp(){
     PKG=${1:-"site"}
     GO=${2:-0}
     CURR=$(python -c "import $PKG; import os; print(os.path.dirname($PKG.__file__))" 2> /dev/null)
@@ -685,6 +685,15 @@ pips(){
         cd $CURR
     else
         echo $CURR
+    fi
+}
+
+pips(){
+    LCL_PATH="$(pipp site 0)/site-packages"
+    if [ -z $1 ]; then
+        cd $LCL_PATH
+    else
+        echo $LCL_PATH
     fi
 }
 
@@ -743,6 +752,10 @@ mhr(){
     cdr masthay_helpers
     source reinstall.sh
     cd $PREV
+}
+
+check_devices(){
+    python -c "from misfit_toys.utils import check_devices; check_devices('$1')"
 }
 
 source ~/.platform/functions

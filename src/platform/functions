@@ -71,3 +71,48 @@ cdn(){
     cdi misfit_toys/examples/ddp/$1
 }
 
+go(){
+    # mhr
+    # gho
+    if [ -z $1 ]; then
+        cdc
+        rm -rf BENCHMARK
+        cdn
+        python driver.py
+    fi
+    if [ -z $2 ]; then
+        cdn
+        python dw_driver.py
+    fi
+    cdi debug
+    python debug.py /home/tyler/protect conda/BENCHMARK/multiscale/data dw_validate/
+    pfs dw_validate/ "*.txt" "*"
+}
+
+cmp_tensor(){
+    DIR1=${1:-"/home/tyler/protect"}
+    DIR2=${2:-"conda/BENCHMARK/multiscale/data"}
+    OUT_DIR=${3:-"$ISL/debug/dw_validate/"}
+    cdi debug
+    python debug.py $DIR1 $DIR2 $OUT_DIR
+    cd $OUT_DIR
+    pfs . "*.txt" "*"
+}
+
+genp(){
+    PREV=$(pwd)
+    cdn
+    python dw_driver.py
+    cd $PREV
+}
+
+geni(){
+    PREV=$(pwd)
+    if [ -z $1 ]; then
+        cdc
+        rm -rf BENCHMARK
+    fi
+    cdn
+    python driver.py
+    cd $PREV
+}
