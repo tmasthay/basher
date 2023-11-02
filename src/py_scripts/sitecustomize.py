@@ -10,13 +10,19 @@ if filename.lower() != 'none':
     else:
         file = open(filename, 'wt')
 
-    dummy_width = 320
-    console = Console(file=file, force_terminal=True, width=dummy_width)
+    console = Console(file=file, force_terminal=True)
     install(
         console=console,
         show_locals=True,
         word_wrap=True,
-        locals_max_string=dummy_width,
-        locals_max_length=dummy_width,
-        width=dummy_width,
+        width=1000,
+        locals_max_string=1000,
+        locals_max_length=1000,
     )
+
+repo_path = os.environ['REPO']
+nondefault = ['GitHookEm', 'Experiments']
+repos = [os.path.join(repo_path, e) for e in os.listdir(repo_path) if not e.startswith('.') and not e in nondefault and os.path.isdir(os.path.join(repo_path, e))]
+
+for repo in repos:
+    sys.path.append(repo)
