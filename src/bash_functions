@@ -775,7 +775,15 @@ cst(){
 }
 
 phelp() {
-    python $BASHER/src/py_scripts/phelp.py $@
+    FILE=$1
+    INTERACTIVE=${2:-1}
+    OUTPUT=$(python $BASHER/src/py_scripts/phelp.py $FILE)
+    if [ "$INTERACTIVE" -eq 1 ]; then
+        echo "$OUTPUT" | less -R
+    else
+        echo "$OUTPUT" 
+        echo "$INTERACTIVE"
+    fi
 }
 
 
