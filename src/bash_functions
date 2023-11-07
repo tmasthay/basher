@@ -758,6 +758,10 @@ check_devices(){
     python -c "from misfit_toys.utils import check_devices; check_devices('$1')"
 }
 
+gce(){
+    git commit --allow-empty
+}
+
 source ~/.platform/functions
 
 

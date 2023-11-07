@@ -108,11 +108,27 @@ genp(){
 
 geni(){
     PREV=$(pwd)
-    if [ -z $1 ]; then
+    if [ ! -z $1 ]; then
+        echo "Cleaning out BENCHMARK data"
+        sleep 3
         cdc
         rm -rf BENCHMARK
     fi
     cdn
     python driver.py
+    cd $PREV
+}
+
+cmarm(){
+    PREV=$(pwd)
+    cdc
+    rm -rf data/marmousi
+    cd $PREV
+}
+
+down(){
+    PREV=$(pwd)
+    cdi misfit_toys/examples
+    python download_data.py
     cd $PREV
 }
