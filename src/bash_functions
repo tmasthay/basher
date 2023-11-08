@@ -799,6 +799,10 @@ pcr(){
     pre-commit clean
     pre-commit install
 }
+
+gds(){
+    git difftool --staged @{u}
+}
 source ~/.platform/functions
 
 
