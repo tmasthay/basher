@@ -566,8 +566,10 @@ user_funcs(){
     PLATFORM_FUNCS=$(cat "$HOME/.platform/functions")
     grep_regex='.*()[ ]*{'
     sed_regex='s/\(.*\)[ ]*([ ]*)[ ]*\{/\1/'
-    echo "$BASH_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex"
-    echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex"
+    FIRST=$(echo "$BASH_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
+    SECOND=$(echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
+    TOTAL=$(echo "$FIRST\n$SECOND" | sort | uniq)
+    echo $TOTAL
 }
 
 
