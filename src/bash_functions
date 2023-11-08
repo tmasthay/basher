@@ -520,7 +520,7 @@ cde() {
 }
 
 ups(){
-    local TMP_BASHER=$(exp $BASHER)
+local TMP_BASHER=$(exp $BASHER)
     python $TMP_BASHER/src/py_scripts/ups.py
 }
 
@@ -561,7 +561,12 @@ rpython(){
     python $BASHER/src/py_scripts/rich_python.py $@
 }
 
+cols(){
+    python $BASHER/src/py_scripts/cols.py $@
+}
+
 user_funcs(){
+    COLS=${1:-5}
     BASH_FUNCS=$(cat "$HOME/.bash_functions")
     PLATFORM_FUNCS=$(cat "$HOME/.platform/functions")
     grep_regex='.*()[ ]*{'
@@ -569,7 +574,7 @@ user_funcs(){
     FIRST=$(echo "$BASH_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
     SECOND=$(echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
     TOTAL=$(echo "$FIRST\n$SECOND" | sort | uniq)
-    echo $TOTAL
+    cols -c $COLS "$(echo $TOTAL)"
 }
 
 
