@@ -803,6 +803,10 @@ pcr(){
 gds(){
     git difftool --staged @{u}
 }
+
+git-hook-em(){
+    git config --global core.hooksPath $HOOK_EM/.git/hooks
+}
 source ~/.platform/functions
 
 
