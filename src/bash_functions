@@ -807,6 +807,49 @@ gds(){
 git-hook-em(){
     git config --global core.hooksPath $HOOK_EM/.git/hooks
 }
+
+update_pre_commit() {
+    # Check if HOOK_EM environment variable is set
+    if [[ -z "${HOOK_EM}" ]]; then
+        echo "Error: The HOOK_EM environment variable is not set."
+        return 1
+    fi
+
+    # Check if REPO environment variable is set
+    if [[ -z "${REPO}" ]]; then
+        echo "Error: The REPO environment variable is not set."
+        return 1
+    fi
+
+    # Find all directories in your $REPO variable, excluding any paths that contain $HOOK_EM
+    find "${REPO}" -maxdepth 1 -mindepth 1 -type d | grep -v "${HOOK_EM}" | while read -r repo_dir; do
+        echo "Updating repository: ${repo_dir}"
+        
+        # Copy the pre-commit config files into the repository
+        cp "${HOOK_EM}/.pre-commit-config.yaml" "${repo_dir}/"
+        cp "${HOOK_EM}/.pre-commit-hooks.yaml" "${repo_dir}/"
+        cp "${HOOK_EM}/.gitattributes" "${repo_dir}/"
+
+        
+
+        # Change directory to the repository
+        pushd "${repo_dir}" > /dev/null || return
+
+        # Clean the pre-commit environment
+        pre-commit clean > /dev/null 2>&1
+        
+        # Install the pre-commit hook
+        pre-commit install > /dev/null 2>&1
+
+        # Return to the original directory
+        popd > /dev/null || return
+    done
+}
+
+lsh(){
+    ls -ld .?* | awk '{print $9}' | grep -v '[.][.]'
+}
+
 source ~/.platform/functions
 
 
