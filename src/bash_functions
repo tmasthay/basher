@@ -827,10 +827,7 @@ update_pre_commit() {
         
         # Copy the pre-commit config files into the repository
         cp "${HOOK_EM}/.pre-commit-config.yaml" "${repo_dir}/"
-        cp "${HOOK_EM}/.pre-commit-hooks.yaml" "${repo_dir}/"
         cp "${HOOK_EM}/.gitattributes" "${repo_dir}/"
-
-        
 
         # Change directory to the repository
         pushd "${repo_dir}" > /dev/null || return
@@ -849,6 +846,28 @@ update_pre_commit() {
 lsh(){
     ls -ld .?* | awk '{print $9}' | grep -v '[.][.]'
 }
+
+gca(){
+    git commit --amend
+}
+
+grt(){
+    git rev-parse --show-toplevel
+}
+
+cimp() {
+    RES=$(find $(grt) -name "*.py" -exec grep -E "^(import|from)" {} \; | awk '{print $2}' | sed 's/\([^\.]*\)\..*/\1/' | sort | uniq)
+    PIP_LIST=$(pip list)
+
+    for res in $RES; do
+        # Search for the package in the pip list, format, and print the matching line
+        MATCH=$(echo "$PIP_LIST" | grep -w "$res" | awk '{printf "%s>=%s\n", $1, $2}')
+        if [[ ! -z "$MATCH" ]]; then
+            echo "$MATCH"
+        fi
+    done
+}
+
 
 source ~/.platform/functions
 
