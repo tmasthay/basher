@@ -855,19 +855,46 @@ grt(){
     git rev-parse --show-toplevel
 }
 
+sfi() {
+    # Check if the file path is provided
+    if [ -z "$1" ]; then
+        echo "No file path provided."
+        return 1
+    fi
+
+    local file_path="$1"
+
+    # Check if the file exists
+    if [ ! -f "$file_path" ]; then
+        echo "File does not exist: $file_path"
+        return 1
+    fi
+
+    # Sort the file and overwrite it
+    sort "$file_path" > "$file_path.sorted"
+    mv "$file_path.sorted" "$file_path"
+}
+
 cimp() {
+    local temp_file="/tmp/requirements_temp.txt"
+    local requirements_file="$(grt)/requirements.txt"
     RES=$(find $(grt) -name "*.py" -exec grep -E "^(import|from)" {} \; | awk '{print $2}' | sed 's/\([^\.]*\)\..*/\1/' | sort | uniq)
     PIP_LIST=$(pip list)
 
+    > "$temp_file" # Empty the file before starting
+
     for res in $RES; do
-        # Search for the package in the pip list, format, and print the matching line
         MATCH=$(echo "$PIP_LIST" | grep -w "$res" | awk '{printf "%s>=%s\n", $1, $2}')
         if [[ ! -z "$MATCH" ]]; then
-            echo "$MATCH"
+            echo "$MATCH" >> "$temp_file"
         fi
     done
-}
 
+    sfi "$temp_file"
+    sfi "$requirements_file"
+
+    git difftool -y "$temp_file" "$requirements_file"
+}
 
 source ~/.platform/functions
 
