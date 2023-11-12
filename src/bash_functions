@@ -1,6 +1,7 @@
 ~/.secrets/build_souper_secrets.sh
 source ~/.secrets/functions
 
+# cecho: colored echo
 cecho() {
     local no_newline=0
     local color_value
@@ -53,11 +54,12 @@ cecho() {
     tput sgr0  # Reset text attributes to normal without clearing screen.
 }
 
-#see fonts
+# see_fonts: see fonts
 see_fonts(){
     fc-list | cut -f2 -d':' | sort -u
 }
 
+# set_var: set environment variable
 set_var() {
     if [ "$#" -ne 1 ]; then
         echo "Usage: echo VAR_VALUE | set_var VAR_NAME"
@@ -68,7 +70,7 @@ set_var() {
     eval "export $1=\"$VAR_CONTENT\""
 }
 
-#conda environment helpers
+# prepend_env_var: conda environment helpers
 prepend_env_var() {
     # Check if the environment variable is already set
     if [ -z "${!1}" ]; then
@@ -81,6 +83,7 @@ prepend_env_var() {
     fi
 }
 
+# append_env_var: conda environment helpers
 revert_env_var() {
     local old_var="OLD_$1"
     eval "export $1=\"\${$old_var}\""
@@ -89,14 +92,17 @@ revert_env_var() {
     unset OLD_$1
 }
 
+# start_ssh: start ssh agent
 start_ssh(){
     eval "$(ssh-agent -s)"
 }
 
+# ssh_add_all: add all ssh keys
 ssh_add_all(){
     ssh-add $(find ~/.ssh -type f -name 'id_*' ! -name '*.pub')
 }
 
+# matlab: start matlab
 matlab(){
     LAST_DIR=$(pwd)
     cd ~/MATLAB/Source
@@ -104,6 +110,7 @@ matlab(){
     cd $LAST_DIR
 }
 
+# pfs: print file contents recursively
 pfs() {
   local dir=$1
   local pattern=$2
@@ -121,6 +128,7 @@ pfs() {
   done
 }
 
+# grb: git rebase
 grb() {
     find . -name '*.orig' -delete
     find . -name '*LOCAL*' -delete
@@ -130,17 +138,19 @@ grb() {
     find . -name '*BASE*' -delete
 }
 
+# kkp: kill process by port
 kkp(){
     TMP=$(sudo lsof -i :$1 | awk '{print $2}' | sed -n '2p')
     echo "kill $TMP"
     kill $TMP
 }
 
-
+# vit: vim with terminal
 vit(){
     vim -c "vertical terminal" $1
 }
 
+# gpu_mem: see gpu memory
 gpu_mem() {
   my_color=${1:-red}
   timestamp=${2:-0}
@@ -153,6 +163,7 @@ gpu_mem() {
   echo 
 }
 
+# mgpu: monitor gpu
 mgpu(){
     iterations=${3:-100}
     sleep_time=${4:-5}
@@ -168,6 +179,7 @@ mgpu(){
     done
 }
 
+# jail_list: list all banned IPs
 jail_list(){
     JAIL=${1:-"sshd"}
     JAIL_LIST=$(sudo fail2ban-client status $JAIL | grep "Banned")
@@ -175,18 +187,21 @@ jail_list(){
     echo $JAIL_LIST | tr ' ' '\n'
 }
 
+# ban_ip: ban an IP
 ban_ip(){
     IP=$1
     JAIL=${2:-"sshd"}
     sudo fail2ban-client set $JAIL banip $IP
 }
 
+# unban_ip: unban an IP
 unban_ip(){
     IP=$1
     JAIL=${2:-"sshd"}
     sudo fail2ban-client set $JAIL unbanip $IP
 }
 
+# unban_ip_regex: unban all IPs matching a regex
 unban_ip_regex(){
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     local JAIL=${2:-"sshd"}
@@ -198,18 +213,20 @@ unban_ip_regex(){
     done
 }
 
+# unban_first: unban the first IP
 unban_first(){
     JAIL=${1:-"sshd"}
     unban_ip $(sudo fail2ban-client status $JAIL | grep "Banned" | awk '{print $5}')
 }
 
 
-
+# cdmr: change directory to most recent
 cdmr(){
     DIR=${1:-$CDMR_DEFAULT}
     cd $DIR/$(ls $DIR -tr | tail -n 1)
 }
 
+# ensure_ssh_agent: ensure ssh agent is running
 ensure_ssh_agent() {
     # Find all agent sockets based on the file structure
     AGENT_SOCKETS=$(find /tmp/ssh-* -type d -exec find {} -name "agent.*" \;)
@@ -237,6 +254,7 @@ ensure_ssh_agent() {
     ssh_add_all
 }
 
+# bpushm: basher push main
 bpushm() {
     PREV=$(pwd)
     cd $BASHER
@@ -246,6 +264,7 @@ bpushm() {
     cd $PREV
 }
 
+# bpush: basher push
 bpush() {
     PREV=$(pwd)
     cde $BASHER
@@ -256,6 +275,7 @@ bpush() {
     cd $PREV
 }
 
+# bpull: basher pull
 bpull(){
     PREV=$(pwd)
     cd $BASHER
@@ -263,6 +283,7 @@ bpull(){
     cd $PREV
 }
 
+# dwre: deepwave reinstall and test
 dwre(){
     RETEST=${1:-0}
     REDOWNLOAD_DATA=${2:-0}
@@ -272,6 +293,7 @@ dwre(){
     cd $CURR_PATH
 }
 
+# tyc: remove files from path matching regex
 tyc(){
     CURR_PATH=${2:-.}
     REGEX=${1:-"AnExpressionThatWillNeverMatchAnythingHOORAH.NOPE"}
@@ -286,26 +308,32 @@ tyc(){
     find . -type f -name "$REGEX" -delete
 }
 
+# sfunc: source bash functions
 sfunc(){
     source ~/.bash_functions
 }
 
+# salias: source bash aliases
 salias(){
     source ~/.bash_aliases
 }
 
+# svars: source bash environment variables
 svars(){
     source ~/.bash_env_vars
 }
 
+# senv: source bash environment
 senv(){
     source ~/.bash_env
 }
 
+# shelp: source bash helpers
 shelp(){
     source ~/.bash_source_helpers
 } 
 
+# codeo: open files in vscode
 codeo(){
     PATTERN=${1:-"*.jpg"}
     CURR_PATH=${2:-.}
@@ -326,35 +354,40 @@ codeo(){
     code $RES
 }
 
-#git functions
+# gsg: see unstaged git files
 gsg(){
     KEEP=${1:-modified}
     OMIT=${2:-.gitkeep}
     git status -uno | grep -E "$KEEP" | grep -vE "$OMIT" | awk '{print $2}'
 }
 
+# gag: add git files matching gsg convention
 gag(){
     ga $(gsg $1 $2)
 }
 
+# ge: "git everything" - gau; gc; gp
 ge(){
     gau
     gc
     gp
 }
 
+# gem: "git everything message" - gau; gcm $1; gp
 gem(){
     gau
     gcm $1
     gp
 }
 
+# geg: "git everything gsg" - gau; gag $1 $2; gc; gp
 geg(){
     gag $1 $2
     gc
     gp
 }
 
+# ufw_bak: backup ufw rules
 ufw_bak(){
     mkdir -p ~/.backups/ufw
     if [ -f /etc/ufw/user.rules ]; then
@@ -369,6 +402,7 @@ ufw_bak(){
     fi
 }   
 
+# ufw_bak2: backup ufw rules
 ufw_bak2(){
     if [ -f ~/.backups/ufw/user.rules ]; then
         sudo cp ~/.backups/ufw/user.rules ~/.backups/ufw/user.rules.bak
@@ -382,6 +416,7 @@ ufw_bak2(){
     fi
 }
 
+# ufw_restore: restore ufw rules
 ufw_restore(){
     ufw_bak2
     if [ -f ~/.backups/ufw/user.rules ]; then
@@ -397,6 +432,7 @@ ufw_restore(){
     fi
 }
 
+# ufw_swap: swap ufw rules
 ufw_swap_bak(){
     # Create a temporary backup of the current 'user.rules'
     sudo cp ~/.backups/ufw/user.rules ~/.backups/tmp.rules || { echo "Failed to create temp backup"; return 1; }
@@ -408,6 +444,7 @@ ufw_swap_bak(){
     sudo mv ~/.backups/tmp.rules ~/.backups/ufw/user.rules.bak || { echo "Failed to finalize swap"; return 1; }
 }
 
+# ufw_fsd_legacy: find and delete ufw rules containing SCALPEL_DENY
 ufw_fsd_legacy() {
     # Find the first rule with "SCALPEL_DENY", get its number and IP
     local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY" | awk 'NR==1{print $2, $(NF-2)}' | tr -d '[]')
@@ -425,6 +462,7 @@ ufw_fsd_legacy() {
     fi
 }
 
+# ufw_fsd: find and delete ufw rules containing SCALPEL_DENY
 ufw_fsd(){
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY")
@@ -446,6 +484,7 @@ ufw_fsd(){
     fi
 }
 
+# ufw_all_scalpel: find and delete all ufw rules containing SCALPEL_DENY
 ufw_all_scalpel() {
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     # Run the backup function at the beginning
@@ -462,6 +501,7 @@ ufw_all_scalpel() {
     done
 }
 
+# ufw_all_scalpel_unban: find and delete all ufw rules containing SCALPEL_DENY
 ufw_all_scalpel_unban() {
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
 
@@ -469,23 +509,12 @@ ufw_all_scalpel_unban() {
     unban_ip_regex $REGEX
 }
 
-# Function to unravel alias and replace environment variables
-unr_alias() {
-  alias_name=$1
-  alias_cmd=$(alias "$alias_name" 2>/dev/null | sed "s/alias $alias_name='//;s/'$//")
-  
-  # Replace environment variables
-  fully_expanded_cmd=$(echo "$alias_cmd" | envsubst)
-  
-  echo "$fully_expanded_cmd"
-}
-
-
-# Function to unravel an alias
+# unr_alias: unravel an alias
 unr_alias() {
     alias $1 2> /dev/null | sed -E "s/alias $1='(.*)'/\1/;s/\$[0-9]\{1,\}//g" | envsubst
 }
 
+# atrm_all: remove all at jobs
 atrm_all() {
     num_calls=$(atq | wc -l)
 
@@ -494,6 +523,7 @@ atrm_all() {
     done
 }
 
+# jbr: "jupyter bind remote"
 jbr(){
     REMOTE_DOMAIN=$1
     HOST_PORT=${2:-8889}
@@ -501,29 +531,35 @@ jbr(){
     ssh -N -f -L localhost:$HOST_PORT:localhost:$REMOTE_PORT $REMOTE_DOMAIN
 }
 
+# jmr: "jupyter make remote"
 jmr(){
     PORT=${1:-8888}
     MODE=${2:-"lab"}
     jupyter $MODE --no-browser --port=$PORT
 }
 
+# gcp: "git clean preview"
 gcp() {
     git clean -ndfx
 }
 
+# exp: "expand environment variables"
 exp(){
     eval echo $1
 }
 
+# cde: "cd expand"
 cde() {
     cd "$(exp $1)"
 }
 
+# ups: "update setup"
 ups(){
-local TMP_BASHER=$(exp $BASHER)
+    local TMP_BASHER=$(exp $BASHER)
     python $TMP_BASHER/src/py_scripts/ups.py
 }
 
+# gmu: "git merge up"
 gmu(){
     TARGET=${1:-"main"}
     CURR=$(git rev-parse --abbrev-ref HEAD)
@@ -535,6 +571,7 @@ gmu(){
     git checkout $CURR
 }
 
+# gmd: "git merge down"
 gmd(){
     SRC=${1:-"main"}
     CURR=$(git rev-parse --abbrev-ref HEAD)
@@ -545,26 +582,32 @@ gmd(){
     git merge $SRC
 }
 
+# no_suspend: prevent suspend
 no_suspend(){
     gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &
 }
 
+# cver: "check version"
 cver(){
     cat setup.py | grep "version"
 }
 
+# cemu: "CI git-everything merge up"
 cemu(){
     ups; gem $1; gmu
 }
 
+# rpython "rich python" -- deprecated
 rpython(){
     python $BASHER/src/py_scripts/rich_python.py $@
 }
 
+# cols: columnize output
 cols(){
     python $BASHER/src/py_scripts/cols.py $@
 }
 
+# user_funcs: see user functions
 user_funcs(){
     COLS=${1:-5}
     BASH_FUNCS=$(cat "$HOME/.bash_functions")
@@ -577,7 +620,7 @@ user_funcs(){
     cols -c $COLS "$(echo $TOTAL)"
 }
 
-
+# all_git: run a git command in all git repos
 all_git(){
     CMD=$1
     ROOT=${2:-$REPO}
@@ -590,6 +633,7 @@ all_git(){
     done
 }
 
+# agfetch: fetch all git repos
 agfetch(){
     all_git '
         git fetch origin;
@@ -602,27 +646,22 @@ agfetch(){
     ' "$1"
 }
 
+# agpull: pull all git repos
 agpull(){
     all_git 'git pull' $1
 }
 
+# agsee: see all git repos
 agsee(){
     all_git 'echo "$dir"' $1
 }
 
+# agmo: merge all git repos
 agmo(){
     all_git 'git merge origin' $1
 }
 
-# see_repos(){
-#     ROOT=${1:-$REPO}
-#     directories=$(find $ROOT -type d -name ".git" -exec dirname {} \;)
-#     for dir in $directories; do
-#         cd "$dir" || continue
-#         git fetch origin
-#         git diff HEAD..@{u} 
-# }
-
+# create_worktrees: create worktrees for all remote branches
 create_worktrees() {
     # Get the absolute path to the root of the repo
     REPO_ROOT=$(git rev-parse --show-toplevel)
@@ -660,7 +699,7 @@ create_worktrees() {
     done
 }
 
-
+# abgrep: grep all branches
 abgrep(){
     REGEX=$1
     branches=$(git branch -r | sed 's/origin\///g' | sed '/HEAD/d' | tr -d ' ')
@@ -675,14 +714,17 @@ abgrep(){
     git checkout $curr_branch
 }
 
+# wgrep: grep worktrees
 wgrep(){
     python $BASHER/src/py_scripts/wgrep.py $@
 }
 
+# wch: change to worktree
 wch(){
     cd $(git rev-parse --show-toplevel)/worktrees/$1
 }
 
+# pipp: print python package path
 pipp(){
     PKG=${1:-"site"}
     GO=${2:-0}
@@ -695,6 +737,7 @@ pipp(){
     fi
 }
 
+# pips: print python site-packages path
 pips(){
     LCL_PATH="$(pipp site 0)/site-packages"
     if [ -z $1 ]; then
@@ -704,56 +747,67 @@ pips(){
     fi
 }
 
-
-
+# efunc: edit bash functions
 efunc(){
     code $HOME/.bash_functions
 }
 
+# ealias: edit bash aliases
 ealias(){
     code $HOME/.bash_aliases
 }
 
+# evars: edit bash environment variables
 evars(){
     code $HOME/.bash_env_vars
 }
 
+# eenv: edit bash environment
 eenv(){
     code $HOME/.bash_env
 }
 
+# gr: git reset
 gr(){
     git reset $@
 }
 
+# rcb: reset current branch
 rcb(){
     git reset $1 origin/$(git rev-parse --abbrev-ref HEAD)
 }
 
+# cdi: change directory to isl
 cdi(){
     cd $ISL/$1
 }
 
+# cdd: change directory to deepwave_debug
 cdd(){
     cd $DEEPWAVE_DEBUG/$1
 }
 
+# cdb: change directory to basher
 cdb(){
     cd $BASHER/$1
 }
 
+#cdc: change directory to conda prefix
 cdc(){
     cd $CONDA_PREFIX/$1
 }
 
+# cdr: change directory to repo
 cdr(){
     cd $REPO/$1
 }
 
+# eplat: edit platform
 eplat(){
     code $BASHER/src/platform/$1
 }
 
+# mhr: masthay helpers reinstall -- deprecated -- use pip install -e .
 mhr(){
     PREV=$(pwd)
     cdr masthay_helpers
@@ -761,10 +815,12 @@ mhr(){
     cd $PREV
 }
 
+# check_devices: check devices
 check_devices(){
     python -c "from misfit_toys.utils import check_devices; check_devices('$1')"
 }
 
+# cst: "check status" -- repeatedly print contents of file with sleeps
 cst(){
     sleep_time=${1:-3}
     iterations=${2:-1000}
@@ -781,33 +837,38 @@ cst(){
     done
 }
 
+# phelp: "python help"
 phelp() {
     python $BASHER/src/py_scripts/phelp.py $@
 }
 
-
+# gce: "git commit empty"
 gce(){
     git commit --allow-empty
 }
 
-
+# rcache: remove __pycache__ recursively
 rcache(){
     find . -type d -name "__pycache__" -print -exec rm -rf {} \; 2> /dev/null
 }
 
+# pcr: "pre-commit run"
 pcr(){
     pre-commit clean
     pre-commit install
 }
 
+# gds: "git difftool staged"
 gds(){
     git difftool --staged @{u}
 }
 
+# git-hook-em: set git hooks path -- deprecated
 git-hook-em(){
     git config --global core.hooksPath $HOOK_EM/.git/hooks
 }
 
+# update_pre_commit: update pre-commit hooks
 update_pre_commit() {
     # Check if HOOK_EM environment variable is set
     if [[ -z "${HOOK_EM}" ]]; then
@@ -843,18 +904,22 @@ update_pre_commit() {
     done
 }
 
+# lsh: "list hidden" -- list ONLY hidden files
 lsh(){
     ls -ld .?* | awk '{print $9}' | grep -v '[.][.]'
 }
 
+# gca: "git commit amend"
 gca(){
     git commit --amend
 }
 
+# grt: "git root"
 grt(){
     git rev-parse --show-toplevel
 }
 
+# sfi: "sort file in place"
 sfi() {
     # Check if the file path is provided
     if [ -z "$1" ]; then
@@ -875,6 +940,7 @@ sfi() {
     mv "$file_path.sorted" "$file_path"
 }
 
+# cimp: "check imoprts" -- create list of all imports and check against requirements.txt
 cimp() {
     local temp_file="/tmp/requirements_temp.txt"
     local requirements_file="$(grt)/requirements.txt"
