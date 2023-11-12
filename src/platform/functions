@@ -1,3 +1,4 @@
+# gho: designated for current workflow "gho" == "go" 
 gho(){
     PREV=$(pwd)
     cdi
@@ -5,6 +6,7 @@ gho(){
     cd $PREV
 }
 
+# ghh: Another designated current workflow if need two
 ghh(){
     gho
     cdi
@@ -12,27 +14,32 @@ ghh(){
     python ddp_driver.py
 }
 
+# clr: Designated data clearing function
 clr(){
     cdc
     rm -rf data
 }
 
+# ghoc: "gho clear"
 ghoc(){
     clr
     gho
 }
 
+# cddp: misfit_toys helper
 cddp(){
     cdi
     cd misfit_toys/examples/ddp
 }
 
+# go: another current workflow helper
 go(){
     cddp
     gho
     python driver.py
 }
 
+# kdata: kill data -- another cleaner if needed
 kdata(){
     PREV=$(pwd)
     cdc
@@ -40,6 +47,7 @@ kdata(){
     cd $PREV
 }
 
+# mtd: misfit_toys download
 mtd(){
     dwre
     # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples
@@ -48,12 +56,14 @@ mtd(){
     python download_data.py
 }
 
+# lll: helper for rich text -- deprecated
 lll(){
     dwre
     rm /tmp/session.ans
     script -O /tmp/session.ans
 }
 
+# rexit: related to lll to leave the script env -- deprecated
 rexit () {
     cact dw
     cd $(pips)
@@ -63,14 +73,17 @@ rexit () {
     exit
 }
 
+# gg: gdown helper
 gg(){
     echo "gdown $1" | sed 's/view?.*//' | sed 's/file\/d\//uc?id=/'
 }
 
+# cdn: cd to misfit_toys/examples/ddp
 cdn(){
     cdi misfit_toys/examples/ddp/$1
 }
 
+# go: Overwrite of the above -- see what you want here?
 go(){
     # mhr
     # gho
@@ -89,6 +102,7 @@ go(){
     pfs dw_validate/ "*.txt" "*"
 }
 
+# cmp_tensor: compare tensors
 cmp_tensor(){
     DIR1=${1:-"/home/tyler/protect"}
     DIR2=${2:-"conda/BENCHMARK/multiscale/data"}
@@ -99,6 +113,7 @@ cmp_tensor(){
     pfs . "*.txt" "*"
 }
 
+# genp: generate some data -- forgot what p stands for here
 genp(){
     PREV=$(pwd)
     cdn
@@ -106,6 +121,7 @@ genp(){
     cd $PREV
 }
 
+# geni: "generate island" -- generate the island of misfit toys version of data
 geni(){
     PREV=$(pwd)
     if [ ! -z $1 ]; then
@@ -119,6 +135,7 @@ geni(){
     cd $PREV
 }
 
+# cmarm: clean marmousi
 cmarm(){
     PREV=$(pwd)
     cdc
@@ -126,6 +143,7 @@ cmarm(){
     cd $PREV
 }
 
+# down: download data
 down(){
     PREV=$(pwd)
     cdi misfit_toys/examples
