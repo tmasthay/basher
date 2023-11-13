@@ -15,7 +15,7 @@ def main():
         if e != '':
             full_list.extend(e.split())
 
-    final = np.array_split(full_list, len(full_list) // args.cols + 1)
+    final = np.array_split(full_list, int(np.ceil(len(full_list) // args.cols)))
     final = [list(e) for e in final]
 
     print(tab(final, tablefmt='plain'))

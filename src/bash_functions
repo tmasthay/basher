@@ -1,6 +1,54 @@
 ~/.secrets/build_souper_secrets.sh
 source ~/.secrets/functions
 
+# scl: "get_color" -- Set terminal color
+scl() {
+    local color_value=$1
+
+    case "$color_value" in
+        black)    tput setaf 0 ;;
+        red)      tput setaf 1 ;;
+        green)    tput setaf 2 ;;
+        yellow)   tput setaf 3 ;;
+        blue)     tput setaf 4 ;;
+        magenta)  tput setaf 5 ;;
+        cyan)     tput setaf 6 ;;
+        white)    tput setaf 7 ;;
+        rgb[0-5][0-5][0-5])
+            local r="${color_value:3:1}"
+            local g="${color_value:4:1}"
+            local b="${color_value:5:1}"
+            local code=$((16 + (36 * r) + (6 * g) + b))
+            tput setaf $code ;;
+        gray[0-9]|gray1[0-9]|gray2[0-3])
+            local gray_value="${color_value:4}"
+            local code=$((232 + gray_value))
+            tput setaf $code ;;
+        *)
+            echo "Unknown color: $color_value" >&2; return 1 ;;
+    esac
+}
+
+ctxt(){
+    python $BASHER/src/py_scripts/ctxt.py $@
+}
+
+ftxt() {
+    FILE=$1
+    OPTS=$2
+    READ_FROM_FILE=${3:-""}
+    
+    # Check if -f (file read) flag is present, then prepend it to the file argument
+    if [ "$READ_FROM_FILE" = "-f" ]; then
+        FILE_ARG="-f $FILE"
+    else
+        FILE_ARG="$FILE"
+    fi
+    
+    # Now call ctxt with the file argument and the contents of the options file
+    ctxt $FILE_ARG $(cat "$OPTS")
+}
+
 # cecho: colored echo
 cecho() {
     local no_newline=0
@@ -618,6 +666,17 @@ user_funcs(){
     SECOND=$(echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
     TOTAL=$(echo "$FIRST\n$SECOND" | sort | uniq)
     cols -c $COLS "$(echo $TOTAL)"
+}
+
+# ufd: "user functions docs"
+ufd(){
+    grep_regex='^# \(.*\): \(.*\)'
+    sed_regex='s/^# \(.*\)/\1/'
+    awk_cmd='{printf "%-30s %s\n", $1, $2}'
+    echo 'USER FUNCTIONS'
+    grep $grep_regex "$HOME/.bash_functions" | sort | uniq | sed $sed_regex | awk -F':' "$awk_cmd"
+    echo; echo; echo; echo 'PLATFORM FUNCTIONS'
+    grep $grep_regex "$HOME/.platform/functions" | sort | uniq | sed $sed_regex | awk -F':' "$awk_cmd"
 }
 
 # all_git: run a git command in all git repos
