@@ -165,7 +165,8 @@ cmp(){
 
 smr(){
     TMP='/tmp/tmp1.txt'
-    RES=$(ls *.txt | grep -v '[0-9][0-9]*' | xargs grep "mean" | sed 's/ = /=/g' | awk -F':' '{print $1, $2}')
+    FIELD=${1:-"mean"}
+    RES=$(ls *.txt | grep -v '[0-9][0-9]*' | xargs grep "$FIELD" | sed 's/ = /=/g' | awk -F':' '{print $1, $2}')
     cols -c 2 "$RES"> $TMP
     ctxt -t rbow $TMP
 }
