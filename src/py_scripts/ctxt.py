@@ -95,8 +95,7 @@ def main():
         args.colors = open(f'{basher}/themes/{args.theme}.cth').read().split()
         args.colors = [e for e in args.colors if e not in ['-c', '--colors']]
 
-    input(args)
-    colored_text = colorize_text(args.text, args.sep, args.colors)
+    colored_text = colorize_text(args.text.strip(), args.sep, args.colors)
     print(colored_text)
 
 
