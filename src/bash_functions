@@ -188,7 +188,7 @@ grb() {
 
 # kkp: kill process by port
 kkp(){
-    TMP=$(sudo lsof -i :$1 | awk '{print $2}' | sed -n '2p')
+    TMP=$(lsof -i :$1 | awk '{print $2}' | sed -n '2p')
     echo "kill $TMP"
     kill $TMP
 }

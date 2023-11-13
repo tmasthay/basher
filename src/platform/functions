@@ -107,8 +107,9 @@ cmp_tensor(){
     DIR1=${1:-"/home/tyler/protect"}
     DIR2=${2:-"conda/BENCHMARK/multiscale/data"}
     OUT_DIR=${3:-"$ISL/debug/dw_validate/"}
+    MAKE_FIGS=${4:-""}
     cdi debug
-    python debug.py $DIR1 $DIR2 $OUT_DIR
+    python debug.py $DIR1 $DIR2 $OUT_DIR -f -i v_record obs_data
     cd $OUT_DIR
     pfs . "*.txt" "*"
 }
@@ -157,16 +158,11 @@ cda(){
 
 cmp(){
     BASE=$ISL/misfit_toys/tccs/modules
-    TEST_FOLDER=${1:-"out/parallel"}
+    TEST_FOLDER="out/parallel"
+    MAKE_FIGS=${1:-""}
     mkdir -p $BASE/local_compare/$TEST_FOLDER
-    cmp_tensor $BASE/alan/$TEST_FOLDER $BASE/val/$TEST_FOLDER $BASE/local_compare/$TEST_FOLDER
-    cd $BASE/local_compare
-}
-
-rcmp(){
-    cdi misfit_toys/tccs/modules/val
-    python fwi_parallel.py
-    cmp
+    echo "MAKE_FIGS: $MAKE_FIGS"
+    cmp_tensor $BASE/alan/$TEST_FOLDER $BASE/val/$TEST_FOLDER $BASE/local_compare/$TEST_FOLDER 
 }
 
 smr(){
@@ -175,4 +171,24 @@ smr(){
     RES=$(ls *.txt | grep -v '[0-9][0-9]*' | xargs grep "$FIELD" | sed 's/ = /=/g' | awk -F':' '{print $1, $2}')
     cols -c 2 "$RES"> $TMP
     ctxt -t rbow $TMP
+}
+
+smr_all(){
+    BASE=$ISL/misfit_toys/tccs/modules
+    cd $BASE/local_compare/out/parallel
+
+    fields=('dtype' 'shape' 'mean' 'variance' 'median' 'min' 'max' 'stddev' 'RMS' 'L2')
+    echo "" > summary.txt
+    for e in "${fields[@]}"; do
+        echo >> summary.txt
+        smr $e >> summary.txt
+    done
+    cat summary.txt
+}
+rcmp(){
+    cdi misfit_toys/tccs/modules/val
+    python fwi_parallel.py
+    cmp $1
+    smr_all
+    code $(find . -name "*.gif")
 }
