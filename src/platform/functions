@@ -163,6 +163,12 @@ cmp(){
     cd $BASE/local_compare
 }
 
+rcmp(){
+    cdi misfit_toys/tccs/modules/val
+    python fwi_parallel.py
+    cmp
+}
+
 smr(){
     TMP='/tmp/tmp1.txt'
     FIELD=${1:-"mean"}
