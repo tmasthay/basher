@@ -192,3 +192,23 @@ rcmp(){
     smr_all
     code $(find . -name "*.gif")
 }
+
+runmeta(){
+    NUM_RUNS=${1:-10}
+    STORAGE_FILE=${2:-"runmeta.txt"}
+    echo "" > $STORAGE_FILE
+    for i in {1..$NUM_RUNS}; do
+        rcmp
+        RES=$(
+            cat summary.txt | \
+            grep "v_record" | \ 
+            grep -E '(min|max)' | \
+            awk '{print $2}' | \
+            tr '\n' ', ' | \
+            sed 's/min=//' | \
+            sed 's/max=//' | \
+            sed 's/,$//'
+        )
+        echo $RES >> $STORAGE_FILE
+    done
+}

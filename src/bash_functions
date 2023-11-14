@@ -1021,6 +1021,10 @@ cimp() {
     git difftool -y "$temp_file" "$requirements_file"
 }
 
+stats(){
+    python $BASHER/src/py_scripts/stats.py $@
+}
+
 source ~/.platform/functions
 
 
