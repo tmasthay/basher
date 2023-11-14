@@ -1025,6 +1025,10 @@ stats(){
     python $BASHER/src/py_scripts/stats.py $@
 }
 
+ccsv(){
+    python $BASHER/src/py_scripts/ccsv.py $@
+}
+
 source ~/.platform/functions
 
 
