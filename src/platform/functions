@@ -212,3 +212,16 @@ runmeta(){
         echo $RES >> $STORAGE_FILE
     done
 }
+
+mst(){
+    INPUT=${1:-"summary.txt"}
+    OUTPUT=${2:-"summary.csv"}
+    echo "ignore ignore=0.0" > /tmp/ignore.txt
+    cat /tmp/ignore.txt $INPUT | \
+        grep -E '(ignore|v_record)' | \
+        awk '{print $2}' | \
+        grep -vE '(dtype|shape)' | \
+        sed 's/=/,/' | \
+        sed 's/\x1b\[[0-9;]*m//g' > $OUTPUT
+    stats $OUTPUT -t
+}
