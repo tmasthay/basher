@@ -225,10 +225,16 @@ mst(){
         sed 's/\x1b\[[0-9;]*m//g' > $OUTPUT
 }
 
+cdv(){
+    BASE=$ISL/misfit_toys/tccs/modules
+    cd $BASE/local_compare/out/parallel
+}
+
 vlt(){
     NUM_RUNS=${1-"10"}
     ACCUM=${2:-"accum"}
     INPUT=${3:-"summary"}
+    cdv
     echo "" > $ACCUM.csv
     for i in {1..$NUM_RUNS}; do
         echo "Run $i"

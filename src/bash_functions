@@ -1029,6 +1029,16 @@ ccsv(){
     python $BASHER/src/py_scripts/ccsv.py $@
 }
 
+#toggle RICH_LOG
+trich(){
+    if [ -z $RICH_LOG ]; then
+        export RICH_LOG='/tmp/rich.ans'
+    else
+        unset RICH_LOG
+    fi
+    echo "RICH_LOG=$RICH_LOG"
+}
+
 source ~/.platform/functions
 
 
