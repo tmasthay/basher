@@ -223,5 +223,18 @@ mst(){
         grep -vE '(dtype|shape)' | \
         sed 's/=/,/' | \
         sed 's/\x1b\[[0-9;]*m//g' > $OUTPUT
-    stats $OUTPUT -t
 }
+
+vlt(){
+    NUM_RUNS=${1-"10"}
+    ACCUM=${2:-"accum"}
+    INPUT=${3:-"summary"}
+    echo "" > $ACCUM.csv
+    for i in {1..$NUM_RUNS}; do
+        echo "Run $i"
+        # rcmp
+        mst $INPUT.txt $INPUT.csv
+        ccsv $ACCUM.csv $INPUT.csv
+    done
+}
+
