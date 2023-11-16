@@ -193,6 +193,11 @@ rcmp(){
     code $(find . -name "*.gif")
 }
 
+rrr(){
+    cdi misfit_toys/tccs/modules/val
+    python fwi_parallel.py
+}
+
 runmeta(){
     NUM_RUNS=${1:-10}
     STORAGE_FILE=${2:-"runmeta.txt"}
@@ -214,8 +219,8 @@ runmeta(){
 }
 
 mst(){
-    INPUT=${1:-"summary.txt"}
-    OUTPUT=${2:-"summary.csv"}
+    local INPUT=${1:-"summary.txt"}
+    local OUTPUT=${2:-"summary.csv"}
     echo "ignore ignore=0.0" > /tmp/ignore.txt
     cat /tmp/ignore.txt $INPUT | \
         grep -E '(ignore|v_record)' | \
@@ -231,16 +236,28 @@ cdv(){
 }
 
 vlt(){
-    NUM_RUNS=${1-"10"}
-    ACCUM=${2:-"accum"}
-    INPUT=${3:-"summary"}
+    local NUM_RUNS=${1-5}
+    local ACCUM=${2:-"accum"}
+    local INPUT=${3:-"summary"}
     cdv
-    echo "" > $ACCUM.csv
-    for i in {1..$NUM_RUNS}; do
+    rm "$ACCUM.csv"
+    for i in $(seq 1 "$NUM_RUNS"); do
         echo "Run $i"
-        # rcmp
-        mst $INPUT.txt $INPUT.csv
-        ccsv $ACCUM.csv $INPUT.csv
+        rcmp
+        mst "$INPUT.txt" "$INPUT.csv"
+        if [ "$i" -eq 1 ]; then  # Changed 'do' to 'then'
+            cat "$INPUT.csv" > "$ACCUM.csv"
+        else  # Added 'else' clause
+            mst "$INPUT.txt" "$INPUT.csv"
+            ccsv $ACCUM.csv $INPUT.csv -o "$ACCUM.csv"
+        fi  # Added 'fi' to close the if statement
     done
+    stats $ACCUM.csv -t
+    echo "Results stored in $ACCUM.(csv|txt) and $ACCUM_stats.(csv|txt)"
 }
+
+mptab(){
+    python mptab.py $@
+}
+
 
