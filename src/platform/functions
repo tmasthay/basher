@@ -257,7 +257,7 @@ vlt(){
 }
 
 mptab(){
-    python mptab.py $@
+    python $BASHER/src/py_scripts/mptab.py $@
 }
 
 

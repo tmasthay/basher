@@ -22,6 +22,7 @@ if filename.lower() != 'none':
         word_wrap=True,
         width=cols,
         locals_max_string=cols,
+        locals_max_length=20
     )
 
 # repo_path = os.environ['REPO']
