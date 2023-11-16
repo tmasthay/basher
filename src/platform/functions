@@ -109,9 +109,9 @@ cmp_tensor(){
     OUT_DIR=${3:-"$ISL/debug/dw_validate/"}
     MAKE_FIGS=${4:-""}
     cdi debug
-    python debug.py $DIR1 $DIR2 $OUT_DIR -f -i v_record obs_data
+    python debug.py $DIR1 $DIR2 $OUT_DIR -f -i vp_record obs_data
     cd $OUT_DIR
-    pfs . "*.txt" "*"
+    # pfs . "*.txt" "*"
 }
 
 # genp: generate some data -- forgot what p stands for here
@@ -232,7 +232,8 @@ mst(){
 
 cdv(){
     BASE=$ISL/misfit_toys/tccs/modules
-    cd $BASE/local_compare/out/parallel
+    OPTION=${1:-"local_compare"}
+    cd $BASE/$OPTION/out/parallel
 }
 
 vlt(){
@@ -258,6 +259,11 @@ vlt(){
 
 mptab(){
     python $BASHER/src/py_scripts/mptab.py $@
+}
+
+rtab2csv(){
+    local file=$1
+    cat $file | ransi | salpha | tac | awk '/ANSIMARKER/ {exit} {print}' | tac | grep -v '^$' | sed -E 's/ +/,/g; s/^,//; s/,$//'
 }
 
 

@@ -1039,6 +1039,23 @@ trich(){
     echo "RICH_LOG=$RICH_LOG"
 }
 
+# strip all ansi codes
+sansi(){
+    sed $@ 's/\x1b\[[0-9;]*[mGKFH]//g'
+}
+
+# replace all ansi codes with a marker
+ransi(){
+    local replace=${1:-"ANSI_MARKER"}
+    sed "s/\x1b\[[0-9;]*[mGKFH]/$replace/g"
+}
+
+# strip non-alpha numeric symbols
+salpha(){
+    sed "$@" 's/[^0-9a-zA-Z .+-]//g'
+}
+
+
 source ~/.platform/functions
 
 
