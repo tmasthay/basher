@@ -903,7 +903,7 @@ phelp() {
 
 # gce: "git commit empty"
 gce(){
-    git commit --allow-empty
+    git commit --allow-empty $@
 }
 
 # rcache: remove __pycache__ recursively
@@ -948,9 +948,15 @@ update_pre_commit() {
         # Copy the pre-commit config files into the repository
         cp "${HOOK_EM}/.pre-commit-config.yaml" "${repo_dir}/"
         cp "${HOOK_EM}/.gitattributes" "${repo_dir}/"
+        cp "${HOOK_EM}/.gitlint" "${repo_dir}/"
+        cp -r "${HOOK_EM}/git_hook_em/.gitlint_rules" "${repo_dir}/.gitlint_rules"
 
         # Change directory to the repository
         pushd "${repo_dir}" > /dev/null || return
+
+        # Remove commit-msg
+        rm .git/hooks/commit-msg 2> /dev/null 2>&1
+        gitlint install-hook
 
         # Clean the pre-commit environment
         pre-commit clean > /dev/null 2>&1
@@ -1055,7 +1061,10 @@ salpha(){
     sed "$@" 's/[^0-9a-zA-Z .+-]//g'
 }
 
-
+# pip version
+pip_ver(){
+    pip show $1 2> /dev/null | grep "Version"
+}
 source ~/.platform/functions
 
 
