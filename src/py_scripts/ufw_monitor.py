@@ -3,10 +3,6 @@ import argparse
 import os
 from datetime import datetime
 
-import sys
-sys.path.append(__file__.replace("ufw_monitor.py", ""))
-from trusted_ips import blist_alias
-
 
 def sco(cmd, split=False):
     res = co(cmd, shell=True).decode("utf-8").strip()
@@ -18,6 +14,7 @@ def sco(cmd, split=False):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--basher', type=str, required=True)
     parser.add_argument("--interval", "-i", type=int, default=60)
     parser.add_argument("--num_intervals", "-N", type=int, default=24)
     parser.add_argument(
@@ -28,7 +25,10 @@ def main():
 
     os.makedirs(args.out, exist_ok=True)
 
-    blist = blist_alias()
+
+    python3 = sco('which python3')
+    blist = f'sudo {python3} {os.path.join(args.basher, "src/py_scripts/check_jail.py")}'
+    input(blist)
     for j in range(args.num_intervals):
         i = j * args.interval + 1
         at_cmd = f"at now + {i} minutes 2> /dev/null"
