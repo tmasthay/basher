@@ -2,6 +2,9 @@ from subprocess import check_output as co
 import argparse
 import os
 from datetime import datetime
+
+import sys
+sys.path.append(__file__.replace("ufw_monitor.py", ""))
 from trusted_ips import blist_alias
 
 

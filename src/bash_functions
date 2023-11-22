@@ -1065,6 +1065,10 @@ salpha(){
 pip_ver(){
     pip show $1 2> /dev/null | grep "Version"
 }
+
+cdh(){
+    cd $HOME/$1
+}
 source ~/.platform/functions
 
 
