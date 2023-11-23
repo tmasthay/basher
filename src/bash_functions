@@ -945,11 +945,14 @@ update_pre_commit() {
     find "${REPO}" -maxdepth 1 -mindepth 1 -type d | grep -v "${HOOK_EM}" | while read -r repo_dir; do
         echo "Updating repository: ${repo_dir}"
         
+        # clean pre-existing directories
+        rm -rf "${repo_dir}/.gitlint_rules"
+
         # Copy the pre-commit config files into the repository
         cp "${HOOK_EM}/.pre-commit-config.yaml" "${repo_dir}/"
         cp "${HOOK_EM}/.gitattributes" "${repo_dir}/"
         cp "${HOOK_EM}/.gitlint" "${repo_dir}/"
-        cp -r "${HOOK_EM}/git_hook_em/.gitlint_rules" "${repo_dir}/.gitlint_rules"
+        cp -r "${HOOK_EM}/.gitlint_rules" "${repo_dir}/.gitlint_rules"
 
         # Change directory to the repository
         pushd "${repo_dir}" > /dev/null || return
@@ -1065,6 +1068,41 @@ salpha(){
 pip_ver(){
     pip show $1 2> /dev/null | grep "Version"
 }
+
+my_black(){
+    black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
+}
+
+esite(){
+    local prev=$(pwd)
+    pips
+    code sitecustomize.py
+    cd $prev
+}
+
+# gsrt: "git super root" -- go to the root of the repo, disregarding submodules
+gsrt(){
+    local super=$(git rev-parse --show-superproject-working-tree)
+    if [ -z $super ]; then
+        echo "$(git rev-parse --show-toplevel)"
+    else
+        echo "$super"
+    fi
+}
+
+gsmu(){
+    git submodule update --recursive --remote
+}
+
+gsync(){
+    local prev=$(pwd)
+    cd $(gsrt)
+    cd GitHookEm
+    ./sync.sh
+    cd $prev
+}
+
+
 source ~/.platform/functions
 
 

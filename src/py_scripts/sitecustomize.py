@@ -19,7 +19,7 @@ if filename.lower() != 'none':
     install(
         console=console,
         show_locals=True,
-        word_wrap=True,
+        word_wrap=False,
         width=cols,
         locals_max_string=cols,
         locals_max_length=20

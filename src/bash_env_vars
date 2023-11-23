@@ -12,4 +12,11 @@ export DEEPWAVE_DEBUG="$H/Documents/debug/deepwave"
 export BASHER="$H/.bash_repos/basher"
 export RICH_LOG=''
 
+if command -v code > /dev/null; then
+    export GIT_EDITOR="code --wait"
+else
+    export GIT_EDITOR="vim"
+fi
+
+
 source $H/.platform/env_vars
