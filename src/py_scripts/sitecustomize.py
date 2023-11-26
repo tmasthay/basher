@@ -4,8 +4,8 @@ import os
 import sys
 from shutil import get_terminal_size as gts
 
-cols, _ = gts(fallback=(80,24))
-if( cols == 0 ):
+cols, _ = gts(fallback=(80, 24))
+if cols == 0:
     cols = os.environ.get('COLUMNS', 80)
 
 filename = os.environ.get('RICH_LOG', '')
@@ -22,7 +22,7 @@ if filename.lower() != 'none':
         word_wrap=False,
         width=cols,
         locals_max_string=cols,
-        locals_max_length=20
+        locals_max_length=20,
     )
 
 # repo_path = os.environ['REPO']

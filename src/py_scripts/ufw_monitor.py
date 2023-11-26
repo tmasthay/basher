@@ -25,9 +25,11 @@ def main():
 
     os.makedirs(args.out, exist_ok=True)
 
-
     python3 = sco('which python3')
-    blist = f'sudo {python3} {os.path.join(args.basher, "src/py_scripts/check_jail.py")}'
+    blist = (
+        'sudo'
+        f' {python3} {os.path.join(args.basher, "src/py_scripts/check_jail.py")}'
+    )
     input(blist)
     for j in range(args.num_intervals):
         i = j * args.interval + 1

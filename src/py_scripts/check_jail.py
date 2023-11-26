@@ -380,10 +380,9 @@ def main():
         private_ip_ranges=private_ip_ranges, special_ips=special_ips
     )
 
-    (
-        firewalled_ips,
-        recently_jailed_but_not_firewalled,
-    ) = get_firewall_candidates(jail=jail_info["recently_jailed"])
+    (firewalled_ips, recently_jailed_but_not_firewalled) = (
+        get_firewall_candidates(jail=jail_info["recently_jailed"])
+    )
 
     report_firewall(
         firewalled_ips=firewalled_ips,

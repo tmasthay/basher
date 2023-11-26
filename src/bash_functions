@@ -1069,7 +1069,6 @@ pip_ver(){
     pip show $1 2> /dev/null | grep "Version"
 }
 
-<<<<<<< HEAD
 my_black(){
     black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
 }
@@ -1110,6 +1109,11 @@ cdh(){
 
 ufw_monitor(){
     sudo $(which python3) $BASHER/src/py_scripts/ufw_monitor.py --basher $BASHER $@
+}
+
+# glcf: "git log full"
+glcf(){
+    git log --graph --decorate --all --format="%C(auto)%h (%ar) %s%d%n%b"
 }
 
 source ~/.platform/functions

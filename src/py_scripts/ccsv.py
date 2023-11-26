@@ -8,10 +8,7 @@ def get_args():
     parser.add_argument('files', nargs='+', type=str)
     parser.add_argument('-o', '--out', type=str, default='out.csv')
     parser.add_argument(
-        '-t',
-        '--transpose',
-        action='store_true',
-        help='Transpose the file',
+        '-t', '--transpose', action='store_true', help='Transpose the file'
     )
     parser.add_argument('-n', '--no-save', action='store_true')
     parser.add_argument('-w', '--width', default=20, type=int)
