@@ -266,4 +266,8 @@ rtab2csv(){
     cat $file | ransi | salpha | tac | awk '/ANSIMARKER/ {exit} {print}' | tac | grep -v '^$' | sed -E 's/ +/,/g; s/^,//; s/,$//'
 }
 
+cdm(){
+    cdi misfit_toys/tccs/modules
+}
+
 
