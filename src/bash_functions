@@ -1116,6 +1116,13 @@ glcf(){
     git log --graph --decorate --all --format="%C(auto)%h (%ar) %s%d%n%b"
 }
 
+tst(){
+    local prev=$(pwd)
+    cdi
+    pytest tests
+    cd $prev
+}
+
 source ~/.platform/functions
 
 
