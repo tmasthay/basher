@@ -5,6 +5,37 @@ source ~/.secrets/functions
 scl() {
     local color_value=$1
 
+    # Map user-friendly color names to RGB values
+    case "$color_value" in
+        orange) color_value='rgb530' ;;
+        maroon) color_value='rgb320' ;;
+        olive) color_value='rgb330' ;;
+        navy) color_value='rgb003' ;;
+        teal) color_value='rgb033' ;;
+        lime) color_value='rgb250' ;;
+        coral) color_value='rgb550' ;;
+        salmon) color_value='rgb540' ;;
+        beige) color_value='rgb542' ;;
+        mint) color_value='rgb253' ;;
+        lavender) color_value='rgb432' ;;
+        plum) color_value='rgb302' ;;
+        indigo) color_value='rgb104' ;;
+        gold) color_value='rgb530' ;;
+        pink) color_value='rgb532' ;;
+        tan) color_value='rgb531' ;;
+        coffee) color_value='rgb321' ;;
+        chocolate) color_value='rgb320' ;;
+        azure) color_value='rgb156' ;;
+        silver) color_value='rgb555' ;;
+        rand)
+            # Generate random RGB values between 0-5
+            local r=$((RANDOM % 6))
+            local g=$((RANDOM % 6))
+            local b=$((RANDOM % 6))
+            color_value="rgb$r$g$b"
+            ;;
+    esac
+
     case "$color_value" in
         black)    tput setaf 0 ;;
         red)      tput setaf 1 ;;
@@ -49,8 +80,8 @@ ftxt() {
     ctxt $FILE_ARG $(cat "$OPTS")
 }
 
-# cecho: colored echo
-cecho() {
+# cecho_legacy: colored echo legacy before scl function
+cecho_legacy() {
     local no_newline=0
     local color_value
 
@@ -1121,6 +1152,12 @@ tst(){
     cdi
     pytest tests
     cd $prev
+}
+
+gslf(){
+    local file=$1
+    git log --color --pretty=format:"%h - %s" -p -- $file > /tmp/git_log_full.ans
+    code /tmp/git_log_full.ans
 }
 
 source ~/.platform/functions

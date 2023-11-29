@@ -270,4 +270,8 @@ cdm(){
     cdi misfit_toys/tccs/modules
 }
 
+crun(){
+    cat $ISL/tests/benchmarks/out/validate.out
+}
+
 

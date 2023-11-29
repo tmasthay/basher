@@ -1,13 +1,14 @@
 # colorize_text.py
 import argparse
 import re
-import sys
+
+# import sys
 import os
+from random import randint as rand
 
 
-def gcl(color):
-    # Standard colors
-    colors = {
+def colormap_closure():
+    ansi_map = {
         "black": "\033[30m",
         "red": "\033[31m",
         "green": "\033[32m",
@@ -18,7 +19,47 @@ def gcl(color):
         "white": "\033[37m",
         "reset": "\033[0m",
     }
+    base_map = {
+        'orange': 'rgb530',
+        'maroon': 'rgb320',
+        'olive': 'rgb330',
+        'navy': 'rgb003',
+        'teal': 'rgb033',
+        'lime': 'rgb250',
+        'coral': 'rgb550',
+        'salmon': 'rgb540',
+        'beige': 'rgb542',
+        'mint': 'rgb253',
+        'lavender': 'rgb432',
+        'plum': 'rgb302',
+        'indigo': 'rgb104',
+        'gold': 'rgb530',
+        'pink': 'rgb532',
+        'tan': 'rgb531',
+        'coffee': 'rgb321',
+        'chocolate': 'rgb320',
+        'azure': 'rgb006',
+        'silver': 'rgb555',
+    }
 
+    def helper():
+        x, y, z = rand(0, 5), rand(0, 5), rand(0, 5)
+        return ansi_map, {**base_map, 'rand': f'rgb{x}{y}{z}'}
+
+    return helper
+
+
+colormap = colormap_closure()
+
+
+def gcl(color):
+    ansi_map, human_map = colormap()
+
+    if color in ansi_map.keys():
+        return ansi_map[color]
+
+    if color in human_map.keys():
+        color = human_map[color]
     # RGB colors (rgbXYZ format)
     rgb_match = re.match(r'rgb([0-5])([0-5])([0-5])', color)
     if rgb_match:
@@ -34,7 +75,7 @@ def gcl(color):
             code = 232 + gray_value
             return f"\033[38;5;{code}m"
 
-    return colors.get(color, "\033[37m")  # Default to white if color is unknown
+    return "\033[37m"
 
 
 def ctxt(text, color):
