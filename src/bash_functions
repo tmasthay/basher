@@ -257,6 +257,9 @@ mgpu(){
     sleep_time=${4:-3}
     c1=${1:-$(rclr)}
     c2=${2:-$(rclr)}
+    ctxt "Color 1: $c1" -l -c $c1 -e
+    echo -n "    "
+    ctxt "Color 2: $c2" -l -c $c2 
     for ((i=0; i<iterations; i++)); do
         if ((i % 2 == 0)); then
             gpu_mem "$c1" $((i * sleep_time))
@@ -1159,7 +1162,7 @@ glcf(){
 tst(){
     local prev=$(pwd)
     cdi
-    pytest tests
+    mytest tests
     cd $prev
 }
 
@@ -1171,7 +1174,8 @@ gslf(){
 
 # mytest: monitor pytest, plus pun intended
 mytest() {
-    pytest . --color=yes > /tmp/pytest.ans &
+    local file=${1:-"tests"}
+    pytest $file --color=yes > /tmp/pytest.ans &
     pytest_pid=$!
     code /tmp/pytest.ans 
 
@@ -1204,6 +1208,10 @@ mytest() {
             dead_count=0
         fi
     done
+}
+
+sclr(){
+    ctxt -l "$1" -c $1
 }
 
 
