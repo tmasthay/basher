@@ -1160,6 +1160,45 @@ gslf(){
     code /tmp/git_log_full.ans
 }
 
+monitor_pytest() {
+    pytest . --color=yes > /tmp/pytest.ans &
+    pytest_pid=$!
+    code /tmp/pytest.ans 
+
+    # Initialize the counter
+    dead_count=0
+
+    while true; do
+        sleep 2 
+        
+        # Find the line numbers for "Captured stderr call" and "short test summary info"
+        err_line=$(grep -n "Captured stderr call" /tmp/pytest.ans | head -n 1 | cut -d: -f1)
+        sum_line=$(grep -n "short test summary info" /tmp/pytest.ans | head -n 1 | cut -d: -f1)
+
+        # Check if both markers are found
+        if [[ -n "$err_line" && -n "$sum_line" && $sum_line -gt $err_line ]]; then
+            # Delete lines from err_line to sum_line, excluding sum_line
+            sed -i "${err_line},$(($sum_line - 1))d" /tmp/pytest.ans
+            break
+        fi
+
+        # Check if pytest is still running
+        if ! kill -0 $pytest_pid 2> /dev/null; then
+            ((dead_count++))
+            if [[ $dead_count -ge 3 ]]; then
+                echo "pytest process has finished. Exiting..."
+                break
+            fi
+        else
+            # Reset dead count if pytest is still running
+            dead_count=0
+        fi
+    done
+}
+
+
+
+
 source ~/.platform/functions
 
 
