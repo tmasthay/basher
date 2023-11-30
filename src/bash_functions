@@ -229,25 +229,34 @@ vit(){
     vim -c "vertical terminal" $1
 }
 
+rclr(){
+    red_channel=$((RANDOM % 6))
+    green_channel=$((RANDOM % 6))
+    blue_channel=$((RANDOM % 6))
+    color_value="rgb$red_channel$green_channel$blue_channel"
+    echo $color_value
+}
 # gpu_mem: see gpu memory
 gpu_mem() {
-  my_color=${1:-red}
+  my_color=${1:-$(rclr)}
   timestamp=${2:-0}
   
-  cecho -n "--color=$my_color" "$timestamp sec"
+  ctxt "$timestamp sec    " -l -c $my_color -e
+  echo -n "    "
   nvidia-smi --query-gpu=index,memory.used --format=csv,nounits,noheader | while IFS=", " read -r index memory; do
     memory_gb=$(awk "BEGIN {printf \"%.2f\",${memory}/1024}")
-    cecho -n "--color=$my_color" "    GPU #${index}: ${memory_gb} GB"
+    ctxt -l "    GPU #${index}: ${memory_gb} GB" -c $my_color -e
+    echo -n "    "
   done
   echo 
 }
 
 # mgpu: monitor gpu
 mgpu(){
-    iterations=${3:-100}
-    sleep_time=${4:-5}
-    c1=${1:-red}
-    c2=${2:-green}
+    iterations=${3:-1000}
+    sleep_time=${4:-3}
+    c1=${1:-$(rclr)}
+    c2=${2:-$(rclr)}
     for ((i=0; i<iterations; i++)); do
         if ((i % 2 == 0)); then
             gpu_mem "$c1" $((i * sleep_time))
@@ -1160,7 +1169,8 @@ gslf(){
     code /tmp/git_log_full.ans
 }
 
-monitor_pytest() {
+# mytest: monitor pytest, plus pun intended
+mytest() {
     pytest . --color=yes > /tmp/pytest.ans &
     pytest_pid=$!
     code /tmp/pytest.ans 

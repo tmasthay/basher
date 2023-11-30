@@ -110,6 +110,9 @@ def main():
         '-n', '--no-sep', action='store_true', help='Do not split text'
     )
     parser.add_argument(
+        '-e', '--empty', action='store_true', help='Do not end with newline'
+    )
+    parser.add_argument(
         "-c",
         "--colors",
         nargs='+',
@@ -137,7 +140,10 @@ def main():
         args.colors = [e for e in args.colors if e not in ['-c', '--colors']]
 
     colored_text = colorize_text(args.text.strip(), args.sep, args.colors)
-    print(colored_text)
+    end = '\n'
+    if args.empty:
+        end = ''
+    print(colored_text, end=end)
 
 
 if __name__ == "__main__":
