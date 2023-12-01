@@ -60,10 +60,12 @@ scl() {
     esac
 }
 
+# ctxt: color text
 ctxt(){
     python $BASHER/src/py_scripts/ctxt.py $@
 }
 
+# ftxt: file text colored
 ftxt() {
     FILE=$1
     OPTS=$2
@@ -162,7 +164,7 @@ prepend_env_var() {
     fi
 }
 
-# append_env_var: conda environment helpers
+# revert_env_var: conda environment helpers
 revert_env_var() {
     local old_var="OLD_$1"
     eval "export $1=\"\${$old_var}\""
@@ -229,6 +231,7 @@ vit(){
     vim -c "vertical terminal" $1
 }
 
+# rclr: random color
 rclr(){
     red_channel=$((RANDOM % 6))
     green_channel=$((RANDOM % 6))
@@ -236,6 +239,7 @@ rclr(){
     color_value="rgb$red_channel$green_channel$blue_channel"
     echo $color_value
 }
+
 # gpu_mem: see gpu memory
 gpu_mem() {
   my_color=${1:-$(rclr)}
@@ -523,7 +527,7 @@ ufw_restore(){
     fi
 }
 
-# ufw_swap: swap ufw rules
+# ufw_swap_bak: swap ufw rules with backup
 ufw_swap_bak(){
     # Create a temporary backup of the current 'user.rules'
     sudo cp ~/.backups/ufw/user.rules ~/.backups/tmp.rules || { echo "Failed to create temp backup"; return 1; }
@@ -698,8 +702,8 @@ cols(){
     python $BASHER/src/py_scripts/cols.py $@
 }
 
-# user_funcs: see user functions
-user_funcs(){
+# user_funcs_cols: see user functions
+user_funcs_cols(){
     COLS=${1:-5}
     BASH_FUNCS=$(cat "$HOME/.bash_functions")
     PLATFORM_FUNCS=$(cat "$HOME/.platform/functions")
@@ -709,6 +713,18 @@ user_funcs(){
     SECOND=$(echo "$PLATFORM_FUNCS" | grep -E $grep_regex | sed -E "$sed_regex" | grep -v "^ " | grep -v "^#")
     TOTAL=$(echo "$FIRST\n$SECOND" | sort | uniq)
     cols -c $COLS "$(echo $TOTAL)"
+}
+
+# user_funcs: see user functions
+user_funcs(){
+    cat "$HOME/.bash_functions" "$HOME/.platform/functions" | grep "^# " | sed 's/# //' | sort
+}
+
+# undoc_funcs: see undocumented functions
+undoc_funcs(){
+    user_funcs | awk '{print $1}' | sed 's/://' > /tmp/user_funcs.txt
+    user_funcs_cols 1 > /tmp/user_funcs_cols.txt
+    code --diff /tmp/user_funcs.txt /tmp/user_funcs_cols.txt
 }
 
 # ufd: "user functions docs"
@@ -1051,7 +1067,7 @@ sfi() {
     mv "$file_path.sorted" "$file_path"
 }
 
-# cimp: "check imoprts" -- create list of all imports and check against requirements.txt
+# cimp: "check imports" -- create list of all imports and check against requirements.txt
 cimp() {
     local temp_file="/tmp/requirements_temp.txt"
     local requirements_file="$(grt)/requirements.txt"
@@ -1073,15 +1089,17 @@ cimp() {
     git difftool -y "$temp_file" "$requirements_file"
 }
 
+# stats: compute stats on a file (csv file?)
 stats(){
     python $BASHER/src/py_scripts/stats.py $@
 }
 
+# ccsv: "color csv" 
 ccsv(){
     python $BASHER/src/py_scripts/ccsv.py $@
 }
 
-#toggle RICH_LOG
+# trich: toggle RICH_LOG
 trich(){
     if [ -z $RICH_LOG ]; then
         export RICH_LOG='/tmp/rich.ans'
@@ -1091,31 +1109,33 @@ trich(){
     echo "RICH_LOG=$RICH_LOG"
 }
 
-# strip all ansi codes
+# sansi: strip all ansi codes
 sansi(){
     sed $@ 's/\x1b\[[0-9;]*[mGKFH]//g'
 }
 
-# replace all ansi codes with a marker
+# ransi: replace all ansi codes with a marker
 ransi(){
     local replace=${1:-"ANSI_MARKER"}
     sed "s/\x1b\[[0-9;]*[mGKFH]/$replace/g"
 }
 
-# strip non-alpha numeric symbols
+# salpha: strip non-alpha numeric symbols
 salpha(){
     sed "$@" 's/[^0-9a-zA-Z .+-]//g'
 }
 
-# pip version
+# pip_ver: pip version
 pip_ver(){
     pip show $1 2> /dev/null | grep "Version"
 }
 
+# my_black: black 80 chars, no string norm, preview, skip magic trailing comma
 my_black(){
     black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
 }
 
+# esite: edit site customize file
 esite(){
     local prev=$(pwd)
     pips
@@ -1133,10 +1153,12 @@ gsrt(){
     fi
 }
 
+# gsmu: git submodule update --recursive --remote
 gsmu(){
     git submodule update --recursive --remote
 }
 
+# gsync: sync GitHookEm settings
 gsync(){
     local prev=$(pwd)
     cd $(gsrt)
@@ -1145,11 +1167,12 @@ gsync(){
     cd $prev
 }
 
-
+# cdh: cd $HOME/$1
 cdh(){
     cd $HOME/$1
 }
 
+# ufw_monitor: run ufw_monitor.py
 ufw_monitor(){
     sudo $(which python3) $BASHER/src/py_scripts/ufw_monitor.py --basher $BASHER $@
 }
@@ -1159,6 +1182,7 @@ glcf(){
     git log --graph --decorate --all --format="%C(auto)%h (%ar) %s%d%n%b"
 }
 
+# tst: Run pytest in tests directory
 tst(){
     local show_code=${1:-0}
     local prev=$(pwd)
@@ -1167,6 +1191,7 @@ tst(){
     cd $prev
 }
 
+# gslf: "git show log full"
 gslf(){
     local file=$1
     git log --color --pretty=format:"%h - %s" -p -- $file > /tmp/git_log_full.ans
@@ -1218,12 +1243,12 @@ mytest() {
     done
 }
 
+# sclr: "string color" -- ctxt -l "$1" -c $1
 sclr(){
     ctxt -l "$1" -c $1
 }
 
-
-
+echo "ignore this" > /dev/null
 
 source ~/.platform/functions
 

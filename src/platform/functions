@@ -165,6 +165,7 @@ cmp(){
     cmp_tensor $BASE/alan/$TEST_FOLDER $BASE/val/$TEST_FOLDER $BASE/local_compare/$TEST_FOLDER 
 }
 
+# smr: "summary" -- deprecated
 smr(){
     TMP='/tmp/tmp1.txt'
     FIELD=${1:-"mean"}
@@ -173,6 +174,7 @@ smr(){
     ctxt -t rbow $TMP
 }
 
+# smr_all: "summary all" -- deprecated
 smr_all(){
     BASE=$ISL/misfit_toys/tccs/modules
     cd $BASE/local_compare/out/parallel
@@ -185,6 +187,8 @@ smr_all(){
     done
     cat summary.txt
 }
+
+# rcmp: run compare -- deprecated
 rcmp(){
     cdi misfit_toys/tccs/modules/val
     python fwi_parallel.py
@@ -193,11 +197,13 @@ rcmp(){
     code $(find . -name "*.gif")
 }
 
+# rrr: "run run run" -- deprecated
 rrr(){
     cdi misfit_toys/tccs/modules/val
     python fwi_parallel.py
 }
 
+# runmeta: run meta -- deprecated
 runmeta(){
     NUM_RUNS=${1:-10}
     STORAGE_FILE=${2:-"runmeta.txt"}
@@ -218,6 +224,7 @@ runmeta(){
     done
 }
 
+# mst: "misfit summary to csv" -- deprecated
 mst(){
     local INPUT=${1:-"summary.txt"}
     local OUTPUT=${2:-"summary.csv"}
@@ -230,12 +237,14 @@ mst(){
         sed 's/\x1b\[[0-9;]*m//g' > $OUTPUT
 }
 
+# cdv: "cd to val"
 cdv(){
     BASE=$ISL/misfit_toys/tccs/modules
     OPTION=${1:-"local_compare"}
     cd $BASE/$OPTION/out/parallel
 }
 
+# vlt: "val loop test" -- deprecated
 vlt(){
     local NUM_RUNS=${1-5}
     local ACCUM=${2:-"accum"}
@@ -257,19 +266,23 @@ vlt(){
     echo "Results stored in $ACCUM.(csv|txt) and $ACCUM_stats.(csv|txt)"
 }
 
+# mptab: "multiprocessing table" -- displays multiple rich tables side-by-side
 mptab(){
     python $BASHER/src/py_scripts/mptab.py $@
 }
 
+# rtab2csv: convert rich table to csv -- deprecated?
 rtab2csv(){
     local file=$1
     cat $file | ransi | salpha | tac | awk '/ANSIMARKER/ {exit} {print}' | tac | grep -v '^$' | sed -E 's/ +/,/g; s/^,//; s/,$//'
 }
 
+# cdm: cdi misfit_toys/tccs/modules
 cdm(){
     cdi misfit_toys/tccs/modules
 }
 
+# crun: "check run" -- check latest run for misfit_toys repo
 crun(){
     cat $ISL/tests/benchmarks/out/validate.out
 }
