@@ -1160,9 +1160,10 @@ glcf(){
 }
 
 tst(){
+    local show_code=${1:-0}
     local prev=$(pwd)
     cdi
-    mytest tests
+    mytest tests $show_code
     cd $prev
 }
 
@@ -1175,9 +1176,12 @@ gslf(){
 # mytest: monitor pytest, plus pun intended
 mytest() {
     local file=${1:-"tests"}
+    local show_code=${2:-0}
     pytest $file --color=yes > /tmp/pytest.ans &
     pytest_pid=$!
-    code /tmp/pytest.ans 
+    if [[ $show_code -eq 1 ]]; then
+        code /tmp/pytest.ans
+    fi
 
     # Initialize the counter
     dead_count=0
@@ -1200,13 +1204,17 @@ mytest() {
         if ! kill -0 $pytest_pid 2> /dev/null; then
             ((dead_count++))
             if [[ $dead_count -ge 3 ]]; then
-                echo "pytest process has finished. Exiting..."
+                # echo "pytest process has finished. Exiting..."
+                clear
+                cat /tmp/pytest.ans
                 break
             fi
         else
             # Reset dead count if pytest is still running
             dead_count=0
         fi
+        clear
+        cat /tmp/pytest.ans
     done
 }
 
