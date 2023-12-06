@@ -279,7 +279,7 @@ rtab2csv(){
 
 # cdm: cdi misfit_toys/tccs/modules
 cdm(){
-    cdi misfit_toys/tccs/modules
+    cdi misfit_toys/tccs/modules/$1
 }
 
 # crun: "check run" -- check latest run for misfit_toys repo
