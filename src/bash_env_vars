@@ -11,6 +11,8 @@ export CDMR_DEFAULT="$H/plots_iomt"
 export DEEPWAVE_DEBUG="$H/Documents/debug/deepwave"
 export BASHER="$H/.bash_repos/basher"
 export RICH_LOG=''
+export ADDON_PATH="$HOME/Documents/repos/Experiments/blender/addons"
+export ADDON_HELPERS_NAME="helpers"
 
 if command -v code > /dev/null; then
     export GIT_EDITOR="code --wait"

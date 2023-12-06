@@ -1248,6 +1248,23 @@ sclr(){
     ctxt -l "$1" -c $1
 }
 
+# code_blender: open blender in vscode
+code_blender(){
+    sudo /usr/bin/blender --python /home/tyler/.vscode/extensions/jacqueslucke.blender-development-0.0.18/pythonFiles/launch.py
+}
+
+link_addons(){
+    ln -s $ADDON_PATH/$ADDON_HELPERS_NAME.py $(pwd)/$ADDON_HELPERS_NAME.py
+}
+
+cdo(){
+    cd $OLDPWD
+}
+
+gci(){
+    git clean -i
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
