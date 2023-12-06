@@ -1248,6 +1248,23 @@ sclr(){
     ctxt -l "$1" -c $1
 }
 
+# cmts: "count comments" -- count the number of comments in a file
+cmts(){
+    local file=$1;
+    local num_cmts=${2:-5}
+    if [[ $(cat $file | sed 's/.*#.*/#/' | sed 's/^\([#]*\).*/\1/' | tr '\n' '@' | sed 's/#@/#/g' | tr '@' ' ' | grep $(perl -E "say '#' x $num_cmts") | wc -l) -eq 1 ]]; then
+        echo "$file"
+    fi
+}
+
+# cmta: "count comments all" -- count the number of comments in all files
+cmta(){
+    local dir=${1:-.}
+    local num_cmts=${2:-5}
+    find $dir -type f -name "*.py" | while read file; do
+        cmts $file $num_cmts
+    done
+}
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
