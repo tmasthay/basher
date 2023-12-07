@@ -1184,11 +1184,14 @@ glcf(){
 
 # tst: Run pytest in tests directory
 tst(){
-    local show_code=${1:-0}
-    local prev=$(pwd)
+    # local show_code=${1:-0}
+    # local prev=$(pwd)
+    # cdi
+    # mytest tests $show_code
+    # cd $prev
     cdi
-    mytest tests $show_code
-    cd $prev
+    pytest tests
+    cd $OLDPWD
 }
 
 # gslf: "git show log full"
