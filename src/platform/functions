@@ -287,4 +287,15 @@ crun(){
     cat $ISL/tests/benchmarks/out/validate.out
 }
 
+# gen_docs: regenerate docs for misfit_toys
+gen_docs(){
+    local prev=$(pwd)
+    cdi docs/source
+    rm -rf misfit_toys
+    cdi
+    sphinx-nested-apidoc -o docs/source misfit_toys
+    cd docs/source
+    python nested_clean.py
+    cd $prev
+}
 

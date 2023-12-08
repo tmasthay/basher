@@ -1296,6 +1296,18 @@ see_torch(){
 rhome(){
     echo "$1" | sed "s|$HOME|~|g"
 }
+
+# rgrm: "retroactive git remove"
+rgrm(){
+    local res=$(gsl | grep 'deleted: ' | awk '{print $2}' | tail -n 1)
+    while $res; do
+        if [[ -z "$res" ]]; then
+            break
+        fi
+        git rm $res
+        res=$(gsl | grep 'deleted: ' | awk '{print $2}' | tail -n 1)
+    done
+}
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
