@@ -295,7 +295,7 @@ gen_docs(){
     cdi
     sphinx-nested-apidoc -o docs/source misfit_toys
     cd docs/source
-    python nested_clean.py
+    python clean_nest.py
     cd $prev
 }
 
