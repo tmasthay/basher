@@ -39,8 +39,6 @@ alias start_agent='eval "$(ssh-agent -s)"'
 alias vi='vim'
 
 #sudo store shortcut
-alias sudood="bash $H/.bash_scripts/sudood.sh"
-alias sdp='sudood'
 alias sur='su root'
 
 #alias check_jail
