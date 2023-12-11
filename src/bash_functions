@@ -1299,15 +1299,18 @@ rhome(){
 
 # rgrm: "retroactive git remove"
 rgrm(){
-    local res=$(gsl | grep 'deleted: ' | awk '{print $2}' | tail -n 1)
+    local category=${1:-"deleted: "}
+    echo $category
+    local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     while $res; do
         if [[ -z "$res" ]]; then
             break
         fi
         git rm $res
-        res=$(gsl | grep 'deleted: ' | awk '{print $2}' | tail -n 1)
+        res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     done
 }
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
