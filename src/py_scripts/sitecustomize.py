@@ -16,13 +16,20 @@ if filename.lower() != 'none':
         file = open(filename, 'wt')
 
     console = Console(file=file, force_terminal=True)
+    # install(
+    #     console=console,
+    #     show_locals=True,
+    #     word_wrap=False,
+    #     width=cols,
+    #     locals_max_string=cols,
+    #     locals_max_length=20,
+    # )
+
     install(
         console=console,
         show_locals=True,
         word_wrap=False,
         width=cols,
-        locals_max_string=cols,
-        locals_max_length=20,
     )
 
 # repo_path = os.environ['REPO']

@@ -290,13 +290,14 @@ crun(){
 # gen_docs: regenerate docs for misfit_toys
 gen_docs(){
     local prev=$(pwd)
-    cdi docs/source
-    rm -rf misfit_toys
+    cdi docs
+    rm -rf source 
     cdi
-    sphinx-nested-apidoc -o docs/source misfit_toys
+    sphinx-apidoc -o docs/source -e -M misfit_toys 
     cd docs/source
     # python clean_nest.py
     cdi docs
+    python clean_nest.py
     make html
     cd $prev
 }
