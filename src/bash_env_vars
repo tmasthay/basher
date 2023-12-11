@@ -14,6 +14,7 @@ export RICH_LOG=''
 export ADDON_PATH="$HOME/Documents/repos/Experiments/blender/addons"
 export ADDON_HELPERS_NAME="helpers"
 export BLENDER_DEV_PATH="$HOME/Documents/repos/Experiments/blender"
+export LS_COLORS='di=94:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=37;41:sg=30;43:tw=30;42:ow=34;42'
 
 if command -v code > /dev/null; then
     export GIT_EDITOR="code --wait"
