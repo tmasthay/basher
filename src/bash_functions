@@ -1311,6 +1311,19 @@ rgrm(){
     done
 }
 
+# update_resume: update resume
+update_resume(){
+    local name=${1:-"TylerMasthay_Resume"}
+    local dir=$RESUME
+    if [[ "$name" != "TylerMasthay_Resume" ]]; then
+        dir="$dir/JobSpecific"
+        name="TylerMasthay_Resume_$name"
+        mkdir -p $dir
+    fi
+
+    cp "$REPO/CV/main.pdf" "$dir/$name.pdf"
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions

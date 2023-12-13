@@ -14,6 +14,7 @@ export RICH_LOG=''
 export ADDON_PATH="$HOME/Documents/repos/Experiments/blender/addons"
 export ADDON_HELPERS_NAME="helpers"
 export BLENDER_DEV_PATH="$HOME/Documents/repos/Experiments/blender"
+export RESUME="$HOME/Documents/Logistics/Career/Jobs/Resumes"
 
 if command -v code > /dev/null; then
     export GIT_EDITOR="code --wait"

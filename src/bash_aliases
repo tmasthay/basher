@@ -1,3 +1,6 @@
+source $BASHER/src/MILD_SECRETS/SUPER_SECRETS/super_secret_aliases
+source ~/.platform/aliases
+
 #alias python
 alias python='python3'
 
@@ -44,5 +47,5 @@ alias sur='su root'
 #alias check_jail
 alias blist='sudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
 
-source ~/.platform/aliases
+
 
