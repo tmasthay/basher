@@ -867,22 +867,22 @@ pips(){
 
 # efunc: edit bash functions
 efunc(){
-    code $HOME/.bash_functions
+    $GIT_EDITOR $HOME/.bash_functions
 }
 
 # ealias: edit bash aliases
 ealias(){
-    code $HOME/.bash_aliases
+    $GIT_EDITOR $HOME/.bash_aliases
 }
 
 # evars: edit bash environment variables
 evars(){
-    code $HOME/.bash_env_vars
+    $GIT_EDITOR $HOME/.bash_env_vars
 }
 
 # eenv: edit bash environment
 eenv(){
-    code $HOME/.bash_env
+    $GIT_EDITOR $HOME/.bash_env
 }
 
 # gr: git reset
@@ -1313,6 +1313,31 @@ rgrm(){
         res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     done
 }
+
+# update_resume: update resume
+update_resume(){
+    local name=${1:-"TylerMasthay_Resume"}
+    local dir=$RESUME
+    if [[ "$name" != "TylerMasthay_Resume" ]]; then
+        dir="$dir/JobSpecific"
+        name="TylerMasthay_Resume_$name"
+        mkdir -p $dir
+    fi
+
+    cp "$REPO/CV/main.pdf" "$dir/$name.pdf"
+}
+
+# gss: git show --stat "HEAD~$1"
+gss(){
+    local commit=${1:-0}
+    if [ $commit -eq 0 ]; then
+        git show --stat
+        return
+    else 
+        git show --stat "HEAD~$commit"
+    fi
+}
+
 
 ghwv(){
     gh workflow view $@
