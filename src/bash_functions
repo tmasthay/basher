@@ -867,22 +867,22 @@ pips(){
 
 # efunc: edit bash functions
 efunc(){
-    code $HOME/.bash_functions
+    $GIT_EDITOR $HOME/.bash_functions
 }
 
 # ealias: edit bash aliases
 ealias(){
-    code $HOME/.bash_aliases
+    $GIT_EDITOR $HOME/.bash_aliases
 }
 
 # evars: edit bash environment variables
 evars(){
-    code $HOME/.bash_env_vars
+    $GIT_EDITOR $HOME/.bash_env_vars
 }
 
 # eenv: edit bash environment
 eenv(){
-    code $HOME/.bash_env
+    $GIT_EDITOR $HOME/.bash_env
 }
 
 # gr: git reset
@@ -1323,6 +1323,18 @@ update_resume(){
 
     cp "$REPO/CV/main.pdf" "$dir/$name.pdf"
 }
+
+# gss: git show --stat "HEAD~$1"
+gss(){
+    local commit=${1:-0}
+    if [ $commit -eq 0 ]; then
+        git show --stat
+        return
+    else 
+        git show --stat "HEAD~$commit"
+    fi
+}
+
 
 echo "ignore this" > /dev/null
 
