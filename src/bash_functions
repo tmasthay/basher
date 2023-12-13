@@ -1297,11 +1297,14 @@ rhome(){
     echo "$1" | sed "s|$HOME|~|g"
 }
 
+gbt(){
+    local category=${1:-"deleted: "}
+    local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
+    echo $res
+}
 # rgrm: "retroactive git remove"
 rgrm(){
-    local category=${1:-"deleted: "}
-    echo $category
-    local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
+    local res=$(gbt $1)
     while $res; do
         if [[ -z "$res" ]]; then
             break
@@ -1309,6 +1312,10 @@ rgrm(){
         git rm $res
         res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     done
+}
+
+ghwv(){
+    gh workflow view $@
 }
 
 echo "ignore this" > /dev/null
