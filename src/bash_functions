@@ -865,24 +865,30 @@ pips(){
     fi
 }
 
+# edit_file: edit file
+efile(){
+    local cmd=$(echo $GIT_EDITOR | awk '{print $1}')
+    $cmd $1
+}
+
 # efunc: edit bash functions
 efunc(){
-    $GIT_EDITOR $HOME/.bash_functions
+    efile $HOME/.bash_functions
 }
 
 # ealias: edit bash aliases
 ealias(){
-    $GIT_EDITOR $HOME/.bash_aliases
+    efile $HOME/.bash_aliases
 }
 
 # evars: edit bash environment variables
 evars(){
-    $GIT_EDITOR $HOME/.bash_env_vars
+    efile $HOME/.bash_env_vars
 }
 
 # eenv: edit bash environment
 eenv(){
-    $GIT_EDITOR $HOME/.bash_env
+    efile $HOME/.bash_env
 }
 
 # gr: git reset
@@ -922,7 +928,7 @@ cdr(){
 
 # eplat: edit platform
 eplat(){
-    code $BASHER/src/platform/$1
+    efile $BASHER/src/platform/$1
 }
 
 # mhr: masthay helpers reinstall -- deprecated -- use pip install -e .
