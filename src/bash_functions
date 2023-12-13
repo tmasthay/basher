@@ -1303,11 +1303,14 @@ rhome(){
     echo "$1" | sed "s|$HOME|~|g"
 }
 
+gbt(){
+    local category=${1:-"deleted: "}
+    local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
+    echo $res
+}
 # rgrm: "retroactive git remove"
 rgrm(){
-    local category=${1:-"deleted: "}
-    echo $category
-    local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
+    local res=$(gbt $1)
     while $res; do
         if [[ -z "$res" ]]; then
             break
@@ -1341,6 +1344,21 @@ gss(){
     fi
 }
 
+
+ghwv(){
+    gh workflow view $@
+}
+
+dsmu(){
+    local prev=$(pwd)
+    cd $(grt)
+    local repo_name=$1
+    rm -rf $repo_name
+    git clone https://github.com/tmasthay/$repo_name.git
+    cd $repo_name
+    rm -rf .git
+    cd $prev
+}
 
 echo "ignore this" > /dev/null
 
