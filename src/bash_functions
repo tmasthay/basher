@@ -1331,17 +1331,63 @@ dsmu(){
     cd $prev
 }
 
-# update_resume: update resume
-update_resume(){
-    local name=${1:-"TylerMasthay_Resume"}
-    local dir=$RESUME
-    if [[ "$name" != "TylerMasthay_Resume" ]]; then
-        dir="$dir/JobSpecific"
-        name="TylerMasthay_Resume_$name"
-        mkdir -p $dir
+# update_content: update content based on build and target directories
+#    Typical use case is for latex resume/cover letter build pdf version control
+update_content(){
+    local build_dir=$1
+    local target_dir=$2
+    local build_file=${3:-"main.pdf"}
+    local target_base=${4:-"TylerMasthay_Resume"}
+    local target_name=${5:-""}
+
+    # Check if either build directory exists; if not exit
+    if [[ ! -d "$build_dir" ]]; then
+        echo "Build directory does not exist: $build_dir"
+        return 1
+    elif
+        [[ ! -d "$target_dir" ]]; then
+        echo "Target directory does not exist: $target_dir"
+        return 1
+    elif
+        [[ ! -f "$build_dir/$build_file" ]]; then
+        echo "Build file does not exist: $build_dir/$build_file"
+        return 1
     fi
 
-    cp "$REPO/CV/main.pdf" "$dir/$name.pdf"
+    local ext=".pdf"
+    build_file=${build_file//$ext/}
+    build_file="$build_file$ext"
+    target_base=${target_base//$ext/}
+    target_name=${target_name//$ext/}
+    local subdir=${target_name//"_"/"/"}
+    local final_dir=${target_dir}/${subdir}
+    local final_file_name="${target_base}_${target_name}${ext}"
+    final_file_name="$final_dir/$final_file_name"
+
+    local cmd="cp $build_dir/$build_file $final_file_name"
+    echo $cmd
+    mkdir -p $final_dir
+    eval $cmd
+}
+
+# update_resume: update_content for resume
+update_resume(){
+    update_content "$REPO/CV" "$JOBS" "main.pdf" "TylerMasthay_Resume" "$1"
+}
+
+# update_cover_letter: update_content for cover letter
+update_cover_letter(){
+    update_content "$REPO/CoverLetterHistory" "$JOBS" "main.pdf" "TylerMasthay_CoverLetter" "$1"
+}
+
+cdj(){
+    cd $JOBS/$1
+}
+
+# update_job: update_content for job posting
+update_job(){
+    update_resume "$1"
+    update_cover_letter "$1"
 }
 
 # gss: git show --stat "HEAD~$1"
