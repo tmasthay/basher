@@ -1360,6 +1360,16 @@ dsmu(){
     cd $prev
 }
 
+protect_file(){
+    local file=$1
+    local permissions=${2:-"644"}
+    sudo chattr -i $file
+    sudo chown root:root $file
+    sudo chmod $permissions $file
+    sudo chattr +i $file
+    ls -al $file
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
