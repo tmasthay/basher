@@ -1359,6 +1359,13 @@ update_content(){
     build_file="$build_file$ext"
     target_base=${target_base//$ext/}
     target_name=${target_name//$ext/}
+
+    if [[ $target_name == "" ]]; then
+        cmd="cp $build_dir/$build_file $target_dir/$target_base$ext"
+        echo $cmd
+        eval $cmd
+        return 0
+    fi
     local subdir=${target_name//"_"/"/"}
     local final_dir=${target_dir}/${subdir}
     local final_file_name="${target_base}_${target_name}${ext}"
@@ -1372,12 +1379,12 @@ update_content(){
 
 # update_resume: update_content for resume
 update_resume(){
-    update_content "$REPO/CV" "$JOBS" "main.pdf" "TylerMasthay_Resume" "$1"
+    update_content "$REPO/CV" "$JOBS" "main.pdf" "TylerMasthay_Resume" $1
 }
 
 # update_cover_letter: update_content for cover letter
 update_cover_letter(){
-    update_content "$REPO/CoverLetterHistory" "$JOBS" "main.pdf" "TylerMasthay_CoverLetter" "$1"
+    update_content "$REPO/CoverLetterHistory" "$JOBS" "main.pdf" "TylerMasthay_CoverLetter" $1
 }
 
 cdj(){
