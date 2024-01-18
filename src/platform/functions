@@ -1,8 +1,8 @@
 # gho: designated for current workflow "gho" == "go" 
 gho(){
     PREV=$(pwd)
-    cdi
-    source reinstall_and_test.sh $1 $2
+    cdi misfit_toys/data
+    python -W ignore download_data.py openfwi
     cd $PREV
 }
 

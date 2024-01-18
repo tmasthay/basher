@@ -1423,6 +1423,16 @@ new_fang(){
     cp $REPO/IvoryTowerTests/template.py "$(pwd)/$name.py"
     sed -i "s/your_function_name/$name/g" "$(pwd)/$name.py"
 }
+protect_file(){
+    local file=$1
+    local permissions=${2:-"644"}
+    sudo chattr -i $file
+    sudo chown root:root $file
+    sudo chmod $permissions $file
+    sudo chattr +i $file
+    ls -al $file
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions

@@ -7,6 +7,7 @@ import torch
 
 torch.set_printoptions(profile='short')
 
+
 cols, _ = gts(fallback=(80, 24))
 if cols == 0:
     cols = os.environ.get('COLUMNS', 80)
@@ -33,6 +34,8 @@ if filename.lower() != 'none':
         show_locals=True,
         word_wrap=False,
         width=cols,
+        locals_max_length=10,
+        locals_max_string=cols,
     )
 
 # repo_path = os.environ['REPO']
