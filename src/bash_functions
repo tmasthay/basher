@@ -1108,7 +1108,7 @@ ccsv(){
 # trich: toggle RICH_LOG
 trich(){
     if [ -z $RICH_LOG ]; then
-        export RICH_LOG='/tmp/rich.ans'
+        export RICH_LOG='none'
     else
         unset RICH_LOG
     fi
@@ -1315,7 +1315,7 @@ rgrm(){
         if [[ -z "$res" ]]; then
             break
         fi
-        git rm $res
+        git rm --cached $res
         res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     done
 }
@@ -1413,6 +1413,16 @@ dsmu(){
     cd $prev
 }
 
+pyig(){
+    python -W ignore $@
+}
+
+new_fang(){
+    local name=$(pwd | awk -F'/' '{print $NF}')
+    cp $REPO/IvoryTowerTests/config_template.yaml $(pwd)/config.yaml
+    cp $REPO/IvoryTowerTests/template.py "$(pwd)/$name.py"
+    sed -i "s/your_function_name/$name/g" "$(pwd)/$name.py"
+}
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions

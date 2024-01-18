@@ -3,6 +3,9 @@ from rich.traceback import install
 import os
 import sys
 from shutil import get_terminal_size as gts
+import torch
+
+torch.set_printoptions(profile='short')
 
 cols, _ = gts(fallback=(80, 24))
 if cols == 0:
