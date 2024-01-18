@@ -31,7 +31,7 @@ if filename.lower() != 'none':
 
     install(
         console=console,
-        show_locals=True,
+        show_locals=os.environ.get('RICH_LOCALS', '').lower() == 'true',
         word_wrap=False,
         width=cols,
         locals_max_length=10,

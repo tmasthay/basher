@@ -1433,6 +1433,15 @@ protect_file(){
     ls -al $file
 }
 
+trichl(){
+    if [ -z $RICH_LOCALS ]; then
+        export RICH_LOCALS='true'
+    else
+        unset RICH_LOCALS
+    fi
+    echo "RICH_LOCALS=$RICH_LOCALS"
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
