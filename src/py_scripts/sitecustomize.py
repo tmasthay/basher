@@ -3,6 +3,9 @@ from rich.traceback import install
 import os
 import sys
 from shutil import get_terminal_size as gts
+import torch
+
+torch.set_printoptions(profile='short')
 
 
 cols, _ = gts(fallback=(80, 24))
@@ -28,7 +31,7 @@ if filename.lower() != 'none':
 
     install(
         console=console,
-        show_locals=True,
+        show_locals=os.environ.get('RICH_LOCALS', '').lower() == 'true',
         word_wrap=False,
         width=cols,
         locals_max_length=10,
