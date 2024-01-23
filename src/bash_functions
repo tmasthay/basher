@@ -1433,6 +1433,28 @@ protect_file(){
     ls -al $file
 }
 
+# export_funcs: Export all functions
+export_funcs(){
+    declare -F | awk '{print $3}' | while read -r func; do
+        export -f "$func"
+    done
+}
+
+# declare_funcs_subshell: Declare all functions in a subshell
+declare_funcs_subshell(){
+    declare -F | sed ':a;N;$!ba;s/\n/; /g'
+}
+
+# link_sitecustomize: Link sitecustomize.py to the current conda env
+link_sitecustomize(){
+    local run_cmd=${1:-0}
+    local cmd="ln -s $BASHER/src/py_scripts/sitecustomize.py $(pips 1)/sitecustomize.py"
+    if [[ $run_cmd -eq 0 ]]; then
+        echo $cmd
+    else
+        eval $cmd
+    fi
+}
 trichl(){
     if [ -z $RICH_LOCALS ]; then
         export RICH_LOCALS='true'
