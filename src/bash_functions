@@ -1442,6 +1442,10 @@ trichl(){
     echo "RICH_LOCALS=$RICH_LOCALS"
 }
 
+undo_conda(){
+    cdct; cdct; cact base; cact dw
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
