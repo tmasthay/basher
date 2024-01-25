@@ -70,14 +70,14 @@ ftxt() {
     FILE=$1
     OPTS=$2
     READ_FROM_FILE=${3:-""}
-    
+
     # Check if -f (file read) flag is present, then prepend it to the file argument
     if [ "$READ_FROM_FILE" = "-f" ]; then
         FILE_ARG="-f $FILE"
     else
         FILE_ARG="$FILE"
     fi
-    
+
     # Now call ctxt with the file argument and the contents of the options file
     ctxt $FILE_ARG $(cat "$OPTS")
 }
@@ -102,7 +102,7 @@ cecho_legacy() {
     fi
 
     local text="$@"
-    
+
     case "$color_value" in
         black)    tput setaf 0 ;;
         red)      tput setaf 1 ;;
@@ -193,20 +193,20 @@ matlab(){
 
 # pfs: print file contents recursively
 pfs() {
-  local dir=$1
-  local pattern=$2
-  local regex=$3  # get the function's third argument
-  find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
-    echo "$file"
-    echo "$(printf '%.0s*' {1..80})"
-    # If regex is provided, use it to filter file contents
-    if [[ -n "$regex" ]]; then
-      grep -E "$regex" "$file" || echo "No match found for regex '$regex'"
-    else
-      cat "$file"
-    fi
-    echo "$(printf '%.0s*' {1..80})"
-  done
+    local dir=$1
+    local pattern=$2
+    local regex=$3  # get the function's third argument
+    find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
+        echo "$file"
+        echo "$(printf '%.0s*' {1..80})"
+        # If regex is provided, use it to filter file contents
+        if [[ -n "$regex" ]]; then
+            grep -E "$regex" "$file" || echo "No match found for regex '$regex'"
+        else
+            cat "$file"
+        fi
+        echo "$(printf '%.0s*' {1..80})"
+    done
 }
 
 # grb: git rebase
@@ -242,17 +242,17 @@ rclr(){
 
 # gpu_mem: see gpu memory
 gpu_mem() {
-  my_color=${1:-$(rclr)}
-  timestamp=${2:-0}
-  
-  ctxt "$timestamp sec    " -l -c $my_color -e
-  echo -n "    "
-  nvidia-smi --query-gpu=index,memory.used --format=csv,nounits,noheader | while IFS=", " read -r index memory; do
-    memory_gb=$(awk "BEGIN {printf \"%.2f\",${memory}/1024}")
-    ctxt -l "    GPU #${index}: ${memory_gb} GB" -c $my_color -e
+    my_color=${1:-$(rclr)}
+    timestamp=${2:-0}
+
+    ctxt "$timestamp sec    " -l -c $my_color -e
     echo -n "    "
-  done
-  echo 
+    nvidia-smi --query-gpu=index,memory.used --format=csv,nounits,noheader | while IFS=", " read -r index memory; do
+        memory_gb=$(awk "BEGIN {printf \"%.2f\",${memory}/1024}")
+        ctxt -l "    GPU #${index}: ${memory_gb} GB" -c $my_color -e
+        echo -n "    "
+    done
+    echo
 }
 
 # mgpu: monitor gpu
@@ -263,7 +263,7 @@ mgpu(){
     c2=${2:-$(rclr)}
     ctxt "Color 1: $c1" -l -c $c1 -e
     echo -n "    "
-    ctxt "Color 2: $c2" -l -c $c2 
+    ctxt "Color 2: $c2" -l -c $c2
     for ((i=0; i<iterations; i++)); do
         if ((i % 2 == 0)); then
             gpu_mem "$c1" $((i * sleep_time))
@@ -334,13 +334,13 @@ ensure_ssh_agent() {
         echo "No active SSH agent socket found. Starting one now..."
         eval $(ssh-agent -s)
         echo "SSH agent started with PID $SSH_AGENT_PID"
-        
-    # If there's exactly one agent socket
+
+        # If there's exactly one agent socket
     elif [[ ${#SOCKET_ARRAY[@]} -eq 1 ]]; then
         export SSH_AUTH_SOCK=${SOCKET_ARRAY[0]}
         echo "Bound to existing SSH agent at $SSH_AUTH_SOCK"
-        
-    # If there's more than one agent socket
+
+        # If there's more than one agent socket
     else
         echo "Warning: Multiple SSH agent sockets found (${#SOCKET_ARRAY[@]} sockets)."
         echo "To kill all active ssh-agents and start afresh, run:"
@@ -426,7 +426,7 @@ senv(){
 # shelp: source bash helpers
 shelp(){
     source ~/.bash_source_helpers
-} 
+}
 
 # codeo: open files in vscode
 codeo(){
@@ -495,7 +495,7 @@ ufw_bak(){
     else
         echo "/etc/ufw/user.rules does not exist."
     fi
-}   
+}
 
 # ufw_bak2: backup ufw rules
 ufw_bak2(){
@@ -561,7 +561,7 @@ ufw_fsd_legacy() {
 ufw_fsd(){
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY")
-    rule_info=$(echo "$rule_info" | grep "$REGEX") 
+    rule_info=$(echo "$rule_info" | grep "$REGEX")
     rule_info=$(echo "$rule_info" | sed 's/\[[ ]*\([0-9][0-9]*\)\]/\1/g')
     rule_info=$(echo "$rule_info" | awk '{print $1,$5}')
     local rule_num=$(echo $rule_info | awk '{print $1}')
@@ -614,7 +614,7 @@ atrm_all() {
     num_calls=$(atq | wc -l)
 
     for ((i=1; i<=num_calls; i++)); do
-      atrm $(atq | awk '{print $1}' | head -n 1)
+        atrm $(atq | awk '{print $1}' | head -n 1)
     done
 }
 
@@ -799,7 +799,7 @@ create_worktrees() {
         if [[ "$branch" == "$current_branch" ]]; then
             continue
         fi
-        
+
         # Replace slashes with underscores in branch name for directory naming
         safe_branch_name=$(echo "$branch" | tr '/' '_')
 
@@ -1009,7 +1009,7 @@ update_pre_commit() {
     # Find all directories in your $REPO variable, excluding any paths that contain $HOOK_EM
     find "${REPO}" -maxdepth 1 -mindepth 1 -type d | grep -v "${HOOK_EM}" | while read -r repo_dir; do
         echo "Updating repository: ${repo_dir}"
-        
+
         # clean pre-existing directories
         rm -rf "${repo_dir}/.gitlint_rules"
 
@@ -1028,7 +1028,7 @@ update_pre_commit() {
 
         # Clean the pre-commit environment
         pre-commit clean > /dev/null 2>&1
-        
+
         # Install the pre-commit hook
         pre-commit install > /dev/null 2>&1
 
@@ -1100,7 +1100,7 @@ stats(){
     python $BASHER/src/py_scripts/stats.py $@
 }
 
-# ccsv: "color csv" 
+# ccsv: "color csv"
 ccsv(){
     python $BASHER/src/py_scripts/ccsv.py $@
 }
@@ -1221,8 +1221,8 @@ mytest() {
     dead_count=0
 
     while true; do
-        sleep 2 
-        
+        sleep 2
+
         # Find the line numbers for "Captured stderr call" and "short test summary info"
         err_line=$(grep -n "Captured stderr call" /tmp/pytest.ans | head -n 1 | cut -d: -f1)
         sum_line=$(grep -n "short test summary info" /tmp/pytest.ans | head -n 1 | cut -d: -f1)
@@ -1334,11 +1334,11 @@ update_content(){
         echo "Build directory does not exist: $build_dir"
         return 1
     elif
-        [[ ! -d "$target_dir" ]]; then
+    [[ ! -d "$target_dir" ]]; then
         echo "Target directory does not exist: $target_dir"
         return 1
     elif
-        [[ ! -f "$build_dir/$build_file" ]]; then
+    [[ ! -f "$build_dir/$build_file" ]]; then
         echo "Build file does not exist: $build_dir/$build_file"
         return 1
     fi
@@ -1392,7 +1392,7 @@ gss(){
     if [ $commit -eq 0 ]; then
         git show --stat
         return
-    else 
+    else
         git show --stat "HEAD~$commit"
     fi
 }
