@@ -1464,6 +1464,18 @@ trichl(){
     echo "RICH_LOCALS=$RICH_LOCALS"
 }
 
+cblender(){
+    /home/tyler/Software/blender-4.0.2-linux-x64/blender
+}
+
+dcmd(){
+    ctxt -l "GNOME RESULTS for $1" -c red
+    find /usr/share/applications -type f -name "*$1*.desktop" -exec grep -Ho "Exec=.*" {} \; | awk -F'Exec=' '{print "    " $2}'
+    echo ""
+    ctxt -l "SNAP RESULTS for $1" -c red
+    find /var/lib/snapd/desktop/applications -type f -name "*$1*.desktop" -exec grep -Ho "Exec=.*" {} \; | awk -F'Exec=' '{print "    " $2}'
+}
+
 echo "ignore this" > /dev/null
 
 source ~/.platform/functions
