@@ -8,6 +8,6 @@ for e in $VALID_BASHRC_HELPERS; do
         source $e
     else
         echo "$e not found...skipping"
-    fi  
+    fi
 done
 
