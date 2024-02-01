@@ -45,7 +45,7 @@ alias vi='vim'
 alias sur='su root'
 
 #alias check_jail
-alias blist='sudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
+alias blist='mudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
 
 
 
