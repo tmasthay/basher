@@ -987,10 +987,6 @@ gds(){
     git difftool --staged @{u}
 }
 
-# git-hook-em: set git hooks path -- deprecated
-git-hook-em(){
-    git config --global core.hooksPath $HOOK_EM/.git/hooks
-}
 
 # update_pre_commit: update pre-commit hooks
 update_pre_commit() {
@@ -1262,14 +1258,17 @@ code_blender(){
     sudo /usr/bin/blender --python /home/tyler/.vscode/extensions/jacqueslucke.blender-development-0.0.18/pythonFiles/launch.py
 }
 
+# link_addons: link blender addons
 link_addons(){
     ln -s $ADDON_PATH/$ADDON_HELPERS_NAME.py $(pwd)/$ADDON_HELPERS_NAME.py
 }
 
+# cdo: "change directory old"
 cdo(){
     cd $OLDPWD
 }
 
+# gci: "git clean interactive"
 gci(){
     git clean -i
 }
@@ -1292,6 +1291,7 @@ cmta(){
     done
 }
 
+# see_torch: see torch directory
 see_torch(){
     local make_figs=${1:-"False"}
     local cmd="from masthay_helpers.global_helpers import torch_dir_see"
@@ -1299,15 +1299,18 @@ see_torch(){
     python -c "$cmd"
 }
 
+# rhome: replace home with ~
 rhome(){
     echo "$1" | sed "s|$HOME|~|g"
 }
 
+# gbt: "git branch type"
 gbt(){
     local category=${1:-"deleted: "}
     local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     echo $res
 }
+
 # rgrm: "retroactive git remove"
 rgrm(){
     local res=$(gbt $1)
@@ -1376,6 +1379,7 @@ update_cover_letter(){
     update_content "$REPO/CoverLetterHistory" "$JOBS" "main.pdf" "TylerMasthay_CoverLetter" $1
 }
 
+# cdj: "change directory job"
 cdj(){
     cd $JOBS/$1
 }
@@ -1397,11 +1401,13 @@ gss(){
     fi
 }
 
-
+# ghwv: "github workflow view"
 ghwv(){
     gh workflow view $@
 }
 
+# dsmu: download submodule update -- used for overleaf/github syncing
+#     This is necessary because overleaf does not support submodules.
 dsmu(){
     local prev=$(pwd)
     cd $(grt)
@@ -1413,16 +1419,20 @@ dsmu(){
     cd $prev
 }
 
+# pyig: "python ignore warnings"
 pyig(){
     python -W ignore $@
 }
 
+# new_fang: create new fang interview question setup
 new_fang(){
     local name=$(pwd | awk -F'/' '{print $NF}')
     cp $REPO/IvoryTowerTests/config_template.yaml $(pwd)/config.yaml
     cp $REPO/IvoryTowerTests/template.py "$(pwd)/$name.py"
     sed -i "s/your_function_name/$name/g" "$(pwd)/$name.py"
 }
+
+# protect_file: protect a file from being modified
 protect_file(){
     local file=$1
     local permissions=${2:-"644"}
@@ -1455,6 +1465,8 @@ link_sitecustomize(){
         eval $cmd
     fi
 }
+
+# trichl: toggle RICH_LOCALS
 trichl(){
     if [ -z $RICH_LOCALS ]; then
         export RICH_LOCALS='true'
@@ -1464,10 +1476,12 @@ trichl(){
     echo "RICH_LOCALS=$RICH_LOCALS"
 }
 
+# cblender: "custom blender" -- this is the one I use since the system blender is outdated
 cblender(){
     /home/tyler/Software/blender-4.0.2-linux-x64/blender
 }
 
+# dcmd: "desktop command" -- find and display desktop commands
 dcmd(){
     ctxt -l "GNOME RESULTS for $1" -c red
     find /usr/share/applications -type f -name "*$1*.desktop" -exec grep -Ho "Exec=.*" {} \; | awk -F'Exec=' '{print "    " $2}'
@@ -1475,6 +1489,8 @@ dcmd(){
     ctxt -l "SNAP RESULTS for $1" -c red
     find /var/lib/snapd/desktop/applications -type f -name "*$1*.desktop" -exec grep -Ho "Exec=.*" {} \; | awk -F'Exec=' '{print "    " $2}'
 }
+
+# undo_conda: undo conda environment -- weird bug on home machine
 undo_conda(){
     cdct; cdct; cact base; cact dw
 }
