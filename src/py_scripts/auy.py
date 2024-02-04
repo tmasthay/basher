@@ -9,7 +9,7 @@ import os
 
 
 def run_grep_command(name="main"):
-    command = rf"grep -o 'c\.[a-zA-Z_]\+\(\.[a-zA-Z_]\+\)*' {name}.py | sed 's/c\.//g' | sort | uniq"
+    command = rf"grep -o 'c[f]*[g]*\.[a-zA-Z_]\+\(\.[a-zA-Z_]\+\)*' {name}.py | sed 's/c\.//g' | sort | uniq"
     process = subprocess.Popen(
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
@@ -60,7 +60,6 @@ def generate_yaml(
 
     # Read the pre-existing YAML file
     try:
-        input(pre_existing_yaml)
         with open(pre_existing_yaml, 'r') as f:
             pre_existing_config = yaml.safe_load(f) or {}
     except FileNotFoundError:
