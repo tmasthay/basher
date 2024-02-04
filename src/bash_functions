@@ -1524,6 +1524,17 @@ pc() {
     python $BASHER/src/py_scripts/$1.py "${@:2}"
 }
 
+cd() {
+    builtin cd "$@" && echo $(pwd) >>~/.cd_history
+    local history=$(cat ~/.cd_history | tail -n 100)
+    echo "$history" >~/.cd_history
+}
+
+cdh() {
+    local num_see=${1:-10}
+    cat ~/.cd_history | tail -n $num_see
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

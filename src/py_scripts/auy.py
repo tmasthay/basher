@@ -31,7 +31,6 @@ def deep_update(source, overrides):
     """Update a nested dictionary or similar mapping.
     Modify `source` in place.
     """
-    input(overrides)
     for key, value in overrides.items():
         if isinstance(value, MutableMapping) and value:
             returned = deep_update(source.get(key, {}), value)
