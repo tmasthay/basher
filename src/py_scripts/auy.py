@@ -9,7 +9,7 @@ import os
 
 
 def run_grep_command(name="main"):
-    command = rf"grep -o 'c[f]*[g]*\.[a-zA-Z_]\+\(\.[a-zA-Z_]\+\)*' {name}.py | sed 's/c\.//g' | sort | uniq"
+    command = rf"grep -o 'c[f]*[g]*\.[a-zA-Z_]\+\(\.[a-zA-Z_]\+\)*' {name}.py | sed 's/c[f]*[g]*\.//g' | sort | uniq"
     process = subprocess.Popen(
         command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
@@ -19,6 +19,7 @@ def run_grep_command(name="main"):
         print("An error occurred:", stderr.decode())
         return []
 
+    # raise ValueError(stdout.decode().splitlines())
     return stdout.decode().splitlines()
 
 
@@ -36,7 +37,11 @@ def deep_update(source, overrides):
             returned = deep_update(source.get(key, {}), value)
             source[key] = returned
         else:
-            source[key] = overrides[key]
+            # input(f"key: {key}, value: {value}, source: {source[key]}")
+            try:
+                source[key] = overrides[key]
+            except:
+                source = {key: overrides[key]}
     return source
 
 
@@ -55,7 +60,7 @@ def generate_yaml(
         for sub_key in sub_keys[:-1]:
             if sub_key not in d:
                 d[sub_key] = {}
-            d = d[sub_key]
+            d = {} if d[sub_key] is None else d[sub_key]
         d[sub_keys[-1]] = None  # Placeholder for actual values
 
     # Read the pre-existing YAML file
