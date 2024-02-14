@@ -1535,6 +1535,10 @@ cdh() {
     cat ~/.cd_history | tail -n $num_see
 }
 
+pywest() {
+    pytest -p no:warnings --color=yes $@
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
