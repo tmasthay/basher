@@ -1410,13 +1410,11 @@ ghwv(){
 #     This is necessary because overleaf does not support submodules.
 dsmu(){
     local prev=$(pwd)
-    cd $(grt)
-    local repo_name=$1
+    local repo_name=${1:-CustomCommands}
+    echo $repo_name
     rm -rf $repo_name
     git clone https://github.com/tmasthay/$repo_name.git
-    cd $repo_name
-    rm -rf .git
-    cd $prev
+    echo "Remember to remove $repo_name/.git"
 }
 
 # pyig: "python ignore warnings"
