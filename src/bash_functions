@@ -7,61 +7,65 @@ scl() {
 
     # Map user-friendly color names to RGB values
     case "$color_value" in
-        orange) color_value='rgb530' ;;
-        maroon) color_value='rgb320' ;;
-        olive) color_value='rgb330' ;;
-        navy) color_value='rgb003' ;;
-        teal) color_value='rgb033' ;;
-        lime) color_value='rgb250' ;;
-        coral) color_value='rgb550' ;;
-        salmon) color_value='rgb540' ;;
-        beige) color_value='rgb542' ;;
-        mint) color_value='rgb253' ;;
-        lavender) color_value='rgb432' ;;
-        plum) color_value='rgb302' ;;
-        indigo) color_value='rgb104' ;;
-        gold) color_value='rgb530' ;;
-        pink) color_value='rgb532' ;;
-        tan) color_value='rgb531' ;;
-        coffee) color_value='rgb321' ;;
-        chocolate) color_value='rgb320' ;;
-        azure) color_value='rgb156' ;;
-        silver) color_value='rgb555' ;;
-        rand)
-            # Generate random RGB values between 0-5
-            local r=$((RANDOM % 6))
-            local g=$((RANDOM % 6))
-            local b=$((RANDOM % 6))
-            color_value="rgb$r$g$b"
-            ;;
+    orange) color_value='rgb530' ;;
+    maroon) color_value='rgb320' ;;
+    olive) color_value='rgb330' ;;
+    navy) color_value='rgb003' ;;
+    teal) color_value='rgb033' ;;
+    lime) color_value='rgb250' ;;
+    coral) color_value='rgb550' ;;
+    salmon) color_value='rgb540' ;;
+    beige) color_value='rgb542' ;;
+    mint) color_value='rgb253' ;;
+    lavender) color_value='rgb432' ;;
+    plum) color_value='rgb302' ;;
+    indigo) color_value='rgb104' ;;
+    gold) color_value='rgb530' ;;
+    pink) color_value='rgb532' ;;
+    tan) color_value='rgb531' ;;
+    coffee) color_value='rgb321' ;;
+    chocolate) color_value='rgb320' ;;
+    azure) color_value='rgb156' ;;
+    silver) color_value='rgb555' ;;
+    rand)
+        # Generate random RGB values between 0-5
+        local r=$((RANDOM % 6))
+        local g=$((RANDOM % 6))
+        local b=$((RANDOM % 6))
+        color_value="rgb$r$g$b"
+        ;;
     esac
 
     case "$color_value" in
-        black)    tput setaf 0 ;;
-        red)      tput setaf 1 ;;
-        green)    tput setaf 2 ;;
-        yellow)   tput setaf 3 ;;
-        blue)     tput setaf 4 ;;
-        magenta)  tput setaf 5 ;;
-        cyan)     tput setaf 6 ;;
-        white)    tput setaf 7 ;;
-        rgb[0-5][0-5][0-5])
-            local r="${color_value:3:1}"
-            local g="${color_value:4:1}"
-            local b="${color_value:5:1}"
-            local code=$((16 + (36 * r) + (6 * g) + b))
-            tput setaf $code ;;
-        gray[0-9]|gray1[0-9]|gray2[0-3])
-            local gray_value="${color_value:4}"
-            local code=$((232 + gray_value))
-            tput setaf $code ;;
-        *)
-            echo "Unknown color: $color_value" >&2; return 1 ;;
+    black) tput setaf 0 ;;
+    red) tput setaf 1 ;;
+    green) tput setaf 2 ;;
+    yellow) tput setaf 3 ;;
+    blue) tput setaf 4 ;;
+    magenta) tput setaf 5 ;;
+    cyan) tput setaf 6 ;;
+    white) tput setaf 7 ;;
+    rgb[0-5][0-5][0-5])
+        local r="${color_value:3:1}"
+        local g="${color_value:4:1}"
+        local b="${color_value:5:1}"
+        local code=$((16 + (36 * r) + (6 * g) + b))
+        tput setaf $code
+        ;;
+    gray[0-9] | gray1[0-9] | gray2[0-3])
+        local gray_value="${color_value:4}"
+        local code=$((232 + gray_value))
+        tput setaf $code
+        ;;
+    *)
+        echo "Unknown color: $color_value" >&2
+        return 1
+        ;;
     esac
 }
 
 # ctxt: color text
-ctxt(){
+ctxt() {
     python $BASHER/src/py_scripts/ctxt.py $@
 }
 
@@ -95,7 +99,7 @@ cecho_legacy() {
 
     # Check for --color= option
     if [[ "$1" =~ ^--color= ]]; then
-        color_value="${1#*=}"  # Extract the value after the '=' sign
+        color_value="${1#*=}" # Extract the value after the '=' sign
         shift
     else
         color_value="red"
@@ -104,26 +108,30 @@ cecho_legacy() {
     local text="$@"
 
     case "$color_value" in
-        black)    tput setaf 0 ;;
-        red)      tput setaf 1 ;;
-        green)    tput setaf 2 ;;
-        yellow)   tput setaf 3 ;;
-        blue)     tput setaf 4 ;;
-        magenta)  tput setaf 5 ;;
-        cyan)     tput setaf 6 ;;
-        white)    tput setaf 7 ;;
-        rgb[0-5]_[0-5]_[0-5])
-            local r="${color_value:3:1}"
-            local g="${color_value:5:1}"
-            local b="${color_value:7:1}"
-            local code=$((16 + (36 * r) + (6 * g) + b))
-            tput setaf $code ;;
-        gray[0-9]|gray1[0-9]|gray2[0-3])
-            local gray_value="${color_value:4}"
-            local code=$((232 + gray_value))
-            tput setaf $code ;;
-        *)
-            echo "Unknown color: $color_value" >&2; return 1 ;;
+    black) tput setaf 0 ;;
+    red) tput setaf 1 ;;
+    green) tput setaf 2 ;;
+    yellow) tput setaf 3 ;;
+    blue) tput setaf 4 ;;
+    magenta) tput setaf 5 ;;
+    cyan) tput setaf 6 ;;
+    white) tput setaf 7 ;;
+    rgb[0-5]_[0-5]_[0-5])
+        local r="${color_value:3:1}"
+        local g="${color_value:5:1}"
+        local b="${color_value:7:1}"
+        local code=$((16 + (36 * r) + (6 * g) + b))
+        tput setaf $code
+        ;;
+    gray[0-9] | gray1[0-9] | gray2[0-3])
+        local gray_value="${color_value:4}"
+        local code=$((232 + gray_value))
+        tput setaf $code
+        ;;
+    *)
+        echo "Unknown color: $color_value" >&2
+        return 1
+        ;;
     esac
 
     if [ $no_newline -eq 1 ]; then
@@ -132,11 +140,11 @@ cecho_legacy() {
         echo "$text"
     fi
 
-    tput sgr0  # Reset text attributes to normal without clearing screen.
+    tput sgr0 # Reset text attributes to normal without clearing screen.
 }
 
 # see_fonts: see fonts
-see_fonts(){
+see_fonts() {
     fc-list | cut -f2 -d':' | sort -u
 }
 
@@ -174,17 +182,17 @@ revert_env_var() {
 }
 
 # start_ssh: start ssh agent
-start_ssh(){
+start_ssh() {
     eval "$(ssh-agent -s)"
 }
 
 # ssh_add_all: add all ssh keys
-ssh_add_all(){
+ssh_add_all() {
     ssh-add $(find ~/.ssh -type f -name 'id_*' ! -name '*.pub')
 }
 
 # matlab: start matlab
-matlab(){
+matlab() {
     LAST_DIR=$(pwd)
     cd ~/MATLAB/Source
     ~/MATLAB/R2023a/bin/matlab &
@@ -195,7 +203,7 @@ matlab(){
 pfs() {
     local dir=$1
     local pattern=$2
-    local regex=$3  # get the function's third argument
+    local regex=$3 # get the function's third argument
     find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
         echo "$file"
         echo "$(printf '%.0s*' {1..80})"
@@ -220,19 +228,19 @@ grb() {
 }
 
 # kkp: kill process by port
-kkp(){
+kkp() {
     TMP=$(lsof -i :$1 | awk '{print $2}' | sed -n '2p')
     echo "kill $TMP"
     kill $TMP
 }
 
 # vit: vim with terminal
-vit(){
+vit() {
     vim -c "vertical terminal" $1
 }
 
 # rclr: random color
-rclr(){
+rclr() {
     red_channel=$((RANDOM % 6))
     green_channel=$((RANDOM % 6))
     blue_channel=$((RANDOM % 6))
@@ -256,7 +264,7 @@ gpu_mem() {
 }
 
 # mgpu: monitor gpu
-mgpu(){
+mgpu() {
     iterations=${3:-1000}
     sleep_time=${4:-3}
     c1=${1:-$(rclr)}
@@ -264,7 +272,7 @@ mgpu(){
     ctxt "Color 1: $c1" -l -c $c1 -e
     echo -n "    "
     ctxt "Color 2: $c2" -l -c $c2
-    for ((i=0; i<iterations; i++)); do
+    for ((i = 0; i < iterations; i++)); do
         if ((i % 2 == 0)); then
             gpu_mem "$c1" $((i * sleep_time))
         else
@@ -275,7 +283,7 @@ mgpu(){
 }
 
 # jail_list: list all banned IPs
-jail_list(){
+jail_list() {
     JAIL=${1:-"sshd"}
     JAIL_LIST=$(sudo fail2ban-client status $JAIL | grep "Banned")
     JAIL_LIST=$(echo $JAIL_LIST | awk '{for (i=5; i<=NF; i++) printf $i " "; print ""}')
@@ -283,40 +291,39 @@ jail_list(){
 }
 
 # ban_ip: ban an IP
-ban_ip(){
+ban_ip() {
     IP=$1
     JAIL=${2:-"sshd"}
     sudo fail2ban-client set $JAIL banip $IP
 }
 
 # unban_ip: unban an IP
-unban_ip(){
+unban_ip() {
     IP=$1
     JAIL=${2:-"sshd"}
     sudo fail2ban-client set $JAIL unbanip $IP
 }
 
 # unban_ip_regex: unban all IPs matching a regex
-unban_ip_regex(){
+unban_ip_regex() {
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     local JAIL=${2:-"sshd"}
     local JAIL_LIST=$(jail_list $JAIL)
     JAIL_LIST=$(echo $JAIL_LIST | tr ' ' '\n' | grep $REGEX)
     for IP in $JAIL_LIST; do
         echo "Unbanning $IP"
-        unban_ip $IP $JAIL 2> /dev/null > /dev/null
+        unban_ip $IP $JAIL 2>/dev/null >/dev/null
     done
 }
 
 # unban_first: unban the first IP
-unban_first(){
+unban_first() {
     JAIL=${1:-"sshd"}
     unban_ip $(sudo fail2ban-client status $JAIL | grep "Banned" | awk '{print $5}')
 }
 
-
 # cdmr: change directory to most recent
-cdmr(){
+cdmr() {
     DIR=${1:-$CDMR_DEFAULT}
     cd $DIR/$(ls $DIR -tr | tail -n 1)
 }
@@ -371,7 +378,7 @@ bpush() {
 }
 
 # bpull: basher pull
-bpull(){
+bpull() {
     PREV=$(pwd)
     cd $BASHER
     git pull
@@ -379,7 +386,7 @@ bpull(){
 }
 
 # dwre: deepwave reinstall and test
-dwre(){
+dwre() {
     RETEST=${1:-0}
     REDOWNLOAD_DATA=${2:-0}
     CURR_PATH=$(pwd)
@@ -389,7 +396,7 @@ dwre(){
 }
 
 # tyc: remove files from path matching regex
-tyc(){
+tyc() {
     CURR_PATH=${2:-.}
     REGEX=${1:-"AnExpressionThatWillNeverMatchAnythingHOORAH.NOPE"}
 
@@ -404,32 +411,32 @@ tyc(){
 }
 
 # sfunc: source bash functions
-sfunc(){
+sfunc() {
     source ~/.bash_functions
 }
 
 # salias: source bash aliases
-salias(){
+salias() {
     source ~/.bash_aliases
 }
 
 # svars: source bash environment variables
-svars(){
+svars() {
     source ~/.bash_env_vars
 }
 
 # senv: source bash environment
-senv(){
+senv() {
     source ~/.bash_env
 }
 
 # shelp: source bash helpers
-shelp(){
+shelp() {
     source ~/.bash_source_helpers
 }
 
 # codeo: open files in vscode
-codeo(){
+codeo() {
     PATTERN=${1:-"*.jpg"}
     CURR_PATH=${2:-.}
     LIMIT=${3:-3}
@@ -450,40 +457,40 @@ codeo(){
 }
 
 # gsg: see unstaged git files
-gsg(){
+gsg() {
     KEEP=${1:-modified}
     OMIT=${2:-.gitkeep}
     git status -uno | grep -E "$KEEP" | grep -vE "$OMIT" | awk '{print $2}'
 }
 
 # gag: add git files matching gsg convention
-gag(){
+gag() {
     ga $(gsg $1 $2)
 }
 
 # ge: "git everything" - gau; gc; gp
-ge(){
+ge() {
     gau
     gc
     gp
 }
 
 # gem: "git everything message" - gau; gcm $1; gp
-gem(){
+gem() {
     gau
     gcm $1
     gp
 }
 
 # geg: "git everything gsg" - gau; gag $1 $2; gc; gp
-geg(){
+geg() {
     gag $1 $2
     gc
     gp
 }
 
 # ufw_bak: backup ufw rules
-ufw_bak(){
+ufw_bak() {
     mkdir -p ~/.backups/ufw
     if [ -f /etc/ufw/user.rules ]; then
         sudo cp /etc/ufw/user.rules ~/.backups/ufw/user.rules
@@ -498,7 +505,7 @@ ufw_bak(){
 }
 
 # ufw_bak2: backup ufw rules
-ufw_bak2(){
+ufw_bak2() {
     if [ -f ~/.backups/ufw/user.rules ]; then
         sudo cp ~/.backups/ufw/user.rules ~/.backups/ufw/user.rules.bak
         if [ $? -eq 0 ]; then
@@ -512,7 +519,7 @@ ufw_bak2(){
 }
 
 # ufw_restore: restore ufw rules
-ufw_restore(){
+ufw_restore() {
     ufw_bak2
     if [ -f ~/.backups/ufw/user.rules ]; then
         sudo cp ~/.backups/ufw/user.rules /etc/ufw/user.rules
@@ -528,15 +535,24 @@ ufw_restore(){
 }
 
 # ufw_swap_bak: swap ufw rules with backup
-ufw_swap_bak(){
+ufw_swap_bak() {
     # Create a temporary backup of the current 'user.rules'
-    sudo cp ~/.backups/ufw/user.rules ~/.backups/tmp.rules || { echo "Failed to create temp backup"; return 1; }
+    sudo cp ~/.backups/ufw/user.rules ~/.backups/tmp.rules || {
+        echo "Failed to create temp backup"
+        return 1
+    }
 
     # Swap 'user.rules' and 'user.rules.bak'
-    sudo mv ~/.backups/ufw/user.rules.bak ~/.backups/ufw/user.rules || { echo "Failed to swap backups"; return 1; }
+    sudo mv ~/.backups/ufw/user.rules.bak ~/.backups/ufw/user.rules || {
+        echo "Failed to swap backups"
+        return 1
+    }
 
     # Replace the backup with the temporary file
-    sudo mv ~/.backups/tmp.rules ~/.backups/ufw/user.rules.bak || { echo "Failed to finalize swap"; return 1; }
+    sudo mv ~/.backups/tmp.rules ~/.backups/ufw/user.rules.bak || {
+        echo "Failed to finalize swap"
+        return 1
+    }
 }
 
 # ufw_fsd_legacy: find and delete ufw rules containing SCALPEL_DENY
@@ -558,7 +574,7 @@ ufw_fsd_legacy() {
 }
 
 # ufw_fsd: find and delete ufw rules containing SCALPEL_DENY
-ufw_fsd(){
+ufw_fsd() {
     local REGEX=${1:-"[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"}
     local rule_info=$(sudo ufw status numbered | grep "SCALPEL_DENY")
     rule_info=$(echo "$rule_info" | grep "$REGEX")
@@ -606,20 +622,20 @@ ufw_all_scalpel_unban() {
 
 # unr_alias: unravel an alias
 unr_alias() {
-    alias $1 2> /dev/null | sed -E "s/alias $1='(.*)'/\1/;s/\$[0-9]\{1,\}//g" | envsubst
+    alias $1 2>/dev/null | sed -E "s/alias $1='(.*)'/\1/;s/\$[0-9]\{1,\}//g" | envsubst
 }
 
 # atrm_all: remove all at jobs
 atrm_all() {
     num_calls=$(atq | wc -l)
 
-    for ((i=1; i<=num_calls; i++)); do
+    for ((i = 1; i <= num_calls; i++)); do
         atrm $(atq | awk '{print $1}' | head -n 1)
     done
 }
 
 # jbr: "jupyter bind remote"
-jbr(){
+jbr() {
     REMOTE_DOMAIN=$1
     HOST_PORT=${2:-8889}
     REMOTE_PORT=${3:-8888}
@@ -627,7 +643,7 @@ jbr(){
 }
 
 # jmr: "jupyter make remote"
-jmr(){
+jmr() {
     PORT=${1:-8888}
     MODE=${2:-"lab"}
     jupyter $MODE --no-browser --port=$PORT
@@ -639,7 +655,7 @@ gcp() {
 }
 
 # exp: "expand environment variables"
-exp(){
+exp() {
     eval echo $1
 }
 
@@ -649,13 +665,13 @@ cde() {
 }
 
 # ups: "update setup"
-ups(){
+ups() {
     local TMP_BASHER=$(exp $BASHER)
     python $TMP_BASHER/src/py_scripts/ups.py
 }
 
 # gmu: "git merge up"
-gmu(){
+gmu() {
     TARGET=${1:-"main"}
     CURR=$(git rev-parse --abbrev-ref HEAD)
     git pull
@@ -667,7 +683,7 @@ gmu(){
 }
 
 # gmd: "git merge down"
-gmd(){
+gmd() {
     SRC=${1:-"main"}
     CURR=$(git rev-parse --abbrev-ref HEAD)
     git pull
@@ -678,32 +694,34 @@ gmd(){
 }
 
 # no_suspend: prevent suspend
-no_suspend(){
+no_suspend() {
     gnome-session-inhibit --inhibit-only --inhibit "idle:suspend" &
 }
 
 # cver: "check version"
-cver(){
+cver() {
     cat setup.py | grep "version"
 }
 
 # cemu: "CI git-everything merge up"
-cemu(){
-    ups; gem $1; gmu
+cemu() {
+    ups
+    gem $1
+    gmu
 }
 
 # rpython "rich python" -- deprecated
-rpython(){
+rpython() {
     python $BASHER/src/py_scripts/rich_python.py $@
 }
 
 # cols: columnize output
-cols(){
+cols() {
     python $BASHER/src/py_scripts/cols.py $@
 }
 
 # user_funcs_cols: see user functions
-user_funcs_cols(){
+user_funcs_cols() {
     COLS=${1:-5}
     BASH_FUNCS=$(cat "$HOME/.bash_functions")
     PLATFORM_FUNCS=$(cat "$HOME/.platform/functions")
@@ -716,43 +734,46 @@ user_funcs_cols(){
 }
 
 # user_funcs: see user functions
-user_funcs(){
+user_funcs() {
     cat "$HOME/.bash_functions" "$HOME/.platform/functions" | grep "^# " | sed 's/# //' | sort
 }
 
 # undoc_funcs: see undocumented functions
-undoc_funcs(){
-    user_funcs | awk '{print $1}' | sed 's/://' > /tmp/user_funcs.txt
-    user_funcs_cols 1 > /tmp/user_funcs_cols.txt
+undoc_funcs() {
+    user_funcs | awk '{print $1}' | sed 's/://' >/tmp/user_funcs.txt
+    user_funcs_cols 1 >/tmp/user_funcs_cols.txt
     code --diff /tmp/user_funcs.txt /tmp/user_funcs_cols.txt
 }
 
 # ufd: "user functions docs"
-ufd(){
+ufd() {
     grep_regex='^# \(.*\): \(.*\)'
     sed_regex='s/^# \(.*\)/\1/'
     awk_cmd='{printf "%-30s %s\n", $1, $2}'
     echo 'USER FUNCTIONS'
     grep $grep_regex "$HOME/.bash_functions" | sort | uniq | sed $sed_regex | awk -F':' "$awk_cmd"
-    echo; echo; echo; echo 'PLATFORM FUNCTIONS'
+    echo
+    echo
+    echo
+    echo 'PLATFORM FUNCTIONS'
     grep $grep_regex "$HOME/.platform/functions" | sort | uniq | sed $sed_regex | awk -F':' "$awk_cmd"
 }
 
 # all_git: run a git command in all git repos
-all_git(){
+all_git() {
     CMD=$1
     ROOT=${2:-$REPO}
     directories=$(find "$ROOT" -type d -name ".git" -exec dirname {} \;)
 
     # Iterate over each directory
     for dir in $directories; do
-        cd "$dir" || continue  # Change to the directory, or skip to the next iteration if cd fails
-        eval "$CMD"  # Pull the latest changes
+        cd "$dir" || continue # Change to the directory, or skip to the next iteration if cd fails
+        eval "$CMD"           # Pull the latest changes
     done
 }
 
 # agfetch: fetch all git repos
-agfetch(){
+agfetch() {
     all_git '
         git fetch origin;
         res=$(git log HEAD..origin/HEAD --oneline);
@@ -765,17 +786,17 @@ agfetch(){
 }
 
 # agpull: pull all git repos
-agpull(){
+agpull() {
     all_git 'git pull' $1
 }
 
 # agsee: see all git repos
-agsee(){
+agsee() {
     all_git 'echo "$dir"' $1
 }
 
 # agmo: merge all git repos
-agmo(){
+agmo() {
     all_git 'git merge origin' $1
 }
 
@@ -818,7 +839,7 @@ create_worktrees() {
 }
 
 # abgrep: grep all branches
-abgrep(){
+abgrep() {
     REGEX=$1
     branches=$(git branch -r | sed 's/origin\///g' | sed '/HEAD/d' | tr -d ' ')
 
@@ -833,20 +854,20 @@ abgrep(){
 }
 
 # wgrep: grep worktrees
-wgrep(){
+wgrep() {
     python $BASHER/src/py_scripts/wgrep.py $@
 }
 
 # wch: change to worktree
-wch(){
+wch() {
     cd $(git rev-parse --show-toplevel)/worktrees/$1
 }
 
 # pipp: print python package path
-pipp(){
+pipp() {
     PKG=${1:-"site"}
     GO=${2:-0}
-    CURR=$(python -c "import $PKG; import os; print(os.path.dirname($PKG.__file__))" 2> /dev/null)
+    CURR=$(python -c "import $PKG; import os; print(os.path.dirname($PKG.__file__))" 2>/dev/null)
 
     if [ "$GO" -eq 1 ]; then
         cd $CURR
@@ -856,7 +877,7 @@ pipp(){
 }
 
 # pips: print python site-packages path
-pips(){
+pips() {
     LCL_PATH="$(pipp site 0)/site-packages"
     if [ -z $1 ]; then
         cd $LCL_PATH
@@ -866,73 +887,73 @@ pips(){
 }
 
 # edit_file: edit file
-efile(){
+efile() {
     local cmd=$(echo $GIT_EDITOR | awk '{print $1}')
     $cmd $1
 }
 
 # efunc: edit bash functions
-efunc(){
+efunc() {
     efile $HOME/.bash_functions
 }
 
 # ealias: edit bash aliases
-ealias(){
+ealias() {
     efile $HOME/.bash_aliases
 }
 
 # evars: edit bash environment variables
-evars(){
+evars() {
     efile $HOME/.bash_env_vars
 }
 
 # eenv: edit bash environment
-eenv(){
+eenv() {
     efile $HOME/.bash_env
 }
 
 # gr: git reset
-gr(){
+gr() {
     git reset $@
 }
 
 # rcb: reset current branch
-rcb(){
+rcb() {
     git reset $1 origin/$(git rev-parse --abbrev-ref HEAD)
 }
 
 # cdi: change directory to isl
-cdi(){
+cdi() {
     cd $ISL/$1
 }
 
 # cdd: change directory to deepwave_debug
-cdd(){
+cdd() {
     cd $DEEPWAVE_DEBUG/$1
 }
 
 # cdb: change directory to basher
-cdb(){
+cdb() {
     cd $BASHER/$1
 }
 
 #cdc: change directory to conda prefix
-cdc(){
+cdc() {
     cd $CONDA_PREFIX/$1
 }
 
 # cdr: change directory to repo
-cdr(){
+cdr() {
     cd $REPO/$1
 }
 
 # eplat: edit platform
-eplat(){
+eplat() {
     efile $BASHER/src/platform/$1
 }
 
 # mhr: masthay helpers reinstall -- deprecated -- use pip install -e .
-mhr(){
+mhr() {
     PREV=$(pwd)
     cdr masthay_helpers
     source reinstall.sh
@@ -940,18 +961,18 @@ mhr(){
 }
 
 # check_devices: check devices
-check_devices(){
+check_devices() {
     python -c "from misfit_toys.utils import check_devices; check_devices('$1')"
 }
 
 # cst: "check status" -- repeatedly print contents of file with sleeps
-cst(){
+cst() {
     sleep_time=${1:-3}
     iterations=${2:-1000}
     FILE=${3:-"/tmp/debug.out"}
     c1=${4:-magenta}
     c2=${5:-green}
-    for ((i=0; i<iterations; i++)); do
+    for ((i = 0; i < iterations; i++)); do
         if ((i % 2 == 0)); then
             cecho --color=$c1 "$(cat $FILE)"
         else
@@ -967,26 +988,25 @@ phelp() {
 }
 
 # gce: "git commit empty"
-gce(){
+gce() {
     git commit --allow-empty $@
 }
 
 # rcache: remove __pycache__ recursively
-rcache(){
-    find . -type d -name "__pycache__" -print -exec rm -rf {} \; 2> /dev/null
+rcache() {
+    find . -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
 }
 
 # pcr: "pre-commit run"
-pcr(){
+pcr() {
     pre-commit clean
     pre-commit install
 }
 
 # gds: "git difftool staged"
-gds(){
+gds() {
     git difftool --staged @{u}
 }
-
 
 # update_pre_commit: update pre-commit hooks
 update_pre_commit() {
@@ -1016,35 +1036,35 @@ update_pre_commit() {
         cp -r "${HOOK_EM}/.gitlint_rules" "${repo_dir}/.gitlint_rules"
 
         # Change directory to the repository
-        pushd "${repo_dir}" > /dev/null || return
+        pushd "${repo_dir}" >/dev/null || return
 
         # Remove commit-msg
-        rm .git/hooks/commit-msg 2> /dev/null 2>&1
+        rm .git/hooks/commit-msg 2>/dev/null 2>&1
         gitlint install-hook
 
         # Clean the pre-commit environment
-        pre-commit clean > /dev/null 2>&1
+        pre-commit clean >/dev/null 2>&1
 
         # Install the pre-commit hook
-        pre-commit install > /dev/null 2>&1
+        pre-commit install >/dev/null 2>&1
 
         # Return to the original directory
-        popd > /dev/null || return
+        popd >/dev/null || return
     done
 }
 
 # lsh: "list hidden" -- list ONLY hidden files
-lsh(){
+lsh() {
     ls -ld .?* | awk '{print $9}' | grep -v '[.][.]'
 }
 
 # gca: "git commit amend"
-gca(){
+gca() {
     git commit --amend
 }
 
 # grt: "git root"
-grt(){
+grt() {
     git rev-parse --show-toplevel
 }
 
@@ -1065,7 +1085,7 @@ sfi() {
     fi
 
     # Sort the file and overwrite it
-    sort "$file_path" > "$file_path.sorted"
+    sort "$file_path" >"$file_path.sorted"
     mv "$file_path.sorted" "$file_path"
 }
 
@@ -1076,12 +1096,12 @@ cimp() {
     RES=$(find $(grt) -name "*.py" -exec grep -E "^(import|from)" {} \; | awk '{print $2}' | sed 's/\([^\.]*\)\..*/\1/' | sort | uniq)
     PIP_LIST=$(pip list)
 
-    > "$temp_file" # Empty the file before starting
+    >"$temp_file" # Empty the file before starting
 
     for res in $RES; do
         MATCH=$(echo "$PIP_LIST" | grep -w "$res" | awk '{printf "%s>=%s\n", $1, $2}')
         if [[ ! -z "$MATCH" ]]; then
-            echo "$MATCH" >> "$temp_file"
+            echo "$MATCH" >>"$temp_file"
         fi
     done
 
@@ -1092,17 +1112,17 @@ cimp() {
 }
 
 # stats: compute stats on a file (csv file?)
-stats(){
+stats() {
     python $BASHER/src/py_scripts/stats.py $@
 }
 
 # ccsv: "color csv"
-ccsv(){
+ccsv() {
     python $BASHER/src/py_scripts/ccsv.py $@
 }
 
 # trich: toggle RICH_LOG
-trich(){
+trich() {
     if [ -z $RICH_LOG ]; then
         export RICH_LOG='none'
     else
@@ -1112,33 +1132,33 @@ trich(){
 }
 
 # sansi: strip all ansi codes
-sansi(){
+sansi() {
     sed $@ 's/\x1b\[[0-9;]*[mGKFH]//g'
 }
 
 # ransi: replace all ansi codes with a marker
-ransi(){
+ransi() {
     local replace=${1:-"ANSI_MARKER"}
     sed "s/\x1b\[[0-9;]*[mGKFH]/$replace/g"
 }
 
 # salpha: strip non-alpha numeric symbols
-salpha(){
+salpha() {
     sed "$@" 's/[^0-9a-zA-Z .+-]//g'
 }
 
 # pip_ver: pip version
-pip_ver(){
-    pip show $1 2> /dev/null | grep "Version"
+pip_ver() {
+    pip show $1 2>/dev/null | grep "Version"
 }
 
 # my_black: black 80 chars, no string norm, preview, skip magic trailing comma
-my_black(){
+my_black() {
     black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
 }
 
 # esite: edit site customize file
-esite(){
+esite() {
     local prev=$(pwd)
     pips
     code sitecustomize.py
@@ -1146,7 +1166,7 @@ esite(){
 }
 
 # gsrt: "git super root" -- go to the root of the repo, disregarding submodules
-gsrt(){
+gsrt() {
     local super=$(git rev-parse --show-superproject-working-tree)
     if [ -z $super ]; then
         echo "$(git rev-parse --show-toplevel)"
@@ -1156,12 +1176,12 @@ gsrt(){
 }
 
 # gsmu: git submodule update --recursive --remote
-gsmu(){
+gsmu() {
     git submodule update --recursive --remote
 }
 
 # gsync: sync GitHookEm settings
-gsync(){
+gsync() {
     local prev=$(pwd)
     cd $(gsrt)
     cd GitHookEm
@@ -1170,22 +1190,22 @@ gsync(){
 }
 
 # cdh: cd $HOME/$1
-cdh(){
+cdh() {
     cd $HOME/$1
 }
 
 # ufw_monitor: run ufw_monitor.py
-ufw_monitor(){
+ufw_monitor() {
     sudo $(which python3) $BASHER/src/py_scripts/ufw_monitor.py --basher $BASHER $@
 }
 
 # glcf: "git log full"
-glcf(){
+glcf() {
     git log --graph --decorate --all --format="%C(auto)%h (%ar) %s%d%n%b"
 }
 
 # tst: Run pytest in tests directory
-tst(){
+tst() {
     # local show_code=${1:-0}
     # local prev=$(pwd)
     # cdi
@@ -1197,9 +1217,9 @@ tst(){
 }
 
 # gslf: "git show log full"
-gslf(){
+gslf() {
     local file=$1
-    git log --color --pretty=format:"%h - %s" -p -- $file > /tmp/git_log_full.ans
+    git log --color --pretty=format:"%h - %s" -p -- $file >/tmp/git_log_full.ans
     code /tmp/git_log_full.ans
 }
 
@@ -1207,7 +1227,7 @@ gslf(){
 mytest() {
     local file=${1:-"tests"}
     local show_code=${2:-0}
-    pytest $file --color=yes > /tmp/pytest.ans &
+    pytest $file --color=yes >/tmp/pytest.ans &
     pytest_pid=$!
     if [[ $show_code -eq 1 ]]; then
         code /tmp/pytest.ans
@@ -1231,7 +1251,7 @@ mytest() {
         fi
 
         # Check if pytest is still running
-        if ! kill -0 $pytest_pid 2> /dev/null; then
+        if ! kill -0 $pytest_pid 2>/dev/null; then
             ((dead_count++))
             if [[ $dead_count -ge 3 ]]; then
                 # echo "pytest process has finished. Exiting..."
@@ -1249,33 +1269,33 @@ mytest() {
 }
 
 # sclr: "string color" -- ctxt -l "$1" -c $1
-sclr(){
+sclr() {
     ctxt -l "$1" -c $1
 }
 
 # code_blender: open blender in vscode
-code_blender(){
+code_blender() {
     sudo /usr/bin/blender --python /home/tyler/.vscode/extensions/jacqueslucke.blender-development-0.0.18/pythonFiles/launch.py
 }
 
 # link_addons: link blender addons
-link_addons(){
+link_addons() {
     ln -s $ADDON_PATH/$ADDON_HELPERS_NAME.py $(pwd)/$ADDON_HELPERS_NAME.py
 }
 
 # cdo: "change directory old"
-cdo(){
+cdo() {
     cd $OLDPWD
 }
 
 # gci: "git clean interactive"
-gci(){
+gci() {
     git clean -i
 }
 
 # cmts: "count comments" -- count the number of comments in a file
-cmts(){
-    local file=$1;
+cmts() {
+    local file=$1
     local num_cmts=${2:-5}
     if [[ $(cat $file | sed 's/.*#.*/#/' | sed 's/^\([#]*\).*/\1/' | tr '\n' '@' | sed 's/#@/#/g' | tr '@' ' ' | grep $(perl -E "say '#' x $num_cmts") | wc -l) -eq 1 ]]; then
         echo "$file"
@@ -1283,7 +1303,7 @@ cmts(){
 }
 
 # cmta: "count comments all" -- count the number of comments in all files
-cmta(){
+cmta() {
     local dir=${1:-.}
     local num_cmts=${2:-5}
     find $dir -type f -name "*.py" | while read file; do
@@ -1292,7 +1312,7 @@ cmta(){
 }
 
 # see_torch: see torch directory
-see_torch(){
+see_torch() {
     local make_figs=${1:-"False"}
     local cmd="from masthay_helpers.global_helpers import torch_dir_see"
     cmd="$cmd; torch_dir_see(make_figs=$make_figs)"
@@ -1300,19 +1320,19 @@ see_torch(){
 }
 
 # rhome: replace home with ~
-rhome(){
+rhome() {
     echo "$1" | sed "s|$HOME|~|g"
 }
 
 # gbt: "git branch type"
-gbt(){
+gbt() {
     local category=${1:-"deleted: "}
     local res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     echo $res
 }
 
 # rgrm: "retroactive git remove"
-rgrm(){
+rgrm() {
     local res=$(gbt $1)
     while $res; do
         if [[ -z "$res" ]]; then
@@ -1325,7 +1345,7 @@ rgrm(){
 
 # update_content: update content based on build and target directories
 #    Typical use case is for latex resume/cover letter build pdf version control
-update_content(){
+update_content() {
     local build_dir=$1
     local target_dir=$2
     local build_file=${3:-"main.pdf"}
@@ -1337,11 +1357,13 @@ update_content(){
         echo "Build directory does not exist: $build_dir"
         return 1
     elif
-    [[ ! -d "$target_dir" ]]; then
+        [[ ! -d "$target_dir" ]]
+    then
         echo "Target directory does not exist: $target_dir"
         return 1
     elif
-    [[ ! -f "$build_dir/$build_file" ]]; then
+        [[ ! -f "$build_dir/$build_file" ]]
+    then
         echo "Build file does not exist: $build_dir/$build_file"
         return 1
     fi
@@ -1370,28 +1392,28 @@ update_content(){
 }
 
 # update_resume: update_content for resume
-update_resume(){
+update_resume() {
     update_content "$REPO/CV" "$JOBS" "main.pdf" "TylerMasthay_Resume" $1
 }
 
 # update_cover_letter: update_content for cover letter
-update_cover_letter(){
+update_cover_letter() {
     update_content "$REPO/CoverLetterHistory" "$JOBS" "main.pdf" "TylerMasthay_CoverLetter" $1
 }
 
 # cdj: "change directory job"
-cdj(){
+cdj() {
     cd $JOBS/$1
 }
 
 # update_job: update_content for job posting
-update_job(){
+update_job() {
     update_resume "$1"
     update_cover_letter "$1"
 }
 
 # gss: git show --stat "HEAD~$1"
-gss(){
+gss() {
     local commit=${1:-0}
     if [ $commit -eq 0 ]; then
         git show --stat
@@ -1402,13 +1424,13 @@ gss(){
 }
 
 # ghwv: "github workflow view"
-ghwv(){
+ghwv() {
     gh workflow view $@
 }
 
 # dsmu: download submodule update -- used for overleaf/github syncing
 #     This is necessary because overleaf does not support submodules.
-dsmu(){
+dsmu() {
     local prev=$(pwd)
     local repo_name=${1:-CustomCommands}
     echo $repo_name
@@ -1418,12 +1440,12 @@ dsmu(){
 }
 
 # pyig: "python ignore warnings"
-pyig(){
+pyig() {
     python -W ignore $@
 }
 
 # new_fang: create new fang interview question setup
-new_fang(){
+new_fang() {
     local name=$(pwd | awk -F'/' '{print $NF}')
     cp $REPO/IvoryTowerTests/config_template.yaml $(pwd)/config.yaml
     cp $REPO/IvoryTowerTests/template.py "$(pwd)/$name.py"
@@ -1431,7 +1453,7 @@ new_fang(){
 }
 
 # protect_file: protect a file from being modified
-protect_file(){
+protect_file() {
     local file=$1
     local permissions=${2:-"644"}
     sudo chattr -i $file
@@ -1442,19 +1464,19 @@ protect_file(){
 }
 
 # export_funcs: Export all functions
-export_funcs(){
+export_funcs() {
     declare -F | awk '{print $3}' | while read -r func; do
         export -f "$func"
     done
 }
 
 # declare_funcs_subshell: Declare all functions in a subshell
-declare_funcs_subshell(){
+declare_funcs_subshell() {
     declare -F | sed ':a;N;$!ba;s/\n/; /g'
 }
 
 # link_sitecustomize: Link sitecustomize.py to the current conda env
-link_sitecustomize(){
+link_sitecustomize() {
     local run_cmd=${1:-0}
     local cmd="ln -s $BASHER/src/py_scripts/sitecustomize.py $(pips 1)/sitecustomize.py"
     if [[ $run_cmd -eq 0 ]]; then
@@ -1465,7 +1487,7 @@ link_sitecustomize(){
 }
 
 # trichl: toggle RICH_LOCALS
-trichl(){
+trichl() {
     if [ -z $RICH_LOCALS ]; then
         export RICH_LOCALS='true'
     else
@@ -1475,12 +1497,12 @@ trichl(){
 }
 
 # cblender: "custom blender" -- this is the one I use since the system blender is outdated
-cblender(){
+cblender() {
     /home/tyler/Software/blender-4.0.2-linux-x64/blender
 }
 
 # dcmd: "desktop command" -- find and display desktop commands
-dcmd(){
+dcmd() {
     ctxt -l "GNOME RESULTS for $1" -c red
     find /usr/share/applications -type f -name "*$1*.desktop" -exec grep -Ho "Exec=.*" {} \; | awk -F'Exec=' '{print "    " $2}'
     echo ""
@@ -1489,14 +1511,32 @@ dcmd(){
 }
 
 # undo_conda: undo conda environment -- weird bug on home machine
-undo_conda(){
-    cdct; cdct; cact base; cact dw
+undo_conda() {
+    cdct
+    cdct
+    cact base
+    cact dw
 }
 
-echo "ignore this" > /dev/null
+pc() {
+    python $BASHER/src/py_scripts/$1.py "${@:2}"
+}
+
+cd() {
+    builtin cd "$@" && echo $(pwd) >>~/.cd_history
+    local history=$(cat ~/.cd_history | tail -n 100)
+    echo "$history" >~/.cd_history
+}
+
+cdh() {
+    local num_see=${1:-10}
+    cat ~/.cd_history | tail -n $num_see
+}
+
+pywest() {
+    pytest -p no:warnings --color=yes $@
+}
+
+echo "ignore this" >/dev/null
 
 source ~/.platform/functions
-
-
-
-
