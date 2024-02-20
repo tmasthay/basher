@@ -1537,6 +1537,10 @@ pywest() {
     pytest -p no:warnings --color=yes $@
 }
 
+cdmh(){
+    cdr masthay_helpers
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
