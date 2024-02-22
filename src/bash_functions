@@ -1537,22 +1537,28 @@ pywest() {
     pytest -p no:warnings --color=yes $@
 }
 
-cdmh(){
+cdmh() {
     cdr masthay_helpers
 }
 
-gcnv(){
+gcnv() {
     git commit --no-verify $@
 }
 
-genv(){
-    gau;
-    gcnv $@;
+genv() {
+    gau
+    gcnv $@
     gp
 }
 
-kgpy(){
+kgpy() {
     nvidia-smi | grep "python" | awk '{print $5}' | xargs kill -9
+}
+
+tpt() {
+    cd $BASHER/src/py_scripts
+    python tpt.py $@
+    cd $OLDPWD
 }
 
 echo "ignore this" >/dev/null

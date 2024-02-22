@@ -1,0 +1,9 @@
+t: hpy
+o: null
+
+alias:
+  simple_hydra.py: [shpy, sh]
+  hydra.py: [hpy, h, hyd]
+
+path: tpt_cfg/tpt_files
+oldpwd: true
