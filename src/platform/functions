@@ -152,10 +152,6 @@ down(){
     cd $PREV
 }
 
-cda(){
-    cdi misfit_toys/tccs/modules/alan
-}
-
 cmp(){
     BASE=$ISL/misfit_toys/tccs/modules
     TEST_FOLDER="out/parallel"

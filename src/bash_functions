@@ -1561,6 +1561,13 @@ tpt() {
     cd $OLDPWD
 }
 
+cda(){
+    local FURTHER=${1:-""}
+    cdi
+    cd misfit_toys/examples/hydra
+    cd $FURTHER
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
