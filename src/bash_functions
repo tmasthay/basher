@@ -1566,6 +1566,10 @@ cda(){
     cd $ISL/misfit_toys/examples/hydra/$FURTHER
 }
 
+fcode(){
+    /home/tyler/.local/share/flatpak/exports/bin/com.visualstudio.code $@
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
