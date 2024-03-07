@@ -1,13 +1,11 @@
-# gho: designated for current workflow "gho" == "go" 
-gho(){
-    PREV=$(pwd)
-    cdi misfit_toys/data
-    python -W ignore download_data.py openfwi
-    cd $PREV
+# gho: designated for current workflow "gho" == "go"
+gho() {
+    cdi tests/unit/fwi/loss_convergence
+    pytest -s .
 }
 
 # ghh: Another designated current workflow if need two
-ghh(){
+ghh() {
     gho
     cdi
     cd misfit_toys/examples/ddp
@@ -15,32 +13,32 @@ ghh(){
 }
 
 # clr: Designated data clearing function
-clr(){
+clr() {
     cdc
     rm -rf data
 }
 
 # ghoc: "gho clear"
-ghoc(){
+ghoc() {
     clr
     gho
 }
 
 # cddp: misfit_toys helper
-cddp(){
+cddp() {
     cdi
     cd misfit_toys/examples/ddp
 }
 
 # go: another current workflow helper
-go(){
+go() {
     cddp
     gho
     python driver.py
 }
 
 # kdata: kill data -- another cleaner if needed
-kdata(){
+kdata() {
     PREV=$(pwd)
     cdc
     rm -rf BENCHMARK
@@ -48,7 +46,7 @@ kdata(){
 }
 
 # mtd: misfit_toys download
-mtd(){
+mtd() {
     dwre
     # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples
     cd $(pips)
@@ -57,14 +55,14 @@ mtd(){
 }
 
 # lll: helper for rich text -- deprecated
-lll(){
+lll() {
     dwre
     rm /tmp/session.ans
     script -O /tmp/session.ans
 }
 
 # rexit: related to lll to leave the script env -- deprecated
-rexit () {
+rexit() {
     cact dw
     cd $(pips)
     cd site-packages/misfit_toys/examples
@@ -74,17 +72,17 @@ rexit () {
 }
 
 # gg: gdown helper
-gg(){
+gg() {
     echo "gdown $1" | sed 's/view?.*//' | sed 's/file\/d\//uc?id=/'
 }
 
 # cdn: cd to misfit_toys/examples/ddp
-cdn(){
+cdn() {
     cdi misfit_toys/examples/ddp/$1
 }
 
 # go: Overwrite of the above -- see what you want here?
-go(){
+go() {
     # mhr
     # gho
     if [ -z $1 ]; then
@@ -103,7 +101,7 @@ go(){
 }
 
 # cmp_tensor: compare tensors
-cmp_tensor(){
+cmp_tensor() {
     DIR1=${1:-"/home/tyler/protect"}
     DIR2=${2:-"conda/BENCHMARK/multiscale/data"}
     OUT_DIR=${3:-"$ISL/debug/dw_validate/"}
@@ -115,7 +113,7 @@ cmp_tensor(){
 }
 
 # genp: generate some data -- forgot what p stands for here
-genp(){
+genp() {
     PREV=$(pwd)
     cdn
     python dw_driver.py
@@ -123,7 +121,7 @@ genp(){
 }
 
 # geni: "generate island" -- generate the island of misfit toys version of data
-geni(){
+geni() {
     PREV=$(pwd)
     if [ ! -z $1 ]; then
         echo "Cleaning out BENCHMARK data"
@@ -137,7 +135,7 @@ geni(){
 }
 
 # cmarm: clean marmousi
-cmarm(){
+cmarm() {
     PREV=$(pwd)
     cdc
     rm -rf data/marmousi
@@ -145,47 +143,47 @@ cmarm(){
 }
 
 # down: download data
-down(){
+down() {
     PREV=$(pwd)
     cdi misfit_toys/examples
     python download_data.py
     cd $PREV
 }
 
-cmp(){
+cmp() {
     BASE=$ISL/misfit_toys/tccs/modules
     TEST_FOLDER="out/parallel"
     MAKE_FIGS=${1:-""}
     mkdir -p $BASE/local_compare/$TEST_FOLDER
     echo "MAKE_FIGS: $MAKE_FIGS"
-    cmp_tensor $BASE/alan/$TEST_FOLDER $BASE/val/$TEST_FOLDER $BASE/local_compare/$TEST_FOLDER 
+    cmp_tensor $BASE/alan/$TEST_FOLDER $BASE/val/$TEST_FOLDER $BASE/local_compare/$TEST_FOLDER
 }
 
 # smr: "summary" -- deprecated
-smr(){
+smr() {
     TMP='/tmp/tmp1.txt'
     FIELD=${1:-"mean"}
     RES=$(ls *.txt | grep -v '[0-9][0-9]*' | xargs grep "$FIELD" | sed 's/ = /=/g' | awk -F':' '{print $1, $2}')
-    cols -c 2 "$RES"> $TMP
+    cols -c 2 "$RES" >$TMP
     ctxt -t rbow $TMP
 }
 
 # smr_all: "summary all" -- deprecated
-smr_all(){
+smr_all() {
     BASE=$ISL/misfit_toys/tccs/modules
     cd $BASE/local_compare/out/parallel
 
     fields=('dtype' 'shape' 'mean' 'variance' 'median' 'min' 'max' 'stddev' 'RMS' 'L2')
-    echo "" > summary.txt
+    echo "" >summary.txt
     for e in "${fields[@]}"; do
-        echo >> summary.txt
-        smr $e >> summary.txt
+        echo >>summary.txt
+        smr $e >>summary.txt
     done
     cat summary.txt
 }
 
 # rcmp: run compare -- deprecated
-rcmp(){
+rcmp() {
     cdi misfit_toys/tccs/modules/val
     python fwi_parallel.py
     cmp $1
@@ -194,54 +192,54 @@ rcmp(){
 }
 
 # rrr: "run run run" -- deprecated
-rrr(){
+rrr() {
     cdi misfit_toys/tccs/modules/val
     python fwi_parallel.py
 }
 
 # runmeta: run meta -- deprecated
-runmeta(){
+runmeta() {
     NUM_RUNS=${1:-10}
     STORAGE_FILE=${2:-"runmeta.txt"}
-    echo "" > $STORAGE_FILE
+    echo "" >$STORAGE_FILE
     for i in {1..$NUM_RUNS}; do
         rcmp
         RES=$(
-            cat summary.txt | \
-            grep "v_record" | \ 
-            grep -E '(min|max)' | \
-            awk '{print $2}' | \
-            tr '\n' ', ' | \
-            sed 's/min=//' | \
-            sed 's/max=//' | \
-            sed 's/,$//'
+            cat summary.txt |
+                grep "v_record" | \ 
+            grep -E '(min|max)' |
+                awk '{print $2}' |
+                tr '\n' ', ' |
+                sed 's/min=//' |
+                sed 's/max=//' |
+                sed 's/,$//'
         )
-        echo $RES >> $STORAGE_FILE
+        echo $RES >>$STORAGE_FILE
     done
 }
 
 # mst: "misfit summary to csv" -- deprecated
-mst(){
+mst() {
     local INPUT=${1:-"summary.txt"}
     local OUTPUT=${2:-"summary.csv"}
-    echo "ignore ignore=0.0" > /tmp/ignore.txt
-    cat /tmp/ignore.txt $INPUT | \
-        grep -E '(ignore|v_record)' | \
-        awk '{print $2}' | \
-        grep -vE '(dtype|shape)' | \
-        sed 's/=/,/' | \
-        sed 's/\x1b\[[0-9;]*m//g' > $OUTPUT
+    echo "ignore ignore=0.0" >/tmp/ignore.txt
+    cat /tmp/ignore.txt $INPUT |
+        grep -E '(ignore|v_record)' |
+        awk '{print $2}' |
+        grep -vE '(dtype|shape)' |
+        sed 's/=/,/' |
+        sed 's/\x1b\[[0-9;]*m//g' >$OUTPUT
 }
 
 # cdv: "cd to val"
-cdv(){
+cdv() {
     BASE=$ISL/misfit_toys/tccs/modules
     OPTION=${1:-"local_compare"}
     cd $BASE/$OPTION/out/parallel
 }
 
 # vlt: "val loop test" -- deprecated
-vlt(){
+vlt() {
     local NUM_RUNS=${1-5}
     local ACCUM=${2:-"accum"}
     local INPUT=${3:-"summary"}
@@ -251,45 +249,45 @@ vlt(){
         echo "Run $i"
         rcmp
         mst "$INPUT.txt" "$INPUT.csv"
-        if [ "$i" -eq 1 ]; then  # Changed 'do' to 'then'
-            cat "$INPUT.csv" > "$ACCUM.csv"
-        else  # Added 'else' clause
+        if [ "$i" -eq 1 ]; then # Changed 'do' to 'then'
+            cat "$INPUT.csv" >"$ACCUM.csv"
+        else # Added 'else' clause
             mst "$INPUT.txt" "$INPUT.csv"
             ccsv $ACCUM.csv $INPUT.csv -o "$ACCUM.csv"
-        fi  # Added 'fi' to close the if statement
+        fi # Added 'fi' to close the if statement
     done
     stats $ACCUM.csv -t
     echo "Results stored in $ACCUM.(csv|txt) and $ACCUM_stats.(csv|txt)"
 }
 
 # mptab: "multiprocessing table" -- displays multiple rich tables side-by-side
-mptab(){
+mptab() {
     python $BASHER/src/py_scripts/mptab.py $@
 }
 
 # rtab2csv: convert rich table to csv -- deprecated?
-rtab2csv(){
+rtab2csv() {
     local file=$1
     cat $file | ransi | salpha | tac | awk '/ANSIMARKER/ {exit} {print}' | tac | grep -v '^$' | sed -E 's/ +/,/g; s/^,//; s/,$//'
 }
 
 # cdm: cdi misfit_toys/tccs/modules
-cdm(){
+cdm() {
     cdi misfit_toys/tccs/modules/$1
 }
 
 # crun: "check run" -- check latest run for misfit_toys repo
-crun(){
+crun() {
     cat $ISL/tests/benchmarks/out/validate.out
 }
 
 # gen_docs: regenerate docs for misfit_toys
-gen_docs(){
+gen_docs() {
     local prev=$(pwd)
     cdi docs
-    rm -rf source 
+    rm -rf source
     cdi
-    sphinx-apidoc -o docs/source -e -M misfit_toys 
+    sphinx-apidoc -o docs/source -e -M misfit_toys
     cd docs/source
     # python clean_nest.py
     cdi docs
@@ -297,4 +295,3 @@ gen_docs(){
     make html
     cd $prev
 }
-

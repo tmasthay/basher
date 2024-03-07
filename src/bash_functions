@@ -1561,13 +1561,17 @@ tpt() {
     cd $OLDPWD
 }
 
-cda(){
+cda() {
     local FURTHER=${1:-""}
     cd $ISL/misfit_toys/examples/hydra/$FURTHER
 }
 
-fcode(){
+fcode() {
     /home/tyler/.local/share/flatpak/exports/bin/com.visualstudio.code $@
+}
+
+lt() {
+    tree -I "__*" $@
 }
 
 echo "ignore this" >/dev/null
