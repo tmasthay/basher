@@ -1563,9 +1563,7 @@ tpt() {
 
 cda(){
     local FURTHER=${1:-""}
-    cdi
-    cd misfit_toys/examples/hydra
-    cd $FURTHER
+    cd $ISL/misfit_toys/examples/hydra/$FURTHER
 }
 
 echo "ignore this" >/dev/null
