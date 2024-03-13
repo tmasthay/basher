@@ -1574,6 +1574,10 @@ lt() {
     tree -I "__*" $@
 }
 
+ch() {
+    pyig $@ --help | pc chydra
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

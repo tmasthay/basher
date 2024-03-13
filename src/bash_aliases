@@ -47,4 +47,4 @@ alias sur='su root'
 #alias check_jail
 alias blist='mudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
 
-alias ch="python $BASHER/src/py_scripts/chydra.py"
+# alias ch="python $BASHER/src/py_scripts/chydra.py"
