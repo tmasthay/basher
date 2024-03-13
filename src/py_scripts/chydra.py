@@ -68,10 +68,6 @@ def main():
         random.shuffle(order)
     else:
         order = [int(i) for i in sys.argv[1].split(',')]
-    print(order)
-    import os
-
-    os.system('sleep 5')
     colors = []
     for i in order:
         colors.extend(groups[i])
