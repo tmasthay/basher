@@ -1578,6 +1578,10 @@ ch() {
     pyig $@ --help | pc chydra
 }
 
+rch() {
+    pyig $@ --help | pc chydra rand
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
