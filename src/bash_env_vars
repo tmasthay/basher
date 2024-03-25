@@ -15,6 +15,7 @@ export ADDON_PATH="$HOME/Documents/repos/Experiments/blender/addons"
 export ADDON_HELPERS_NAME="helpers"
 export BLENDER_DEV_PATH="$HOME/Documents/repos/Experiments/blender"
 export JOBS="$HOME/Documents/Logistics/Career/Jobs"
+export SANDBOX="$HOME/.sandbox"
 
 if command -v code > /dev/null; then
     export GIT_EDITOR="code --wait"
