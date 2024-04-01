@@ -1672,6 +1672,20 @@ lres() {
     cd $further
 }
 
+cdg(){
+    local git_root=$(git rev-parse --show-toplevel)
+    local path=${1:-""}
+
+    local workflows_alias="wkf"
+    local workflows_dir=".github/workflows"
+
+    if [[ $path == "$workflows_alias" ]]; then
+        path=$workflows_dir
+    fi
+
+    cd "$git_root/$path"
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

@@ -1,7 +1,11 @@
 # gho: designated for current workflow "gho" == "go"
 gho() {
-    cdi tests/unit/fwi/loss_convergence
-    pytest -s .
+    # cdi tests/unit/fwi/loss_convergence
+    # pytest -s .
+    cdi tests
+    pytest -s -m mysub
+    lres
+    code *.gif
 }
 
 # ghh: Another designated current workflow if need two
