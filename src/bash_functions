@@ -1561,32 +1561,130 @@ tpt() {
     cd $OLDPWD
 }
 
-cda(){
+cda() {
     local FURTHER=${1:-""}
-    cdi
-    cd misfit_toys/examples/hydra
-    cd $FURTHER
+    cd $ISL/misfit_toys/examples/hydra/$FURTHER
 }
 
-fcode(){
+fcode() {
     /home/tyler/.local/share/flatpak/exports/bin/com.visualstudio.code $@
 }
 
-# code(){
-#    fcode $@
-# }
-
-fp(){
-    ~/.local/share/flatpak/exports/bin/$1
+lt() {
+    tree -I "__*" $@
 }
 
-gif2pdf(){
-    ffmpeg -i $1.gif $1%04d.png
-    img2pdf $1*.png -o $1.pdf
-    rm *.png
+ch() {
+    pyig $@ --help | pc chydra
 }
 
-    
+rch() {
+    pyig $@ --help | pc chydra rand
+}
+
+my_flake() {
+    flake8 --extend-ignore=F401,F403,F405,E501,E203
+}
+
+chlist() {
+    cp $REPO/Experiments/organization/$1.yaml .
+    code $1.yaml
+}
+
+create_gifs() {
+    local delay=100     # Default delay (100 = 1 second)
+    local interactive=0 # Non-interactive by default
+    local remove_jpgs=0 # Do not remove JPGs by default
+
+    # Reset OPTIND to 1 in case the function is called multiple times in the same shell session
+    OPTIND=1
+
+    # Process options
+    while getopts "ir" opt; do
+        case ${opt} in
+        i) interactive=1 ;;
+        r) remove_jpgs=1 ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            echo "Usage: create_gifs [-i] [-r]" >&2
+            return 1
+            ;;
+        esac
+    done
+
+    shift $((OPTIND - 1)) # Shift off the options and optional --
+
+    # Ask for custom delay if in interactive mode
+    if [[ $interactive -eq 1 ]]; then
+        read -p "Enter delay between frames (in hundredths of a second, 100 = 1s): " input_delay
+        if [[ ! -z "$input_delay" && "$input_delay" =~ ^[0-9]+$ ]]; then
+            delay=$input_delay
+        else
+            echo "Invalid input. Using default delay."
+        fi
+    fi
+
+    # Extract unique prefixes from the filenames
+    prefixes=$(ls *.jpg 2>/dev/null | awk -F'_' '{print $1}' | uniq)
+
+    if [ -z "$prefixes" ]; then
+        echo "No JPG files found."
+        return 1
+    fi
+
+    for prefix in $prefixes; do
+        local proceed="y"
+        if [[ $interactive -eq 1 ]]; then
+            read -p "Create GIF for '$prefix' images? (y/n): " proceed
+        fi
+
+        if [[ "$proceed" == "y" ]]; then
+            # Create a GIF for each type of image, with the specified delay between frames
+            convert -delay $delay ${prefix}_*.jpg ${prefix}.gif
+            echo "GIF created: ${prefix}.gif"
+        fi
+    done
+
+    # Handle removal of JPGs if -r option is provided
+    if [[ $remove_jpgs -eq 1 ]]; then
+        if [[ $interactive -eq 1 ]]; then
+            read -p "Remove all JPG files? (y/n): " confirm_remove
+            if [[ "$confirm_remove" == "y" ]]; then
+                echo "Removing JPG files..."
+                rm -f *.jpg
+                echo "JPG files removed."
+            else
+                echo "JPG files retained."
+            fi
+        else
+            echo "Removing JPG files..."
+            rm -f *.jpg
+            echo "JPG files removed."
+        fi
+    fi
+}
+
+lres() {
+    local further=${1:-"beta/loss/figs"}
+    cd /home/tyler/Documents/repos/IslandOfMisfitToys/tests/outputs
+    cd $(ls -t | head -n 1)
+    cd $(ls -t | head -n 1)
+    cd $further
+}
+
+cdg(){
+    local git_root=$(git rev-parse --show-toplevel)
+    local path=${1:-""}
+
+    local workflows_alias="wkf"
+    local workflows_dir=".github/workflows"
+
+    if [[ $path == "$workflows_alias" ]]; then
+        path=$workflows_dir
+    fi
+
+    cd "$git_root/$path"
+}
 
 echo "ignore this" >/dev/null
 
