@@ -1498,7 +1498,7 @@ trichl() {
 
 # cblender: "custom blender" -- this is the one I use since the system blender is outdated
 cblender() {
-    /home/tyler/Software/blender-4.0.2-linux-x64/blender
+    /home/tyler/Software/blender-4.1.0-linux-x64/blender
 }
 
 # dcmd: "desktop command" -- find and display desktop commands
@@ -1571,6 +1571,22 @@ cda(){
 fcode(){
     /home/tyler/.local/share/flatpak/exports/bin/com.visualstudio.code $@
 }
+
+# code(){
+#    fcode $@
+# }
+
+fp(){
+    ~/.local/share/flatpak/exports/bin/$1
+}
+
+gif2pdf(){
+    ffmpeg -i $1.gif $1%04d.png
+    img2pdf $1*.png -o $1.pdf
+    rm *.png
+}
+
+    
 
 echo "ignore this" >/dev/null
 
