@@ -1498,7 +1498,7 @@ trichl() {
 
 # cblender: "custom blender" -- this is the one I use since the system blender is outdated
 cblender() {
-    /home/tyler/Software/blender-4.0.2-linux-x64/blender
+    /home/tyler/Software/blender-4.1.0-linux-x64/blender
 }
 
 # dcmd: "desktop command" -- find and display desktop commands
@@ -1684,6 +1684,38 @@ cdg(){
     fi
 
     cd "$git_root/$path"
+}
+
+# sss: Screenshot sync
+sss(){
+    local num_sync=${1:-1}
+    local oldpwd=$(pwd)
+    local screenshot_path="$HOME/Pictures/Screenshots"
+    local icloud_path="$screenshot_path/icloud"
+
+    cd $screenshot_path
+    local png_files_in_order=$(ls -t | grep ".png")
+
+    #if num_sync is not 'all' or 'a', then only sync the specified number of files
+    if [[ $num_sync != "all" && $num_sync != "a" ]]; then
+        local png_files_in_order=$(ls -t | grep ".png" | head -n $num_sync)
+    else
+        local png_files_in_order=$(ls -t | grep ".png")
+    fi
+    
+    #check number of pre-existing files in $icloud_path
+    mkdir -p $icloud_path
+    local start_idx=$(ls $icloud_path | wc -l)
+
+    # convert png files to array
+    png_files_in_order=($png_files_in_order)
+
+    #convert them all to jpg files with the same name in $icloud_paths
+    for file in $png_files_in_order; do
+        local curr_idx=$((start_idx + 1))
+        convert $file $icloud_path/$curr_idx.jpg
+    done
+    cd $oldpwd
 }
 
 echo "ignore this" >/dev/null
