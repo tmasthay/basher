@@ -1718,6 +1718,10 @@ sss(){
     cd $oldpwd
 }
 
+# ksg: "kill stray gpu"
+ksg(){
+    kill $(nvidia-smi | grep "dw/bin" | awk '{print $5}')
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
