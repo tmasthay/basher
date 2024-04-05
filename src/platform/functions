@@ -8,6 +8,10 @@ gho() {
     code *.gif
 }
 
+cc(){
+    cd $ISL/misfit_toys/beta
+}
+
 # ghh: Another designated current workflow if need two
 ghh() {
     gho
