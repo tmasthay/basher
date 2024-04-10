@@ -1672,7 +1672,7 @@ lres() {
     cd $further
 }
 
-cdg(){
+cdg() {
     local git_root=$(git rev-parse --show-toplevel)
     local path=${1:-""}
 
@@ -1687,7 +1687,7 @@ cdg(){
 }
 
 # sss: Screenshot sync
-sss(){
+sss() {
     local num_sync=${1:-1}
     local oldpwd=$(pwd)
     local screenshot_path="$HOME/Pictures/Screenshots"
@@ -1702,7 +1702,7 @@ sss(){
     else
         local png_files_in_order=$(ls -t | grep ".png")
     fi
-    
+
     #check number of pre-existing files in $icloud_path
     mkdir -p $icloud_path
     local start_idx=$(ls $icloud_path | wc -l)
@@ -1719,8 +1719,14 @@ sss(){
 }
 
 # ksg: "kill stray gpu"
-ksg(){
+ksg() {
     kill $(nvidia-smi | grep "dw/bin" | awk '{print $5}')
+}
+
+# cdrec: "cd most recent"
+cdrec() {
+    depth=${1:-1}
+    cd $(ls -t | head -n $depth | tail -n 1)
 }
 echo "ignore this" >/dev/null
 
