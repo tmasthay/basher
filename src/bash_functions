@@ -1522,6 +1522,10 @@ pc() {
     python $BASHER/src/py_scripts/$1.py "${@:2}"
 }
 
+pce() {
+    eval $(pc $1)
+}
+
 cd() {
     builtin cd "$@" && echo $(pwd) >>~/.cd_history
     local history=$(cat ~/.cd_history | tail -n 100)

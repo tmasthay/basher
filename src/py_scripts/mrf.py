@@ -35,8 +35,7 @@ def generate_command():
     # Create the command
     command = (
         f'find "{args.path}" -mindepth {args.mindepth} -maxdepth {args.maxdepth} -type f '
-        f'-exec stat --format=\'%Y %n\' {{}} + | sort -n | tail -n {args.count} | '
-        f'while read -r time file; do echo "$(date -d @$time "+%Y-%m-%d %H:%M:%S") $file"; done'
+        f'-exec stat --format=\'%y %n\' {{}} + | sort | tail -n {args.count}'
     )
 
     # Print the command
