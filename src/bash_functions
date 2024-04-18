@@ -1733,6 +1733,38 @@ cdrec() {
 glo() {
     git log --oneline
 }
+
+# gcmp: git compare
+gcmp() {
+    branch=${1:-main}
+    # Check if the remote branch exists
+    if git show-ref --verify --quiet refs/remotes/origin/$branch; then
+        # Get counts for how many commits the current branch is ahead or behind
+        ahead=$(git rev-list --count --left-only @{upstream}...$branch)
+        behind=$(git rev-list --count --right-only @{upstream}...$branch)
+
+        # Construct the message based on the ahead/behind counts
+        local message=""
+        if [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
+            message="Up to date with $branch."
+        else
+            if [ "$ahead" -ne 0 ]; then
+                message="$ahead commits ahead"
+            fi
+            if [ "$behind" -ne 0 ]; then
+                if [ -n "$message" ]; then
+                    message+=", "
+                fi
+                message+="$behind commits behind"
+            fi
+            message+=" of $branch."
+        fi
+        echo $message
+    else
+        echo "No remote branch named origin/$branch."
+    fi
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
