@@ -1526,6 +1526,18 @@ pce() {
     eval $(pc $1)
 }
 
+epy() {
+    local script_path="$BASHER/src/py_scripts/$1.py"
+
+    if command -v code >/dev/null 2>&1; then
+        # If VS Code's 'code' command is available, use it
+        code "$script_path"
+    else
+        # Otherwise, fall back to using Vim
+        vim "$script_path"
+    fi
+}
+
 cd() {
     builtin cd "$@" && echo $(pwd) >>~/.cd_history
     local history=$(cat ~/.cd_history | tail -n 100)
