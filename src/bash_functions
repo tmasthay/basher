@@ -1779,6 +1779,22 @@ gcmp() {
     gcmp_remote $branch
 }
 
+# mrf: "most recent files"
+# mrf() {
+#     local starting_path="${1:-$(pwd)}" # Default to current working directory's absolute path
+#     local mindepth="${2:-1}"           # Minimum depth for find; default to 1
+#     local maxdepth="${3:-5}"           # Maximum depth for find; default to 5
+#     local file_count="${4:-5}"         # Number of files to display; default to 5
+
+#     # Find files, execute stat for modification times, sort them, and display the last N files
+#     find "$starting_path" -mindepth "$mindepth" -maxdepth "$maxdepth" -type f -exec stat --format='%y %n' {} + | sort | tail -n "$file_count"
+# }
+
+# To use this function, source your .bashrc after adding it or just declare it in your current terminal session.
+
+# You can now use this function by calling it from your shell like this:
+# find_modified_files [path] [mindepth] [maxdepth] [number of files]
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
