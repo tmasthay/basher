@@ -1745,9 +1745,9 @@ compare_message() {
 
     message="${type^}"
     if [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
-        message="Up to date with ${branch}."
+        message+="Up to date with ${branch}."
     else
-        [ "$ahead" -ne 0 ] && message="$ahead commits ahead of"
+        [ "$ahead" -ne 0 ] && message+="$ahead commits ahead of"
         [ "$ahead" -ne 0 ] && [ "$behind" -ne 0 ] && message+=", "
         [ "$behind" -ne 0 ] && message+="$behind commits behind"
         message+=" ${branch}."
