@@ -1735,34 +1735,47 @@ glo() {
 }
 
 # gcmp: git compare
-gcmp() {
-    branch=${1:-main}
-    # Check if the remote branch exists
-    if git show-ref --verify --quiet refs/remotes/origin/$branch; then
-        # Get counts for how many commits the current branch is ahead or behind
-        ahead=$(git rev-list --count --left-only @{upstream}...$branch)
-        behind=$(git rev-list --count --right-only @{upstream}...$branch)
+# Helper function to echo the comparison result
+compare_message() {
+    local type=$1 # "local" or "remote"
+    local ahead=$2
+    local behind=$3
+    local branch=$4
+    local message=""
 
-        # Construct the message based on the ahead/behind counts
-        local message=""
-        if [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
-            message="Up to date with $branch."
-        else
-            if [ "$ahead" -ne 0 ]; then
-                message="$ahead commits ahead"
-            fi
-            if [ "$behind" -ne 0 ]; then
-                if [ -n "$message" ]; then
-                    message+=", "
-                fi
-                message+="$behind commits behind"
-            fi
-            message+=" of $branch."
-        fi
-        echo $message
+    if [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
+        message="${type^} branch is up to date with ${branch}."
+    else
+        [ "$ahead" -ne 0 ] && message="${type^} branch is $ahead commits ahead"
+        [ "$ahead" -ne 0 ] && [ "$behind" -ne 0 ] && message+=", "
+        [ "$behind" -ne 0 ] && message+="$behind commits behind"
+        message+=" of ${branch}."
+    fi
+    echo $message
+}
+
+gcmp_lcl() {
+    local branch=${1:-main}
+    local ahead=$(git rev-list --count --right-only $branch...HEAD)
+    local behind=$(git rev-list --count --left-only $branch...HEAD)
+    compare_message "local" $ahead $behind $branch
+}
+
+gcmp_remote() {
+    local branch=${1:-main}
+    if git show-ref --verify --quiet refs/remotes/origin/$branch; then
+        local ahead=$(git rev-list --count --left-only @{upstream}...origin/$branch)
+        local behind=$(git rev-list --count --right-only @{upstream}...origin/$branch)
+        compare_message "remote" $ahead $behind "origin/$branch"
     else
         echo "No remote branch named origin/$branch."
     fi
+}
+
+gcmp() {
+    local branch=${1:-main}
+    gcmp_lcl $branch
+    gcmp_remote $branch
 }
 
 echo "ignore this" >/dev/null
