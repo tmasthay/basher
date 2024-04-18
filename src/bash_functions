@@ -1743,13 +1743,14 @@ compare_message() {
     local branch=$4
     local message=""
 
+    message="${type^}"
     if [ "$ahead" -eq 0 ] && [ "$behind" -eq 0 ]; then
-        message="${type^} branch is up to date with ${branch}."
+        message="Up to date with ${branch}."
     else
-        [ "$ahead" -ne 0 ] && message="${type^} branch is $ahead commits ahead"
+        [ "$ahead" -ne 0 ] && message="$ahead commits ahead of"
         [ "$ahead" -ne 0 ] && [ "$behind" -ne 0 ] && message+=", "
         [ "$behind" -ne 0 ] && message+="$behind commits behind"
-        message+=" of ${branch}."
+        message+=" ${branch}."
     fi
     echo $message
 }
@@ -1758,7 +1759,7 @@ gcmp_lcl() {
     local branch=${1:-main}
     local ahead=$(git rev-list --count --right-only $branch...HEAD)
     local behind=$(git rev-list --count --left-only $branch...HEAD)
-    compare_message "local" $ahead $behind $branch
+    compare_message "LOCAL:  " $ahead $behind $branch
 }
 
 gcmp_remote() {
@@ -1766,7 +1767,7 @@ gcmp_remote() {
     if git show-ref --verify --quiet refs/remotes/origin/$branch; then
         local ahead=$(git rev-list --count --left-only @{upstream}...origin/$branch)
         local behind=$(git rev-list --count --right-only @{upstream}...origin/$branch)
-        compare_message "remote" $ahead $behind "origin/$branch"
+        compare_message "REMOTE: " $ahead $behind "origin/$branch"
     else
         echo "No remote branch named origin/$branch."
     fi
