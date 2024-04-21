@@ -1811,6 +1811,13 @@ gcmp() {
 # You can now use this function by calling it from your shell like this:
 # find_modified_files [path] [mindepth] [maxdepth] [number of files]
 
+# esk: "easy ssh key"
+esk(){
+    cd ~/.ssh
+    ssh-keygen -t ed25519 -b 4096 -N "" -f id_$1
+    cd $OLDPWD
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
