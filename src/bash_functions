@@ -1843,7 +1843,7 @@ trc() {
         shift
         tree $@ | pc tclr
     else
-        tree -I "__*" -C --dirs-first $@ | pc tclr
+        tree -I "__*" -C --dirsfirst $@ | pc tclr
     fi
 }
 echo "ignore this" >/dev/null
