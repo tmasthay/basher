@@ -1730,7 +1730,7 @@ sss() {
     local png_files_array=()
     while IFS= read -r line; do
         png_files_array+=("$line")
-    done <<< "$png_files_in_order"
+    done <<<"$png_files_in_order"
 
     #convert them all to jpg files with the same name in $icloud_path
     for file in "${png_files_array[@]}"; do
@@ -1741,7 +1741,6 @@ sss() {
     done
     cd $oldpwd
 }
-
 
 # ksg: "kill stray gpu"
 ksg() {
@@ -1821,7 +1820,7 @@ gcmp() {
 # find_modified_files [path] [mindepth] [maxdepth] [number of files]
 
 # esk: "easy ssh key"
-esk(){
+esk() {
     cd ~/.ssh
     ssh-keygen -t ed25519 -b 4096 -N "" -f id_$1
     cd $OLDPWD
@@ -1832,10 +1831,13 @@ my_black() {
     black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
 }
 
-sgp(){
+sgp() {
     gpaste-client | grep "$1" | awk '{print $2}'
 }
 
+trc() {
+    tree -I "__*" -C $@ | pc tclr
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
