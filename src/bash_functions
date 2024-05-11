@@ -1836,7 +1836,15 @@ sgp() {
 }
 
 trc() {
-    tree -I "__*" -C $@ | pc tclr
+    local first_arg=$1
+
+    # if first_arg = -cc, then don't use defaults, else use defaults
+    if [ "$first_arg" == "-cc" ]; then
+        shift
+        tree $@ | pc tclr
+    else
+        treee -I "__*" -C --dirs-first $@ | pc tclr
+    fi
 }
 echo "ignore this" >/dev/null
 
