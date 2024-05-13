@@ -4,11 +4,11 @@ source ~/.secrets/env
 source ~/Software/spack/share/spack/setup-env.sh
 source /usr/share/modules/init/bash
 
-IFS=$'\n'  # Set internal field separator to newline
-for func in $USER_DEFINED_FUNCTIONS; do
-    # echo "Exporting $func"
-    export -f $func
-done
+# IFS=$'\n'  # Set internal field separator to newline
+# for func in $USER_DEFINED_FUNCTIONS; do
+#     # echo "Exporting $func"
+#     export -f $func
+# done
 
 ensure_ssh_agent
 
