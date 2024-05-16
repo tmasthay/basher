@@ -651,7 +651,15 @@ jmr() {
 
 # gcp: "git clean preview"
 gcp() {
+    local actual_clean=${1:-0}
     git clean -ndfx
+    if [[ $actual_clean -eq 1 ]]; then
+        # ask user for input
+        read -p "Do you want to clean these files? (y/n) " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            git clean -dfx
+        fi
+    fi
 }
 
 # exp: "expand environment variables"
