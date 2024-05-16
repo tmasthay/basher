@@ -1818,6 +1818,30 @@ esk(){
     cd $OLDPWD
 }
 
+# gcmd: "generate commands"
+gcmd() {
+    local execute_flag=false
+    local file_name="$2"
+    local pre_arg="$1"
+    local post_arg="$3"
+
+    # Check if the first parameter is the -e flag
+    if [ "$1" == "-e" ]; then
+        execute_flag=true
+        file_name="$3"
+        pre_arg="$2"
+        post_arg="$4"
+    fi
+
+    while IFS= read -r line_content; do
+        local cmd="$pre_arg $line_content $post_arg"
+        echo "$cmd"  # Echo the command for review
+        if [ "$execute_flag" = true ]; then
+            eval "$cmd"  # Execute the command if -e flag is present
+        fi
+    done < "$file_name"
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
