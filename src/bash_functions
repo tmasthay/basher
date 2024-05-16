@@ -1843,11 +1843,11 @@ gcmd() {
 
     while IFS= read -r line_content; do
         local cmd="$pre_arg $line_content $post_arg"
-        echo "$cmd"  # Echo the command for review
+        echo "$cmd" # Echo the command for review
         if [ "$execute_flag" = true ]; then
-            eval "$cmd"  # Execute the command if -e flag is present
+            eval "$cmd" # Execute the command if -e flag is present
         fi
-    done < "$file_name"
+    done <"$file_name"
 }
 
 # my_black: custom black config
@@ -1873,6 +1873,11 @@ trc() {
 
 hydra() {
     python -W ignore main.py $@
+}
+
+gcl() {
+    repo_name=$1
+    git clone https://github.com/tmasthay/$repo_name.git
 }
 echo "ignore this" >/dev/null
 
