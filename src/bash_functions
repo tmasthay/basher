@@ -651,7 +651,7 @@ jmr() {
 
 # gcp: "git clean preview"
 gcp() {
-    local actual_clean=${1:-0}
+    local actual_clean=${1:-1}
     git clean -ndfx
     if [[ $actual_clean -eq 1 ]]; then
         # ask user for input
