@@ -1434,9 +1434,27 @@ dsmu() {
     local prev=$(pwd)
     local repo_name=${1:-CustomCommands}
     echo $repo_name
+
+    # check if any changes have been made
+    git status -uno | grep "$repo_name" -q
+    if [ $? -eq 0 ]; then
+        echo "Changes have been made to $repo_name. Please commit or stash them before proceeding."
+        return 1
+    fi
     rm -rf $repo_name
     git clone https://github.com/tmasthay/$repo_name.git
-    echo "Remember to remove $repo_name/.git"
+    cd $repo_name
+    echo $(git log | head -n 1 | awk '{print $2}') >.githash_dummysubmodule
+    # echo "Remember to remove $repo_name/.git"
+    echo ""
+    echo "Current directory: $(pwd)"
+
+    # ask if you would like to remove .git
+    read -p "Would you like to remove the .git directory? (y/n) " -n 5 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        rm -rf .git
+    fi
+    cd $prev
 }
 
 # pyig: "python ignore warnings"
