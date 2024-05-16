@@ -1710,26 +1710,34 @@ sss() {
     local icloud_path="$screenshot_path/icloud"
 
     cd $screenshot_path
-    local png_files_in_order=$(ls -t | grep ".png")
+    local png_files_in_order
 
-    #if num_sync is not 'all' or 'a', then only sync the specified number of files
+    # Determine how many files to sync based on num_sync
     if [[ $num_sync != "all" && $num_sync != "a" ]]; then
-        local png_files_in_order=$(ls -t | grep ".png" | head -n $num_sync)
+        echo "num_sync=$num_sync"
+        png_files_in_order=$(ls -t | grep ".png" | head -n $num_sync)
     else
-        local png_files_in_order=$(ls -t | grep ".png")
+        echo "num_sync=all"
+        png_files_in_order=$(ls -t | grep ".png")
     fi
+    echo "png_files_in_order=$png_files_in_order"
 
     #check number of pre-existing files in $icloud_path
     mkdir -p $icloud_path
     local start_idx=$(ls $icloud_path | wc -l)
 
-    # convert png files to array
-    png_files_in_order=($png_files_in_order)
+    # Convert png files to array properly handling spaces in filenames
+    local png_files_array=()
+    while IFS= read -r line; do
+        png_files_array+=("$line")
+    done <<<"$png_files_in_order"
 
-    #convert them all to jpg files with the same name in $icloud_paths
-    for file in $png_files_in_order; do
+    #convert them all to jpg files with the same name in $icloud_path
+    for file in "${png_files_array[@]}"; do
+        echo "file=$file"
         local curr_idx=$((start_idx + 1))
-        convert $file $icloud_path/$curr_idx.jpg
+        convert "$file" "$icloud_path/$curr_idx.jpg"
+        start_idx=$curr_idx # Update start_idx so that each file gets a unique index
     done
     cd $oldpwd
 }
@@ -1812,7 +1820,7 @@ gcmp() {
 # find_modified_files [path] [mindepth] [maxdepth] [number of files]
 
 # esk: "easy ssh key"
-esk(){
+esk() {
     cd ~/.ssh
     ssh-keygen -t ed25519 -b 4096 -N "" -f id_$1
     cd $OLDPWD
@@ -1842,6 +1850,30 @@ gcmd() {
     done < "$file_name"
 }
 
+# my_black: custom black config
+my_black() {
+    black --line-length 80 --skip-string-normalization --preview --skip-magic-trailing-comma $@
+}
+
+sgp() {
+    gpaste-client | grep "$1" | awk '{print $2}'
+}
+
+trc() {
+    local first_arg=$1
+
+    # if first_arg = -cc, then don't use defaults, else use defaults
+    if [ "$first_arg" == "-cc" ]; then
+        shift
+        tree $@ | pc tclr
+    else
+        tree -I "__*" -C --dirsfirst $@ | pc tclr
+    fi
+}
+
+hydra() {
+    python -W ignore main.py $@
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

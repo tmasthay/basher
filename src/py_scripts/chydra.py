@@ -3,35 +3,41 @@ from rich.console import Console
 from rich.text import Text
 import sys
 
+def create_indentation(indent_level, depth_color_map, bars=False):
+    """Create indentation string, optionally with vertical bars for structure, each bar colored by depth."""
+    indentation = Text()
+    if bars:
+        # Create a string with colored bars for each indentation level
+        for i in range(indent_level):
+            bar_color = depth_color_map.get(i, 'white')  # Fetch the color for the current depth
+            indentation.append('| ', style=bar_color)  # Append the bar with the corresponding color
+    else:
+        # Standard indentation with spaces
+        indentation.append(' ' * (indent_level * 2))  # Simply append spaces
+    return indentation
 
-def colorize_yaml(lines, depth_color_map, value_color):
+def colorize_yaml(lines, depth_color_map, value_color, bars=True):
     colored_lines = Text()
     for line in lines:
         # Detect the indentation level
         stripped_line = line.lstrip()
         indent_level = (len(line) - len(stripped_line)) // 2
 
-        # Determine the color based on the indentation level
-        color = depth_color_map.get(indent_level, 'white')
+        # Generate the appropriate indentation
+        indentation = create_indentation(indent_level, depth_color_map, bars)
 
         # Apply the color to the line without changing the indentation
         if ':' in stripped_line:  # Key-value pair
             key, value = stripped_line.split(':', 1)
-            colored_lines.append(
-                ' ' * (indent_level * 2)
-            )  # Preserve indentation
-            colored_lines.append(key + ': ', style=color)
+            colored_lines.append(indentation)
+            colored_lines.append(key + ': ', style=depth_color_map.get(indent_level, 'white'))
             colored_lines.append(value.strip(), style=value_color)
         elif stripped_line.startswith('-'):  # List item
-            colored_lines.append(
-                ' ' * (indent_level * 2)
-            )  # Preserve indentation
+            colored_lines.append(indentation)
             colored_lines.append(stripped_line, style=value_color)
         else:  # Handle keys without a value
-            colored_lines.append(
-                ' ' * (indent_level * 2)
-            )  # Preserve indentation
-            colored_lines.append(stripped_line, style=color)
+            colored_lines.append(indentation)
+            colored_lines.append(stripped_line, style=depth_color_map.get(indent_level, 'white'))
         colored_lines.append('\n')
     return colored_lines
 
