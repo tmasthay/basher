@@ -1903,7 +1903,7 @@ hydra() {
 
 gcl() {
     repo_name=$1
-    git clone https://github.com/tmasthay/$repo_name.git
+    git clone git@github.com:tmasthay/$repo_name.git
 }
 echo "ignore this" >/dev/null
 
