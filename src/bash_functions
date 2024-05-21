@@ -652,12 +652,12 @@ jmr() {
 # gcp: "git clean preview"
 gcp() {
     local actual_clean=${1:-1}
-    git clean -ndfx
+    git clean -ndfx --exclude=.vscode --exclude=outputs --exclude=multirun
     if [[ $actual_clean -eq 1 ]]; then
         # ask user for input
         read -p "Do you want to clean these files? (y/n) " -n 1 -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            git clean -dfx
+            git clean -dfx --exclude=.vscode --exclude=outputs --exclude=multirun
         fi
     fi
 }
