@@ -18,7 +18,7 @@ def gcp(extra_excludes=[]):
     if os.path.isfile(gunk_file):
         with open(gunk_file, 'r') as file:
             excludes = [e.strip() for e in file.read().split('\n') if len(e.strip()) > 0]
-    excludes.extend(extra_excludes)
+    excludes.extend([f"*{e}*" for e in extra_excludes])
     
     exclude_args = []
     for exclude in excludes:
