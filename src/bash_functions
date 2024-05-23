@@ -689,7 +689,7 @@ gmd() {
 }
 
 gcp() {
-    pc gcp_helper
+    pc gcp_helper $@
 }
 
 # no_suspend: prevent suspend

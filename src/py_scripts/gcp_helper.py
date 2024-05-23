@@ -1,7 +1,8 @@
 import os
 import subprocess
+import sys
 
-def gcp():
+def gcp(extra_excludes=[]):
     # Determine the root of the repository
     try:
         repo_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).strip().decode('utf-8')
@@ -17,6 +18,7 @@ def gcp():
     if os.path.isfile(gunk_file):
         with open(gunk_file, 'r') as file:
             excludes = [e.strip() for e in file.read().split('\n') if len(e.strip()) > 0]
+    excludes.extend(extra_excludes)
     
     exclude_args = []
     for exclude in excludes:
@@ -27,4 +29,4 @@ def gcp():
     subprocess.run(clean_cmd)
 
 if __name__ == "__main__":
-    gcp()
+    gcp(sys.argv[1:])
