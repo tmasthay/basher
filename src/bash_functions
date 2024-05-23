@@ -649,19 +649,6 @@ jmr() {
     jupyter $MODE --no-browser --port=$PORT
 }
 
-# gcp: "git clean preview"
-gcp() {
-    local actual_clean=${1:-1}
-    git clean -ndfx --exclude=.vscode --exclude=outputs --exclude=multirun
-    if [[ $actual_clean -eq 1 ]]; then
-        # ask user for input
-        read -p "Do you want to clean these files? (y/n) " -n 1 -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            git clean -dfx --exclude=.vscode --exclude=outputs --exclude=multirun
-        fi
-    fi
-}
-
 # exp: "expand environment variables"
 exp() {
     eval echo $1
@@ -699,6 +686,10 @@ gmd() {
     git pull
     git checkout $CURR
     git merge $SRC
+}
+
+gcp() {
+    pc gcp_helper
 }
 
 # no_suspend: prevent suspend
@@ -1905,6 +1896,7 @@ gcl() {
     repo_name=$1
     git clone git@github.com:tmasthay/$repo_name.git
 }
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
