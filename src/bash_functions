@@ -66,7 +66,7 @@ scl() {
 
 # ctxt: color text
 ctxt() {
-    python $BASHER/src/py_scripts/ctxt.py $@
+    python $BASHER/src/py_scripts/ctxt.py "$@"
 }
 
 # ftxt: file text colored
@@ -269,9 +269,9 @@ mgpu() {
     sleep_time=${4:-3}
     c1=${1:-$(rclr)}
     c2=${2:-$(rclr)}
-    ctxt "Color 1: $c1" -l -c $c1 -e
+    ctxt -l "Color 1: $c1" -c $c1 -e
     echo -n "    "
-    ctxt "Color 2: $c2" -l -c $c2
+    ctxt -l "Color 2: $c2" -c $c2
     for ((i = 0; i < iterations; i++)); do
         if ((i % 2 == 0)); then
             gpu_mem "$c1" $((i * sleep_time))
@@ -647,6 +647,11 @@ jmr() {
     PORT=${1:-8888}
     MODE=${2:-"lab"}
     jupyter $MODE --no-browser --port=$PORT
+}
+
+# jcp: "jupyter convert to python"
+jcp() {
+    jupyter nbconvert --to python $1
 }
 
 # exp: "expand environment variables"
@@ -1892,9 +1897,15 @@ hydra() {
     python -W ignore main.py $@
 }
 
+# gcl: "git clone"
 gcl() {
     repo_name=$1
     git clone git@github.com:tmasthay/$repo_name.git
+}
+
+# grl: gh run list
+grl() {
+    gh run list
 }
 
 echo "ignore this" >/dev/null
