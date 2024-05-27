@@ -1912,7 +1912,7 @@ grl() {
 ccn(){
     name=$1
     version=${2:-3.10}
-    conda create -n $name python=$version
+    conda create -n $name python=$version -y
     conda activate $name
 }
 
