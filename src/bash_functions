@@ -1908,6 +1908,13 @@ grl() {
     gh run list
 }
 
+# ccn: conda create new
+cnn(){
+    name=$1
+    version=${2:-3.10}
+    conda create -n $name python=$version
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

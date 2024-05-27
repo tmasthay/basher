@@ -1,11 +1,6 @@
 # gho: designated for current workflow "gho" == "go"
 gho() {
-    # cdi tests/unit/fwi/loss_convergence
-    # pytest -s .
-    cdi tests
-    pytest -s -m mysub
-    lres
-    code *.gif
+    google-chrome /home/tyler/Documents/repos/IslandOfMisfitToys/docs/build/html/index.html
 }
 
 cc(){
