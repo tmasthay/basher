@@ -1342,7 +1342,7 @@ rgrm() {
         if [[ -z "$res" ]]; then
             break
         fi
-        git rm --cached $res
+        git rm $res
         res=$(gsl | grep "$category" | awk -F':' '{print $2}' | tail -n 1 | xargs)
     done
 }
