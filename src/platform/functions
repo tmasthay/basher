@@ -1,6 +1,10 @@
 # gho: designated for current workflow "gho" == "go"
 gho() {
-    google-chrome /home/tyler/Documents/repos/IslandOfMisfitToys/docs/build/html/index.html
+    cd $ISL/docs
+    # make clean
+    # rm -rf autoapi
+    make html
+    # google-chrome /home/tyler/Documents/repos/IslandOfMisfitToys/docs/_build/html/index.html
 }
 
 cc(){
@@ -9,10 +13,9 @@ cc(){
 
 # ghh: Another designated current workflow if need two
 ghh() {
-    gho
-    cdi
-    cd misfit_toys/examples/ddp
-    python ddp_driver.py
+    cd ~/Software
+    rm -rf src
+    git clone --branch julia_interface_bug --single-branch git@github.com:ahay/src.git
 }
 
 # clr: Designated data clearing function
