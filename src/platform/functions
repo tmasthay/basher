@@ -16,8 +16,8 @@ ghh() {
     cd ~/Software
     rm -rf src
     git clone --branch julia_interface_bug --single-branch git@github.com:ahay/src.git
-    cd src/.git/hooks
-    cp $REPO/basher/src/scripts/protective.sh src/.git/hooks/pre-commit
+    cp $REPO/basher/src/scripts/protective_hook.sh src/.git/hooks/pre-commit
+    cd src
 }
 
 # clr: Designated data clearing function
