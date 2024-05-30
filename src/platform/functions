@@ -3,7 +3,7 @@ gho() {
     google-chrome /home/tyler/Documents/repos/IslandOfMisfitToys/docs/build/html/index.html
 }
 
-cc(){
+cc() {
     cd $ISL/misfit_toys/beta
 }
 

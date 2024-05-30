@@ -1601,7 +1601,7 @@ tpt() {
 
 cda() {
     local FURTHER=${1:-""}
-    cd $ISL/misfit_toys/examples/hydra/$FURTHER
+    cd $ISL/misfit_toys/hydra/$FURTHER
 }
 
 fcode() {
@@ -1909,11 +1909,16 @@ grl() {
 }
 
 # ccn: conda create new
-ccn(){
+ccn() {
     name=$1
     version=${2:-3.10}
     conda create -n $name python=$version -y
     conda activate $name
+}
+
+# srf: "short recent file"
+srf() {
+    pce mrf $@ | awk '{print $4}' | xargs -I {} realpath --relative-to="$(pwd)" {}
 }
 
 echo "ignore this" >/dev/null
