@@ -1921,11 +1921,6 @@ srf() {
     pce mrf $@ | awk '{print $4}' | xargs -I {} realpath --relative-to="$(pwd)" {}
 }
 
-# gsd: "google sheets date"
-gsd(){
-    date --rfc-3339='date' | awk -F'-' '{print $2,$3,$1}' | sed 's/ /\//g' | pbcopy
-}
-
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
