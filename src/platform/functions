@@ -14,9 +14,13 @@ cc() {
 # ghh: Another designated current workflow if need two
 ghh() {
     cd ~/Software
-    rm -rf src
-    git clone --branch julia_interface_bug --single-branch git@github.com:ahay/src.git
-    cp $REPO/basher/src/scripts/protective_hook.sh src/.git/hooks/pre-commit
+
+    # check if the repo exists
+    if [ ! -d "src" ]; then
+        echo "Cloning the repo"
+        git clone --branch julia_interface_bug --single-branch git@github.com:ahay/src.git
+    fi
+    cp $REPO/basher/src/bash_scripts/protective_hook.sh src/.git/hooks/pre-commit
     cd src
 }
 

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Array of protected branches
-protected_branches=("main" "master" "release" "production" "julia_interface_bug")
+protected_branches=("main" "master" "release" "production")
 
 # Array of allowed branches
-allowed_branches=("develop" "feature" "bugfix")
+allowed_branches=("julia_interface_bug")
 
 # Get the name of the branch being pushed to
 current_branch=$(git rev-parse --abbrev-ref HEAD)
