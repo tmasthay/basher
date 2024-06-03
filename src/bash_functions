@@ -1921,6 +1921,19 @@ srf() {
     pce mrf $@ | awk '{print $4}' | xargs -I {} realpath --relative-to="$(pwd)" {}
 }
 
+lin() {
+    local a=$1
+    local b=$2
+    local n=$3
+    local prec=${4:-2}
+
+    python <<EOF
+import numpy as np
+u = [e for e in np.linspace($a, $b, $n)]
+print(','.join([f'{e:.$prec}' for e in u]))
+EOF
+
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
