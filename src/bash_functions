@@ -1921,6 +1921,7 @@ srf() {
     pce mrf $@ | awk '{print $4}' | xargs -I {} realpath --relative-to="$(pwd)" {}
 }
 
+# lin: "linspace"
 lin() {
     local a=$1
     local b=$2
