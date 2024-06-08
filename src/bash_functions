@@ -471,8 +471,11 @@ gag() {
 # ge: "git everything" - gau; gc; gp
 ge() {
     gau
-    gc
-    gp
+    if gc; then
+        gp
+    else
+        echo "git commit failed...not pushing"
+    fi
 }
 
 # gem: "git everything message" - gau; gcm $1; gp
@@ -1934,6 +1937,18 @@ u = [e for e in np.linspace($a, $b, $n)]
 print(','.join([f'{e:.$prec}' for e in u]))
 EOF
 
+}
+
+# rng: "range" -- python like
+rng() {
+    local start=$1
+    local end=$2
+    local step=${3:-1}
+
+    python <<EOF
+u = [e for e in range($start, $end, $step)]
+print(','.join([str(e) for e in u]))
+EOF
 }
 echo "ignore this" >/dev/null
 

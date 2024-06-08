@@ -1,10 +1,12 @@
 # gho: designated for current workflow "gho" == "go"
 gho() {
-    cd $ISL/docs
-    # make clean
-    # rm -rf autoapi
+    cd $ISL/docs/meta
+    python leaderboard.py
+    cd ..
+    make clean
     make html
-    # google-chrome /home/tyler/Documents/repos/IslandOfMisfitToys/docs/_build/html/index.html
+    # google-chrome _build/html/index.html
+    cd $ISL/docs/custom_pages/leaderboard
 }
 
 cc() {
@@ -306,4 +308,16 @@ gen_docs() {
     python clean_nest.py
     make html
     cd $prev
+}
+
+# tdocs: "toggle docs" -- set an env var for github workflows for IOMT
+tdocs() {
+    mode=$1
+
+    # if "on" then set the env var to "true", else set it to "false"
+    if [ "$mode" == "on" ]; then
+        export GEN_IOMT_DOCS="true"
+    else
+        export GEN_IOMT_DOCS="false"
+    fi
 }
