@@ -2,6 +2,12 @@
 gho() {
     cd $ISL/docs/meta
     python leaderboard.py
+
+    # check failure
+    if [ $? -ne 0 ]; then
+        echo "Leaderboard failed"
+        return
+    fi
     cd ..
     make clean
     make html
