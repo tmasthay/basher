@@ -1951,8 +1951,14 @@ print(','.join([str(e) for e in u]))
 EOF
 }
 
-cdl(){
+# cdl: "cd leaderboard"
+cdl() {
     cd $ISL/docs/meta/$1
+}
+
+# gpcb: "git pull current branch"
+gpcb() {
+    git pull origin $(git branch --show-current)
 }
 echo "ignore this" >/dev/null
 
