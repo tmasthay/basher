@@ -1952,13 +1952,18 @@ print(','.join([str(e) for e in u]))
 EOF
 }
 
-cdl(){
+# cdl: "cd leaderboard"
+cdl() {
     cd $ISL/docs/meta/$1
 }
 
 cwin(){
     cmd=$(wmctrl -lp | awk '{for(i=5; i<=NF;i++) printf $i " "; print ""}' | grep -v "@" | grep -v "renfield" | sed 's/\(.*\)/wmctrl -c \1/')
     eval $cmd
+}
+# gpcb: "git pull current branch"
+gpcb() {
+    git pull origin $(git branch --show-current)
 }
 echo "ignore this" >/dev/null
 
