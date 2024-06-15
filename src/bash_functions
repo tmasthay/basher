@@ -201,12 +201,12 @@ matlab() {
 
 # pfs: print file contents recursively
 pfs() {
-    local dir=$1
-    local pattern=$2
-    local regex=$3 # get the function's third argument
+    local dir=${1:-"."}
+    local pattern=${2:-"*"}
+    local regex=${3:"*"} # get the function's third argument
     find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
-        echo "$file"
         echo "$(printf '%.0s*' {1..80})"
+        echo "$file"
         # If regex is provided, use it to filter file contents
         if [[ -n "$regex" ]]; then
             grep -E "$regex" "$file" || echo "No match found for regex '$regex'"
@@ -214,6 +214,7 @@ pfs() {
             cat "$file"
         fi
         echo "$(printf '%.0s*' {1..80})"
+        echo ""
     done
 }
 
@@ -1953,6 +1954,11 @@ EOF
 
 cdl(){
     cd $ISL/docs/meta/$1
+}
+
+cwin(){
+    cmd=$(wmctrl -lp | awk '{for(i=5; i<=NF;i++) printf $i " "; print ""}' | grep -v "@" | grep -v "renfield" | sed 's/\(.*\)/wmctrl -c \1/')
+    eval $cmd
 }
 echo "ignore this" >/dev/null
 
