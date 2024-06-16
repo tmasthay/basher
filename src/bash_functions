@@ -1916,6 +1916,18 @@ grl() {
 ccn() {
     name=$1
     version=${2:-3.10}
+    matches=$(conda env list | awk '{print $1}' | grep -c "^name$")
+    if [ $matches -geq 1 ]; then
+        # read in user input
+        read -p "Are you sure you want to remove the current environment? (y/n) " -n 1 -r
+
+        # contine to remove if yes
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            conda remove -n $name --all -y
+        else
+            return 1
+        fi
+    fi
     conda create -n $name python=$version -y
     conda activate $name
 }
@@ -1957,7 +1969,7 @@ cdl() {
     cd $ISL/docs/meta/$1
 }
 
-cwin(){
+cwin() {
     cmd=$(wmctrl -lp | awk '{for(i=5; i<=NF;i++) printf $i " "; print ""}' | grep -v "@" | grep -v "renfield" | sed 's/\(.*\)/wmctrl -c \1/')
     eval $cmd
 }
