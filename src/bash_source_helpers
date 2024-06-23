@@ -11,3 +11,5 @@ for e in $VALID_BASHRC_HELPERS; do
     fi
 done
 
+python $BASHER/src/autocomplete/gen_completions.py
+source $BASHER/src/autocomplete/path_completions.sh
