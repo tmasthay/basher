@@ -12,4 +12,4 @@ for e in $VALID_BASHRC_HELPERS; do
 done
 
 python $BASHER/src/autocomplete/gen_completions.py
-source $BASHER/src/autocomplete/path_completions.sh
+source $BASHER/src/autocomplete/path_complete.sh
