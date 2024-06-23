@@ -1917,7 +1917,7 @@ ccn() {
     name=$1
     version=${2:-3.10}
     matches=$(conda env list | awk '{print $1}' | grep -c "^name$")
-    if [ $matches -geq 1 ]; then
+    if [ $matches -eq 1 ]; then
         # read in user input
         read -p "Are you sure you want to remove the current environment? (y/n) " -n 1 -r
 
