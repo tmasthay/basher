@@ -1978,6 +1978,13 @@ cwin() {
 gpcb() {
     git pull origin $(git branch --show-current)
 }
+
+# jenv: "julia env"
+jenv(){
+    ENV_PATH="$HOME/.julia/environments/$1"
+    shift
+    julia --project=$ENV_PATH $@
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
