@@ -1985,6 +1985,28 @@ jenv(){
     shift
     julia --project=$ENV_PATH $@
 }
+
+# cdje: "cd julia env"
+cdje(){
+    cd $HOME/.julia/environments/$1
+}
+
+# mkje: "make julia env"
+mkje(){
+    # check if env already exists
+    if [ -d "$HOME/.julia/environments/$1" ]; then
+        echo "Environment already exists...would you like to delete and start fresh?"
+        read -p "Are you sure you want to remove the current environment? (y/n) " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            rm -rf $HOME/.julia/environments/$1
+        else
+            echo "Exiting without creating environment."
+            return 1
+        fi
+    fi
+    mkdir -p $HOME/.julia/environments/$1
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
