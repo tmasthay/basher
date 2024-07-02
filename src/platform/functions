@@ -15,7 +15,23 @@ gho() {
     cd $ISL/docs/custom_pages/leaderboard
 }
 
+<<<<<<< Updated upstream
 cc() {
+=======
+gho_mac(){
+    cd ~/Documents/repos/iTTYL/texts/sent
+    mv "$(ls -t | head -n 1)" ..
+    cd ../..
+    python send_scheduled_messages.py
+}
+
+omac(){
+    cd ~/Documents/repos/iTTYL/texts/sent
+    code "$(ls -t | head -n 1)"
+}
+
+cc(){
+>>>>>>> Stashed changes
     cd $ISL/misfit_toys/beta
 }
 

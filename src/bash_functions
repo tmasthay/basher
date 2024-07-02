@@ -1902,6 +1902,7 @@ hydra() {
     python -W ignore main.py $@
 }
 
+<<<<<<< Updated upstream
 # gcl: "git clone"
 gcl() {
     repo_name=$1
@@ -1977,6 +1978,12 @@ cwin() {
 # gpcb: "git pull current branch"
 gpcb() {
     git pull origin $(git branch --show-current)
+=======
+# gcl: git clone
+gcl() {
+    local repo_name=$1
+    git clone https://github.com/tmasthay/$repo_name.git
+>>>>>>> Stashed changes
 }
 echo "ignore this" >/dev/null
 
