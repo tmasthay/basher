@@ -327,3 +327,15 @@ tdocs() {
         export GEN_IOMT_DOCS="false"
     fi
 }
+
+#jse: julia setup
+jse(){
+    local tmp="using Pkg; Pkg.develop(path=pwd()); Pkg.instantiate(); Pkg.resolve();"
+    echo "$tmp" | pbcopy
+    # check exit code
+    if [ $? -ne 0 ]; then
+        # echo "Failed to copy to clipboard"
+        echo "$tmp"
+    fi
+}
+
