@@ -1,18 +1,11 @@
 # gho: designated for current workflow "gho" == "go"
-gho() {
-    cd $ISL/docs/meta
-    python leaderboard.py
-
-    # check failure
-    if [ $? -ne 0 ]; then
-        echo "Leaderboard failed"
-        return
+n() {
+    cd $REPO/Madagascar.jl
+    if [ "$1" == "j" ]; then
+        jse "Madagascar_jll"; sfje pre
+    else
+        jse; sfje pre
     fi
-    cd ..
-    make clean
-    make html
-    # google-chrome _build/html/index.html
-    cd $ISL/docs/custom_pages/leaderboard
 }
 
 cc() {
@@ -330,12 +323,11 @@ tdocs() {
 
 #jse: julia setup
 jse(){
-    local tmp="using Pkg; Pkg.develop(path=pwd()); Pkg.instantiate(); Pkg.resolve();"
-    echo "$tmp" | pbcopy
-    # check exit code
-    if [ $? -ne 0 ]; then
-        # echo "Failed to copy to clipboard"
-        echo "$tmp"
-    fi
+    pc jse $@ | pbcopy
 }
 
+
+# jsec: julia setup clipboard
+jsec(){
+    echo $(jse $1) | pbcopy
+}
