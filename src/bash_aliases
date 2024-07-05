@@ -31,6 +31,7 @@ alias glc='git log --oneline --graph --decorate --all'
 alias gcg='git config --global'
 alias ggg='git config --global --get'
 alias grh='git reset --hard'
+alias grp='git rev-parse'
 
 #screensaver
 alias scrsv='xscreensaver-command -activate'
