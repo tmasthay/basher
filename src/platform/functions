@@ -48,7 +48,7 @@ go() {
     mode=${1:-"pkg"}
     cd 
     mkje dev
-    jenv dev $REPO/Madagascar.jl/dev/test_$1.jl
+    jenv dev "$REPO/Madagascar.jl/dev/test_$mode.jl"
     cdr Madagascar.jl
 }
 
