@@ -45,9 +45,11 @@ cddp() {
 
 # go: another current workflow helper
 go() {
-    cddp
-    gho
-    python driver.py
+    mode=${1:-"pkg"}
+    cd 
+    mkje dev
+    jenv dev $REPO/Madagascar.jl/dev/test_$1.jl
+    cdr Madagascar.jl
 }
 
 # kdata: kill data -- another cleaner if needed
