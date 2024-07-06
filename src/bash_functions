@@ -414,7 +414,6 @@ tyc() {
 # sfunc: source bash functions
 sfunc() {
     source ~/.bash_functions
-    source ~/.platform/functions
 }
 
 # salias: source bash aliases

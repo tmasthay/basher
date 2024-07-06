@@ -96,25 +96,6 @@ cdn() {
     cdi misfit_toys/examples/ddp/$1
 }
 
-# go: Overwrite of the above -- see what you want here?
-go() {
-    # mhr
-    # gho
-    if [ -z $1 ]; then
-        cdc
-        rm -rf BENCHMARK
-        cdn
-        python driver.py
-    fi
-    if [ -z $2 ]; then
-        cdn
-        python dw_driver.py
-    fi
-    cdi debug
-    python debug.py /home/tyler/protect conda/BENCHMARK/multiscale/data dw_validate/
-    pfs dw_validate/ "*.txt" "*"
-}
-
 # cmp_tensor: compare tensors
 cmp_tensor() {
     DIR1=${1:-"/home/tyler/protect"}
