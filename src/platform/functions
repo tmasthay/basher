@@ -327,3 +327,8 @@ tdocs() {
         export GEN_IOMT_DOCS="false"
     fi
 }
+
+# ssh_git: "ssh add github key"
+ssh_git(){
+    ssh-add ~/.ssh/id_github
+}
