@@ -12,6 +12,14 @@ cc() {
     cd $ISL/misfit_toys/beta
 }
 
+gho(){
+    OLD_PATH=$(pwd)
+    PATCH_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar/bundled/patches/tmp_remove_problematic_binaries.patch"
+    RUN_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar"
+    git diff | sed 's|a/|before/src/|g' | sed 's|b/|after/src/|g' > $PATCH_PATH
+    julia build_tarballs.jl --debug --verbose aarch64-apple-darwin
+}
+
 # ghh: Another designated current workflow if need two
 ghh() {
     cd ~/Software

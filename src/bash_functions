@@ -2056,6 +2056,36 @@ sfje(){
         jenv $1
     fi
 }
+
+# vrb: "vanilla rebase"
+vrb(){
+    local start=${1:-"HEAD"}
+    local end=${1:-"main"}
+    git rebase -i $(git rev-parse $start) $(git rev-parse $end)
+}
+
+# crp: "current repo"
+crp(){
+    local curr_repo=$(git remote get-url origin | sed 's/git@github.com://' | sed 's/[.]git//')
+    echo $curr_repo
+}
+
+# ghrl: "github run list"
+ghrl(){
+    gh run list --repo $(crp) $@
+}
+
+# ghri: "github run id"
+ghri(){
+    ghrl --status in_progress --json databaseId | jq -r '.[].databaseId'
+}
+
+# ghrv: "github run view"
+ghrv(){
+    local pos=${1:-1}
+    ghri | tail -n $pos | head -n 1 | xargs gh run view
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
