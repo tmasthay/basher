@@ -312,6 +312,11 @@ tdocs() {
     fi
 }
 
+# ssh_git: "ssh add github key"
+ssh_git(){
+    ssh-add ~/.ssh/id_github
+}
+
 #jse: julia setup
 jse(){
     pc jse $@ | pbcopy
