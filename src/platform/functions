@@ -17,7 +17,9 @@ gho(){
     PATCH_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar/bundled/patches/tmp_remove_problematic_binaries.patch"
     RUN_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar"
     git diff | sed 's|a/|before/src/|g' | sed 's|b/|after/src/|g' > $PATCH_PATH
+    cd $RUN_PATH
     julia build_tarballs.jl --debug --verbose aarch64-apple-darwin
+    cd $OLD_PATH
 }
 
 # ghh: Another designated current workflow if need two
