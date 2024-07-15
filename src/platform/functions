@@ -1,22 +1,28 @@
 # gho: designated for current workflow "gho" == "go"
-gho() {
-    cd $ISL/docs/meta
-    python leaderboard.py
-
-    # check failure
-    if [ $? -ne 0 ]; then
-        echo "Leaderboard failed"
-        return
+n() {
+    cd $REPO/Madagascar.jl
+    if [ "$1" == "j" ]; then
+        jse "Madagascar_jll"
+        sfje pre
+    else
+        jse
+        sfje pre
     fi
-    cd ..
-    make clean
-    make html
-    # google-chrome _build/html/index.html
-    cd $ISL/docs/custom_pages/leaderboard
 }
 
 cc() {
     cd $ISL/misfit_toys/beta
+}
+
+gho() {
+    OLD_PATH=$(pwd)
+    PATCH_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar/bundled/patches/tmp_remove_problematic_binaries.patch"
+    RUN_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar"
+    cd $RSFSRC
+    git diff | sed 's|a/|before/src/|g' | sed 's|b/|after/src/|g' >$PATCH_PATH
+    cd $RUN_PATH
+    julia build_tarballs.jl --debug --verbose aarch64-apple-darwin
+    cd $OLD_PATH
 }
 
 # ghh: Another designated current workflow if need two
@@ -52,9 +58,11 @@ cddp() {
 
 # go: another current workflow helper
 go() {
-    cddp
-    gho
-    python driver.py
+    mode=${1:-"pkg"}
+    cd
+    mkje dev
+    jenv dev "$REPO/Madagascar.jl/dev/test_$mode.jl"
+    cdr Madagascar.jl
 }
 
 # kdata: kill data -- another cleaner if needed
@@ -99,25 +107,6 @@ gg() {
 # cdn: cd to misfit_toys/examples/ddp
 cdn() {
     cdi misfit_toys/examples/ddp/$1
-}
-
-# go: Overwrite of the above -- see what you want here?
-go() {
-    # mhr
-    # gho
-    if [ -z $1 ]; then
-        cdc
-        rm -rf BENCHMARK
-        cdn
-        python driver.py
-    fi
-    if [ -z $2 ]; then
-        cdn
-        python dw_driver.py
-    fi
-    cdi debug
-    python debug.py /home/tyler/protect conda/BENCHMARK/multiscale/data dw_validate/
-    pfs dw_validate/ "*.txt" "*"
 }
 
 # cmp_tensor: compare tensors
@@ -332,4 +321,19 @@ tdocs() {
 cch() {
     cda
     ch main.py $@
+}
+
+# ssh_git: "ssh add github key"
+ssh_git() {
+    ssh-add ~/.ssh/id_github
+}
+
+#jse: julia setup
+jse() {
+    pc jse $@ | pbcopy
+}
+
+# jsec: julia setup clipboard
+jsec() {
+    echo $(jse $1) | pbcopy
 }
