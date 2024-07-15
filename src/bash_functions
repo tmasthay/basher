@@ -1637,7 +1637,7 @@ tpt() {
 # cda: change directory to working hydra directory
 cda() {
     local FURTHER=${1:-""}
-    cd $ISL/misfit_toys/ref_hydra/$FURTHER
+    cd $ISL/misfit_toys/hydra/$FURTHER
 }
 
 fcode() {
@@ -2084,6 +2084,21 @@ ghri(){
 ghrv(){
     local pos=${1:-1}
     ghri | tail -n $pos | head -n 1 | xargs gh run view
+}
+
+# gdsf: "git diff single file"
+gdsf(){
+    if [ -z "$1" ]; then
+        echo "Usage: git_diff_file_history <file-path>"
+        return 1
+    fi
+    local file_path="$1"
+    git log --pretty=format:"%h" -- "$file_path" | xargs -I {} git --no-pager show {} -- "$file_path"
+}
+
+# gsearch: "git search"
+gsearch(){
+    git show-ref -s --heads | xargs git grep "$@"
 }
 
 echo "ignore this" >/dev/null
