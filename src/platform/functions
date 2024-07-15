@@ -327,3 +327,9 @@ tdocs() {
         export GEN_IOMT_DOCS="false"
     fi
 }
+
+# cch: "Check current hydra"
+cch() {
+    cda
+    ch main.py $@
+}
