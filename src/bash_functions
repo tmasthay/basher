@@ -2098,7 +2098,7 @@ gdsf(){
 
 # gsearch: "git search"
 gsearch(){
-    git show-ref -s --heads | xargs git grep "$@"
+    git show-ref -s --heads | xargs git grep "$@" 
 }
 
 echo "ignore this" >/dev/null
