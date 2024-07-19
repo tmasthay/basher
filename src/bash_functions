@@ -2101,6 +2101,11 @@ gsearch(){
     git show-ref -s --heads | xargs git grep "$@" 
 }
 
+# yqd: "yq default"
+yqd(){
+    yq --yaml-output --indentless "$@"
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
