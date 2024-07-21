@@ -15,14 +15,8 @@ cc() {
 }
 
 gho() {
-    OLD_PATH=$(pwd)
-    PATCH_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar/bundled/patches/tmp_remove_problematic_binaries.patch"
-    RUN_PATH="/home/tyler/Documents/repos/Yggdrasil/M/Madagascar"
-    cd $RSFSRC
-    git diff | sed 's|a/|before/src/|g' | sed 's|b/|after/src/|g' >$PATCH_PATH
-    cd $RUN_PATH
-    julia build_tarballs.jl --debug --verbose aarch64-apple-darwin
-    cd $OLD_PATH
+    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/source
+    pyig main.py
 }
 
 # ghh: Another designated current workflow if need two
