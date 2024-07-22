@@ -2131,6 +2131,12 @@ yqd(){
     yq --yaml-output --indentless "$@"
 }
 
+# isc: "install site customize"
+isc(){
+    local sitecustomize_path=$(pips 1)/sitecustomize.py
+    ln -s $BASHER/src/py_scripts/sitecustomize.py $sitecustomize_path
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
