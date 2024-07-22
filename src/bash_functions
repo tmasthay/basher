@@ -221,7 +221,14 @@ pfs ()
 pfsc(){
     local pfs_out=$(pfs "$@")
     local STARS="********************************************************************************"
+    if [ "$CTHEME" = "PERM_RAND" ]; then
+        rclrt
+    fi
     ctxt -l "$pfs_out" -s "$STARS" -t $CTHEME | grep -v "^\*"
+}
+
+pfse(){
+    pfsc . "*.$1" "$2"
 }
 
 
@@ -254,6 +261,17 @@ rclr() {
     blue_channel=$((RANDOM % 6))
     color_value="rgb$red_channel$green_channel$blue_channel"
     echo $color_value
+}
+
+rclrs(){
+    local num_colors=${1:-10}
+    for ((i=0; i<num_colors; i++)); do
+        rclr
+    done
+}
+
+rclrt(){
+    rclrs $1 > $BASHER/themes/PERM_RAND.cth
 }
 
 # gpu_mem: see gpu memory
