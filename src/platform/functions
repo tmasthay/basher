@@ -15,7 +15,7 @@ cc() {
 }
 
 gho() {
-    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/source
+    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/source2
     pyig main.py
 }
 

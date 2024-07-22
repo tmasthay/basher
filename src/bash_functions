@@ -2137,6 +2137,12 @@ isc(){
     ln -s $BASHER/src/py_scripts/sitecustomize.py $sitecustomize_path
 }
 
+# usc: "uninstall site customize"
+usc(){
+    local sitecustomize_path=$(pips 1)/sitecustomize.py
+    rm $sitecustomize_path
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
