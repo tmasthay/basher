@@ -9,6 +9,7 @@ commands = {
     'cdh': 'HOME',
     'cdj': 'JOBS',
     'cdr': 'REPO',
+    'cda': pj('ISL', 'misfit_toys', 'ref_hydra')
 }
 
 

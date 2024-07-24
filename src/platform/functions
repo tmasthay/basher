@@ -2,14 +2,21 @@
 n() {
     cd $REPO/Madagascar.jl
     if [ "$1" == "j" ]; then
-        jse "Madagascar_jll"; sfje pre
+        jse "Madagascar_jll"
+        sfje pre
     else
-        jse; sfje pre
+        jse
+        sfje pre
     fi
 }
 
 cc() {
     cd $ISL/misfit_toys/beta
+}
+
+gho() {
+    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/source2
+    pyig main.py
 }
 
 # ghh: Another designated current workflow if need two
@@ -46,7 +53,7 @@ cddp() {
 # go: another current workflow helper
 go() {
     mode=${1:-"pkg"}
-    cd 
+    cd
     mkje dev
     jenv dev "$REPO/Madagascar.jl/dev/test_$mode.jl"
     cdr Madagascar.jl
@@ -304,18 +311,23 @@ tdocs() {
     fi
 }
 
+# cch: "Check current hydra"
+cch() {
+    cda
+    ch main.py $@
+}
+
 # ssh_git: "ssh add github key"
-ssh_git(){
+ssh_git() {
     ssh-add ~/.ssh/id_github
 }
 
 #jse: julia setup
-jse(){
+jse() {
     pc jse $@ | pbcopy
 }
 
-
 # jsec: julia setup clipboard
-jsec(){
+jsec() {
     echo $(jse $1) | pbcopy
 }

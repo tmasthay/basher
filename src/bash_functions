@@ -200,23 +200,37 @@ matlab() {
 }
 
 # pfs: print file contents recursively
-pfs() {
-    local dir=${1:-"."}
-    local pattern=${2:-"*"}
-    local regex=${3:"*"} # get the function's third argument
-    find "$dir" -type f -name "$pattern" -print0 | while IFS= read -r -d $'\0' file; do
-        echo "$(printf '%.0s*' {1..80})"
-        echo "$file"
-        # If regex is provided, use it to filter file contents
+pfs () 
+{ 
+    local dir=${1:-"."};
+    local pattern=${2:-"*"};
+    local regex=${3:-"*"};
+    find "$dir" -type f -name "$pattern" -print0 | sort -z -t '/' -k2,2nr -k2,2 | awk 'BEGIN{RS=ORS="\0"}1' | while IFS= read -r -d '' file; do
+        echo "$(printf '%.0s*' {1..80})";
+        echo "$file";
         if [[ -n "$regex" ]]; then
-            grep -E "$regex" "$file" || echo "No match found for regex '$regex'"
+            grep --color=auto -E "$regex" "$file" || echo "No match found for regex '$regex'";
         else
-            cat "$file"
-        fi
-        echo "$(printf '%.0s*' {1..80})"
-        echo ""
+            cat "$file";
+        fi;
+        echo "$(printf '%.0s*' {1..80})";
+        echo "";
     done
 }
+
+pfsc(){
+    local pfs_out=$(pfs "$@")
+    local STARS="********************************************************************************"
+    if [ "$CTHEME" = "PERM_RAND" ]; then
+        rclrt
+    fi
+    ctxt -l "$pfs_out" -s "$STARS" -t $CTHEME | grep -v "^\*"
+}
+
+pfse(){
+    pfsc . "*.$1" "$2"
+}
+
 
 # grb: git rebase
 grb() {
@@ -247,6 +261,17 @@ rclr() {
     blue_channel=$((RANDOM % 6))
     color_value="rgb$red_channel$green_channel$blue_channel"
     echo $color_value
+}
+
+rclrs(){
+    local num_colors=${1:-10}
+    for ((i=0; i<num_colors; i++)); do
+        rclr
+    done
+}
+
+rclrt(){
+    rclrs $1 > $BASHER/themes/PERM_RAND.cth
 }
 
 # gpu_mem: see gpu memory
@@ -1611,7 +1636,7 @@ pywest() {
 }
 
 cdmh() {
-    cdr masthay_helpers
+    cdr masthay_helpers/$1
 }
 
 gcnv() {
@@ -1637,7 +1662,7 @@ tpt() {
 # cda: change directory to working hydra directory
 cda() {
     local FURTHER=${1:-""}
-    cd $ISL/misfit_toys/ref_hydra/$FURTHER
+    cd $ISL/misfit_toys/hydra/$FURTHER
 }
 
 fcode() {
@@ -2064,6 +2089,67 @@ hcons() {
     curr_config=$(ls -t $hydra_out_root "*.yaml" | head -n 1)
     echo "Current config: $curr_config"
 }
+# vrb: "vanilla rebase"
+vrb(){
+    local start=${1:-"HEAD"}
+    local end=${1:-"main"}
+    git rebase -i $(git rev-parse $start) $(git rev-parse $end)
+}
+
+# crp: "current repo"
+crp(){
+    local curr_repo=$(git remote get-url origin | sed 's/git@github.com://' | sed 's/[.]git//')
+    echo $curr_repo
+}
+
+# ghrl: "github run list"
+ghrl(){
+    gh run list --repo $(crp) $@
+}
+
+# ghri: "github run id"
+ghri(){
+    ghrl --status in_progress --json databaseId | jq -r '.[].databaseId'
+}
+
+# ghrv: "github run view"
+ghrv(){
+    local pos=${1:-1}
+    ghri | tail -n $pos | head -n 1 | xargs gh run view
+}
+
+# gdsf: "git diff single file"
+gdsf(){
+    if [ -z "$1" ]; then
+        echo "Usage: git_diff_file_history <file-path>"
+        return 1
+    fi
+    local file_path="$1"
+    git log --pretty=format:"%h" -- "$file_path" | xargs -I {} git --no-pager show {} -- "$file_path"
+}
+
+# gsearch: "git search"
+gsearch(){
+    git show-ref -s --heads | xargs git grep "$@" 
+}
+
+# yqd: "yq default"
+yqd(){
+    yq --yaml-output --indentless "$@"
+}
+
+# isc: "install site customize"
+isc(){
+    local sitecustomize_path=$(pips 1)/sitecustomize.py
+    ln -s $BASHER/src/py_scripts/sitecustomize.py $sitecustomize_path
+}
+
+# usc: "uninstall site customize"
+usc(){
+    local sitecustomize_path=$(pips 1)/sitecustomize.py
+    rm $sitecustomize_path
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

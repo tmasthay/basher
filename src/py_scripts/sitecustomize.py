@@ -1,11 +1,8 @@
+import os
 from rich.console import Console
 from rich.traceback import install
-import os
 import sys
 from shutil import get_terminal_size as gts
-import torch
-
-torch.set_printoptions(profile='short')
 
 
 cols, _ = gts(fallback=(80, 24))
@@ -37,12 +34,3 @@ if filename.lower() != 'none':
         locals_max_length=10,
         locals_max_string=cols,
     )
-
-# repo_path = os.environ['REPO']
-# nondefault = ['GitHookEm', 'Experiments']
-# repos = [os.path.join(repo_path, e) for e in os.listdir(repo_path) if not e.startswith('.') and not e in nondefault and os.path.isdir(os.path.join(repo_path, e))]
-
-# for repo in repos:
-#     sys.path.append(repo)
-
-# The above can simply be done by using "pip install -e ." instead
