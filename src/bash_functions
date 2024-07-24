@@ -2087,7 +2087,8 @@ hcons() {
     local hydra_out_root=${HYDRA_OUT_ROOT:-"outputs"}
     python hcons.py $@
     curr_config=$(find outputs -name "config.yaml" | sort -r | head -n 1)
-    echo "Current config: $curr_config"
+    echo "Current config"
+    cat $curr_config
 }
 # vrb: "vanilla rebase"
 vrb(){
