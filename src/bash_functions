@@ -2056,6 +2056,14 @@ sfje(){
         jenv $1
     fi
 }
+
+# hcons: "hydra scons"
+hcons() {
+    local hydra_out_root=${HYDRA_OUT_ROOT:-"output"}
+    python hcons.py $@
+    curr_config=$(ls -t $hydra_out_root "*.yaml" | head -n 1)
+    echo "Current config: $curr_config"
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
