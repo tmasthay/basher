@@ -2086,7 +2086,7 @@ sfje(){
 hcons() {
     local hydra_out_root=${HYDRA_OUT_ROOT:-"outputs"}
     python hcons.py $@
-    curr_config=$(ls -t $hydra_out_root "*.yaml" | head -n 1)
+    curr_config=$(find outputs -name "config.yaml" | sort -r | head -n 1)
     echo "Current config: $curr_config"
 }
 # vrb: "vanilla rebase"
