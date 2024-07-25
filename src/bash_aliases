@@ -1,5 +1,6 @@
 source $BASHER/src/MILD_SECRETS/SUPER_SECRETS/super_secret_aliases
 source ~/.platform/aliases
+source $BASHER/src/git/git_aliases
 
 #alias python
 alias python='python3'
