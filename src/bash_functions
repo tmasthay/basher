@@ -200,25 +200,24 @@ matlab() {
 }
 
 # pfs: print file contents recursively
-pfs () 
-{ 
-    local dir=${1:-"."};
-    local pattern=${2:-"*"};
-    local regex=${3:-"*"};
+pfs() {
+    local dir=${1:-"."}
+    local pattern=${2:-"*"}
+    local regex=${3:-"*"}
     find "$dir" -type f -name "$pattern" -print0 | sort -z -t '/' -k2,2nr -k2,2 | awk 'BEGIN{RS=ORS="\0"}1' | while IFS= read -r -d '' file; do
-        echo "$(printf '%.0s*' {1..80})";
-        echo "$file";
+        echo "$(printf '%.0s*' {1..80})"
+        echo "$file"
         if [[ -n "$regex" ]]; then
-            grep --color=auto -E "$regex" "$file" || echo "No match found for regex '$regex'";
+            grep --color=auto -E "$regex" "$file" || echo "No match found for regex '$regex'"
         else
-            cat "$file";
-        fi;
-        echo "$(printf '%.0s*' {1..80})";
-        echo "";
+            cat "$file"
+        fi
+        echo "$(printf '%.0s*' {1..80})"
+        echo ""
     done
 }
 
-pfsc(){
+pfsc() {
     local pfs_out=$(pfs "$@")
     local STARS="********************************************************************************"
     if [ "$CTHEME" = "PERM_RAND" ]; then
@@ -227,10 +226,9 @@ pfsc(){
     ctxt -l "$pfs_out" -s "$STARS" -t $CTHEME | grep -v "^\*"
 }
 
-pfse(){
+pfse() {
     pfsc . "*.$1" "$2"
 }
-
 
 # grb: git rebase
 grb() {
@@ -263,15 +261,15 @@ rclr() {
     echo $color_value
 }
 
-rclrs(){
+rclrs() {
     local num_colors=${1:-10}
-    for ((i=0; i<num_colors; i++)); do
+    for ((i = 0; i < num_colors; i++)); do
         rclr
     done
 }
 
-rclrt(){
-    rclrs $1 > $BASHER/themes/PERM_RAND.cth
+rclrt() {
+    rclrs $1 >$BASHER/themes/PERM_RAND.cth
 }
 
 # gpu_mem: see gpu memory
@@ -1601,7 +1599,7 @@ cdh() {
     local num_see=${1:-10}
     iter=1
     history=$(tac ~/.cd_history | head -n $num_see)
-    num_see=$(echo $history | wc -l)
+    num_see=$(echo "$history" | wc -l)
     echo "$history" | while read -r line; do
         iter_str="$iter"
         num_spaces=$((4 - ${#iter_str}))
@@ -1609,7 +1607,7 @@ cdh() {
         echo "$iter$spaces$line"
         ((iter++))
     done
-    
+
     # ask user input on which of these directories you'd like to go
     while true; do
         read -p "Where to? [1,$num_see] (q to quit): " -r REPLY
@@ -2036,19 +2034,19 @@ gpcb() {
 }
 
 # jenv: "julia env"
-jenv(){
+jenv() {
     ENV_PATH="$HOME/.julia/environments/$1"
     shift
     julia --project=$ENV_PATH $@
 }
 
 # cdje: "cd julia env"
-cdje(){
+cdje() {
     cd $HOME/.julia/environments/$1
 }
 
 # mkje: "make julia env"
-mkje(){
+mkje() {
     # If $1 is empty, then we simply exit since this is unsafe
     if [ -z "$1" ]; then
         echo "Error: Environment name not provided."
@@ -2070,12 +2068,12 @@ mkje(){
 }
 
 # lsje: "list julia env"
-lsje(){
+lsje() {
     ls $HOME/.julia/environments
 }
 
 # sfje: "start fresh julia env"
-sfje(){
+sfje() {
     mkje $1
     if [ $? -eq 0 ]; then
         jenv $1
@@ -2091,36 +2089,36 @@ hcons() {
     cat $curr_config
 }
 # vrb: "vanilla rebase"
-vrb(){
+vrb() {
     local start=${1:-"HEAD"}
     local end=${1:-"main"}
     git rebase -i $(git rev-parse $start) $(git rev-parse $end)
 }
 
 # crp: "current repo"
-crp(){
+crp() {
     local curr_repo=$(git remote get-url origin | sed 's/git@github.com://' | sed 's/[.]git//')
     echo $curr_repo
 }
 
 # ghrl: "github run list"
-ghrl(){
+ghrl() {
     gh run list --repo $(crp) $@
 }
 
 # ghri: "github run id"
-ghri(){
+ghri() {
     ghrl --status in_progress --json databaseId | jq -r '.[].databaseId'
 }
 
 # ghrv: "github run view"
-ghrv(){
+ghrv() {
     local pos=${1:-1}
     ghri | tail -n $pos | head -n 1 | xargs gh run view
 }
 
 # gdsf: "git diff single file"
-gdsf(){
+gdsf() {
     if [ -z "$1" ]; then
         echo "Usage: git_diff_file_history <file-path>"
         return 1
@@ -2130,23 +2128,23 @@ gdsf(){
 }
 
 # gsearch: "git search"
-gsearch(){
-    git show-ref -s --heads | xargs git grep "$@" 
+gsearch() {
+    git show-ref -s --heads | xargs git grep "$@"
 }
 
 # yqd: "yq default"
-yqd(){
+yqd() {
     yq --yaml-output --indentless "$@"
 }
 
 # isc: "install site customize"
-isc(){
+isc() {
     local sitecustomize_path=$(pips 1)/sitecustomize.py
     ln -s $BASHER/src/py_scripts/sitecustomize.py $sitecustomize_path
 }
 
 # usc: "uninstall site customize"
-usc(){
+usc() {
     local sitecustomize_path=$(pips 1)/sitecustomize.py
     rm $sitecustomize_path
 }
