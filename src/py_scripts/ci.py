@@ -32,15 +32,16 @@ def get_branch_output(branch, *, workflow=None, limit=5):
     workflow_cmd = '' if workflow is None else f"--workflow '{workflow}'"
     limit_cmd = '' if limit is None else f"--limit {limit}"
     cmd = f"gh run list --branch {branch} {workflow_cmd} {limit_cmd} | awk '{{print $1, $2}}'"
-    out = [e.split() for e in sco(cmd).split('\n')]
-    out = [out_to_emoji(*e) for e in out]
+    out = [e.split() for e in sco(cmd).split('\n') if e.split()]
+    if out:
+        out = [out_to_emoji(*e) for e in out]
     return out
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--branches', nargs='+', help='Branches to check', default=None)
-    parser.add_argument('-w', '--workflow', help='Workflow to check', default="GPU Validation and Docs Deployment Workflow")
-    parser.add_argument('-l', '--limit', type=int, help='Limit the number of branches to check', default=None)
+    parser.add_argument('-b', '--branches', type=str, help='Branches to check, env var=ISL_CI_RUN_BRANCHES', default=None)
+    parser.add_argument('-w', '--workflow', help='Workflow to check, env var is ISL_CI_RUN_WORKFLOW', default="GPU Validation and Docs Deployment Workflow")
+    parser.add_argument('-l', '--limit', type=int, help='Limit the number of branches to check, env var is ISL_CI_RUN_LIMIT', default=None)
     args = parser.parse_args()
     
     if args.workflow is None or args.workflow == 'null':
