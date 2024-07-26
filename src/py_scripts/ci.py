@@ -47,6 +47,9 @@ def get_args():
         args.workflow = os.environ.get('ISL_CI_RUN_WORKFLOW', None)
     if args.branches is None:
         args.branches = os.environ.get('ISL_CI_RUN_BRANCHES', 'main,devel')
+    elif args.branches.lower() == 'all':
+        args.branches = sco("git ls-remote --heads $(git config --get remote.origin.url) | awk '{print $2}' | sed 's|refs/heads/||g'")
+        args.branches = ','.join(e for e in args.branches.split('\n') if e)
     if args.limit is None:
         args.limit = int(os.environ.get('ISL_CI_RUN_LIMIT', 5))
     args.branches = args.branches.split(',')
