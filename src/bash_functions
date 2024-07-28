@@ -2149,6 +2149,32 @@ usc() {
     rm $sitecustomize_path
 }
 
+# tgt: "toggle torch" -> torch print behavior
+tgt() {
+    TORCH_PATH="$(pips 1)/torch"
+
+    STR_CURR="$TORCH_PATH/_tensor_str.py"
+    STR_CUSTOM="$TORCH_PATH/_tensor_str_custom.py.bak"
+    STR_TORCH="$TORCH_PATH/_tensor_str.py.bak"
+
+    # check that _tensor_str.py.bak exists and .._str_custom.py.bak exists
+    if [ ! -f "$STR_CUSTOM" ] || [ ! -f "$STR_TORCH" ]; then
+        echo "Error: Backup files not found. Exiting..."
+        return 1
+    fi
+
+    # check which one STR_CURR matches
+    diff $STR_CURR $STR_CUSTOM >/dev/null
+    local custom_exit_code=$?
+    if [ $custom_exit_code -eq 0 ]; then
+        TARGET_FILE=$STR_TORCH
+        echo "Switching tensor str to TRUE_TORCH mode"
+    else
+        TARGET_FILE=$STR_CUSTOM
+        echo "Switching tensor str to CUSTOM mode"
+    fi
+    cp $TARGET_FILE $STR_CURR
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
