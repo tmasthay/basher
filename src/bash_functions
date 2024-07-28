@@ -1598,7 +1598,7 @@ cd() {
 cdh() {
     local num_see=${1:-10}
     iter=1
-    history=$(tac ~/.cd_history | head -n $num_see)
+    history="$(tac ~/.cd_history | head -n $num_see)"
     num_see=$(echo "$history" | wc -l)
     echo "$history" | while read -r line; do
         iter_str="$iter"
@@ -1618,7 +1618,7 @@ cdh() {
 
         if [[ $REPLY =~ ^[0-9]+$ ]] && [[ $REPLY -ge 1 ]] && [[ $REPLY -le $num_see ]]; then
             valid_input=1
-            local line=$(echo $history | head -n $REPLY | tail -n 1)
+            local line=$(echo "$history" | head -n $REPLY | tail -n 1)
             echo ""
             echo "cd $line"
             cd $line
