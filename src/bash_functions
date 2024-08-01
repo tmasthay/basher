@@ -1595,6 +1595,10 @@ cd() {
     echo $(pwd) >>~/.cd_history
 }
 
+cdf() {
+    cd $FOCUS/$1
+}
+
 cdh() {
     local num_see=${1:-10}
     iter=1
