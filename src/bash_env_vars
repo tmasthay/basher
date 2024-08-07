@@ -16,12 +16,14 @@ export ADDON_HELPERS_NAME="helpers"
 export BLENDER_DEV_PATH="$HOME/Documents/repos/Experiments/blender"
 export JOBS="$HOME/Documents/Logistics/Career/Jobs"
 export SANDBOX="$HOME/.sandbox"
+export ISL_CI_RUN_WORKFLOW="GPU Validation and Docs Deployment Workflow"
+export ISL_CI_RUN_LIMIT="5"
+export ISL_CI_RUN_BRANCHES="all"
 
-if command -v code > /dev/null; then
+if command -v code >/dev/null; then
     export GIT_EDITOR="code --wait"
 else
     export GIT_EDITOR="vim"
 fi
-
 
 source $H/.platform/env_vars
