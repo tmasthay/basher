@@ -10,6 +10,10 @@ n() {
     fi
 }
 
+hhsf(){
+    cp /home/tyler/Documents/repos/ConversationStarters/cfg/tyler/family/parents/dad.yaml $1.yaml
+}
+
 cc() {
     cd $ISL/misfit_toys/beta
 }

@@ -3,7 +3,7 @@ source ~/.platform/aliases
 source $BASHER/src/git/git_aliases
 
 #alias python
-alias python='python3'
+# alias python='python3'
 
 #Mac aliases
 alias pbcopy='xclip -select clipboard'
