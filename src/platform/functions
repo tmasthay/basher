@@ -10,7 +10,7 @@ n() {
     fi
 }
 
-hhsf(){
+hhsf() {
     cp /home/tyler/Documents/repos/ConversationStarters/cfg/tyler/family/parents/dad.yaml $1.yaml
 }
 
@@ -21,7 +21,7 @@ cc() {
 gho() {
     cdf
     # python -W ignore main.py case=full "$@"
-    python -W ignore main.py $GHO_ARGS "$@"
+    python -W ignore main.py "$GHO_ARGS" "$@"
 }
 
 # ghh: Another designated current workflow if need two
