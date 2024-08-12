@@ -21,7 +21,11 @@ cc() {
 gho() {
     cdf
     # python -W ignore main.py case=full "$@"
-    python -W ignore main.py "$GHO_ARGS" "$@"
+    # build cmd string
+    CMD="python -W ignore main.py $GHO_ARGS $@"
+    echo $CMD
+    # python -W ignore main.py "$GHO_ARGS" "$@"
+    eval $CMD
 }
 
 # ghh: Another designated current workflow if need two
