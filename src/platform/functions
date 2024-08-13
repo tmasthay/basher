@@ -26,6 +26,13 @@ gho() {
     echo $CMD
     # python -W ignore main.py "$GHO_ARGS" "$@"
     eval $CMD
+    if [ ! "$?" -eq 0 ]; then
+        echo "Error in main script...exiting"
+        return
+    fi
+    . .latest
+    # python tmp_plotter.py true_src_amp_y.pt src_amp_frames.pt compare_src
+    # code compare_src.gif
 }
 
 # ghh: Another designated current workflow if need two
