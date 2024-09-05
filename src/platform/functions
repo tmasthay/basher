@@ -357,3 +357,7 @@ jse() {
 jsec() {
     echo $(jse $1) | pbcopy
 }
+
+cds() {
+    cd "$ISL/misfit_toys/examples/source2/$1"
+}
