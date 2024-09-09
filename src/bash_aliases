@@ -33,6 +33,7 @@ alias gcg='git config --global'
 alias ggg='git config --global --get'
 alias grh='git reset --hard'
 alias grp='git rev-parse'
+alias grc='git rebase --continue'
 
 #screensaver
 alias scrsv='xscreensaver-command -activate'
