@@ -7,5 +7,4 @@ git config --global alias.grab '!f() { git fetch origin "$1" && git checkout "$1
 git config --global alias.pnb '!f() { git push --set-upstream origin "$1"; }; f'
 git config --global alias.revert_file '!f() { git restore --source HEAD~${2-1} $1; }; f'
 git config --global alias.delete_remote 'push origin --delete'
-
-
+git config --global alias.sal 'config --get-regexp alias'
