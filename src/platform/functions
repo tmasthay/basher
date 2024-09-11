@@ -19,27 +19,10 @@ cc() {
 }
 
 gho() {
-    # cdf
-    # # python -W ignore main.py case=full "$@"
-    # # build cmd string
-    # CMD="python -W ignore main.py $GHO_ARGS $@"
-    # echo $CMD
-    # # python -W ignore main.py "$GHO_ARGS" "$@"
-    # eval $CMD
-    # if [ ! "$?" -eq 0 ]; then
-    #     echo "Error in main script...exiting"
-    #     return
-    # fi
-    # . .latest
-    # # python tmp_plotter.py true_src_amp_y.pt src_amp_frames.pt compare_src
-    # # code compare_src.gif
-    # my_black -q /home/tyler/Documents/repos/Experiments/curve_tracing/b.py
-    # cd /home/tyler/Documents/repos/Experiments/curve_tracing
-    # python b.py
-    # code res.gif
-
-    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/hydra
-    python main.py +run=tmp case/train/loss=tbt $@
+    # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/hydra
+    # python main.py +run=tmp case/train/loss=tbt $@
+    cdf
+    python -W ignore main.py case=homo
 }
 
 # ghh: Another designated current workflow if need two
