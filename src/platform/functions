@@ -1,3 +1,8 @@
+bb() {
+    cdf
+    trc -f cfg
+}
+
 # gho: designated for current workflow "gho" == "go"
 n() {
     cd $REPO/Madagascar.jl
@@ -22,7 +27,9 @@ gho() {
     # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/hydra
     # python main.py +run=tmp case/train/loss=tbt $@
     cdf
-    python -W ignore main.py case=homo
+    python -W ignore main.py "$GHO_ARGS" "$@"
+    . .latest
+    cd figs
 }
 
 # ghh: Another designated current workflow if need two
