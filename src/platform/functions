@@ -1,3 +1,8 @@
+bb() {
+    cdf
+    trc -f cfg
+}
+
 # gho: designated for current workflow "gho" == "go"
 n() {
     cd $REPO/Madagascar.jl
@@ -10,7 +15,7 @@ n() {
     fi
 }
 
-hhsf(){
+hhsf() {
     cp /home/tyler/Documents/repos/ConversationStarters/cfg/tyler/family/parents/dad.yaml $1.yaml
 }
 
@@ -19,8 +24,12 @@ cc() {
 }
 
 gho() {
-    cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/source2
-    pyig main.py
+    # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/hydra
+    # python main.py +run=tmp case/train/loss=tbt $@
+    cdf
+    python -W ignore main.py "$GHO_ARGS" "$@"
+    . .latest
+    cd figs
 }
 
 # ghh: Another designated current workflow if need two
@@ -99,7 +108,10 @@ rexit() {
 
 # gg: gdown helper
 gg() {
-    echo "gdown $1" | sed 's/view?.*//' | sed 's/file\/d\//uc?id=/'
+    gho "$@"
+    . .latest
+    code *.gif
+    cdf
 }
 
 # cdn: cd to misfit_toys/examples/ddp
@@ -334,4 +346,8 @@ jse() {
 # jsec: julia setup clipboard
 jsec() {
     echo $(jse $1) | pbcopy
+}
+
+cds() {
+    cd "$ISL/misfit_toys/examples/source2/$1"
 }

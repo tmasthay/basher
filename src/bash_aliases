@@ -33,6 +33,7 @@ alias gcg='git config --global'
 alias ggg='git config --global --get'
 alias grh='git reset --hard'
 alias grp='git rev-parse'
+alias grc='git rebase --continue'
 
 #screensaver
 alias scrsv='xscreensaver-command -activate'
@@ -50,3 +51,6 @@ alias sur='su root'
 alias blist='mudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
 
 # alias ch="python $BASHER/src/py_scripts/chydra.py"
+
+# alias for ". .latest" for IOMT
+alias aa='. .latest'

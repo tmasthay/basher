@@ -2197,6 +2197,15 @@ tgt() {
     fi
     cp $TARGET_FILE $STR_CURR
 }
+
+# bdt: branch diff tool
+bdt() {
+    mkdir -p /tmp/git_diff
+
+    git show "$1" >/tmp/git_diff/branch1.diff
+    git show "$2" >/tmp/git_diff/branch2.diff
+    code --wait --diff /tmp/git_diff/branch1.diff /tmp/git_diff/branch2.diff
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions

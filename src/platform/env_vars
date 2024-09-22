@@ -1,2 +1,3 @@
 export DEFAULT_CMT_MSG="CI server down [skip ci]"
 export FOCUS="$ISL/misfit_toys/examples/source2"
+export GHO_ARGS="case=full"
