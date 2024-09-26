@@ -26,10 +26,12 @@ cc() {
 gho() {
     # cd /home/tyler/Documents/repos/IslandOfMisfitToys/misfit_toys/examples/hydra
     # python main.py +run=tmp case/train/loss=tbt $@
-    cdf
-    python -W ignore main.py "$GHO_ARGS" "$@"
-    . .latest
-    cd figs
+    # cdf
+    # python -W ignore main.py $GHO_ARGS "$@"
+    # . .latest
+    # cd figs
+    cd /home/tyler/Documents/repos/Experiments/iomt/alan
+    pyig main.py
 }
 
 # ghh: Another designated current workflow if need two
