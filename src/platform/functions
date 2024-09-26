@@ -31,7 +31,7 @@ gho() {
     # . .latest
     # cd figs
     cd /home/tyler/Documents/repos/Experiments/iomt/alan
-    pyig main.py
+    pyig main.py && code source_amplitudes.gif
 }
 
 # ghh: Another designated current workflow if need two
