@@ -30,8 +30,12 @@ gho() {
     # python -W ignore main.py $GHO_ARGS "$@"
     # . .latest
     # cd figs
-    cd /home/tyler/Documents/repos/Experiments/iomt/alan
-    pyig main.py && code source_amplitudes.gif
+    # cd /home/tyler/Documents/repos/Experiments/iomt/alan
+    # pyig elastic_landscape.py "$GHO_ARGS" "$@"
+    # aa
+    rm -rf "$CONDA_PREFIX/data"
+    cdi misfit_toys/data
+    python download_data.py marm2
 }
 
 # ghh: Another designated current workflow if need two

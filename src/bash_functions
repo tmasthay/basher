@@ -2085,8 +2085,7 @@ sfje() {
 }
 
 # hcons: "hydra scons"
-hcons () 
-{ 
+hcons() {
     local HELP=0
     local CLEAN=0
     for arg in "$@"; do
@@ -2206,6 +2205,12 @@ bdt() {
     git show "$2" >/tmp/git_diff/branch2.diff
     code --wait --diff /tmp/git_diff/branch1.diff /tmp/git_diff/branch2.diff
 }
+
+# who_gpu: who is using the gpu
+who_gpu() {
+    nvidia-smi --query-compute-apps=pid --format=csv,noheader | xargs -I {} bash -c 'echo "$(ps -o user= -p {}) {}"'
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
