@@ -366,3 +366,8 @@ cfgv() {
     cd /home/tyler/Documents/repos/Experiments/iomt/alan/cfg_gen
     trc -f
 }
+
+# cv: "config view" alias
+cv() {
+    cfgv $@
+}
