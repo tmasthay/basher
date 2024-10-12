@@ -33,9 +33,12 @@ gho() {
     # cd /home/tyler/Documents/repos/Experiments/iomt/alan
     # pyig elastic_landscape.py "$GHO_ARGS" "$@"
     # aa
-    rm -rf "$CONDA_PREFIX/data"
-    cdi misfit_toys/data
-    python download_data.py marm2
+    # rm -rf "$CONDA_PREFIX/data"
+    # cdi misfit_toys/data
+    # python download_data.py marm2
+    cd /home/tyler/Documents/repos/Experiments/iomt/alan
+    python gen_landscape.py $@
+    cdo
 }
 
 # ghh: Another designated current workflow if need two
@@ -356,4 +359,10 @@ jsec() {
 
 cds() {
     cd "$ISL/misfit_toys/examples/source2/$1"
+}
+
+# cfgv: "config view"
+cfgv() {
+    cd /home/tyler/Documents/repos/Experiments/iomt/alan/cfg_gen
+    trc -f
 }

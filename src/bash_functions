@@ -2211,6 +2211,12 @@ who_gpu() {
     nvidia-smi --query-compute-apps=pid --format=csv,noheader | xargs -I {} bash -c 'echo "$(ps -o user= -p {}) {}"'
 }
 
+# sal: search all
+sal() {
+    EXP=$1
+    FILE_TYPE=${2:-"py"}
+    find . -type f -name "*.$FILE_TYPE" -exec grep -Hn --color=always $EXP {} \;
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
