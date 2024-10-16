@@ -37,7 +37,12 @@ gho() {
     # cdi misfit_toys/data
     # python download_data.py marm2
     cd /home/tyler/Documents/repos/Experiments/iomt/alan
-    python gen_landscape.py $@
+    local tmp_str="python -W ignore gen_landscape.py ${GHO_ARGS[@]} $@"
+    echo "$tmp_str"
+    echo
+    echo "Kill now if you don't want to run the command"
+    sleep $GHO_SLEEP_TIME
+    eval "$tmp_str"
     cdo
 }
 
@@ -261,9 +266,10 @@ mst() {
 
 # cdv: "cd to val"
 cdv() {
-    BASE=$ISL/misfit_toys/tccs/modules
-    OPTION=${1:-"local_compare"}
-    cd $BASE/$OPTION/out/parallel
+    # BASE=$ISL/misfit_toys/tccs/modules
+    # OPTION=${1:-"local_compare"}
+    # cd $BASE/$OPTION/out/parallel
+    cd $REPO/Experiments/iomt/alan/cfg_gen $@
 }
 
 # vlt: "val loop test" -- deprecated
@@ -371,3 +377,13 @@ cfgv() {
 cv() {
     cfgv $@
 }
+
+unset GHO_ARGS
+export GHO_ARGS=(
+    "static=elastic_landscape"
+    "src.n_horz=3"
+    "src.n_deep=3"
+)
+
+unset GHO_SLEEP_TIME
+export GHO_SLEEP_TIME=1
