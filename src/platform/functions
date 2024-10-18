@@ -367,7 +367,7 @@ cds() {
 # cfgv: "config view"
 cfgv() {
     cd /home/tyler/Documents/repos/Experiments/iomt/alan/cfg_gen
-    trc -f
+    trc -f $@
 }
 
 # cv: "config view" alias
