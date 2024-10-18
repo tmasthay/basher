@@ -201,9 +201,9 @@ matlab() {
 
 # pfs: print file contents recursively
 pfs() {
-    local dir=${1:-"."}
-    local pattern=${2:-"*"}
-    local regex=${3:-"*"}
+    local dir=${3:-"."}
+    local pattern=${1:-"*"}
+    local regex=${2:-"*"}
     find "$dir" -type f -name "$pattern" -print0 | sort -z -t '/' -k2,2nr -k2,2 | awk 'BEGIN{RS=ORS="\0"}1' | while IFS= read -r -d '' file; do
         echo "$(printf '%.0s*' {1..80})"
         echo "$file"
@@ -1829,7 +1829,7 @@ sss() {
 
 # ksg: "kill stray gpu"
 ksg() {
-    kill $(nvidia-smi | grep "dw/bin" | awk '{print $5}')
+    kill $(nvidia-smi | grep -E "python|dw/bin/" | awk '{print $5}')
 }
 
 # cdrec: "cd most recent"

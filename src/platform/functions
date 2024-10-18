@@ -39,9 +39,6 @@ gho() {
     cd /home/tyler/Documents/repos/Experiments/iomt/alan
     local tmp_str="python -W ignore gen_landscape.py ${GHO_ARGS[@]} $@"
     echo "$tmp_str"
-    echo
-    echo "Kill now if you don't want to run the command"
-    sleep $GHO_SLEEP_TIME
     eval "$tmp_str"
     cdo
 }
