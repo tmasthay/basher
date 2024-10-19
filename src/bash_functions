@@ -2217,6 +2217,97 @@ sal() {
     FILE_TYPE=${2:-"py"}
     find . -type f -name "*.$FILE_TYPE" -exec grep -Hn --color=always $EXP {} \;
 }
+
+# fac: "find and cd"
+fac() {
+    # Set default max number of directories to display
+    max_display=${1:-10}
+
+    # Find directories, sort by modification time, filter, and limit the result
+    dirs=$(find . -mindepth 2 -type d -exec stat --format '%Y %n' {} + | sort -nr | awk '{print $2}' | grep -v ".hydra" | grep -E "outputs|multirun" | head -n "$max_display")
+
+    # Display the results with line numbers
+    echo "$dirs" | nl
+
+    # Loop to get valid input
+    while true; do
+        read -p "Enter a number between 1 and $max_display to cd, or 'q' to quit: " input
+
+        if [[ "$input" == "q" ]]; then
+            echo "Exiting..."
+            return 0
+        elif [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 1 ] && [ "$input" -le "$max_display" ]; then
+            selected_dir=$(echo "$dirs" | sed -n "${input}p")
+            cd "$selected_dir" || {
+                echo "Failed to change directory."
+                return 1
+            }
+            echo "Changed directory to: $selected_dir"
+            return 0
+        else
+            echo "Invalid input. Please try again."
+        fi
+    done
+}
+
+# slh: "select history"
+slh() {
+    # Get the number of commands to display, default to 10
+    num_commands=${1:-10}
+
+    # Display the most recent $num_commands commands with line numbers
+    history | tail -n $num_commands | nl
+
+    # Ask the user to select a command number or quit
+    read -p "Enter a command number to display, or 'q' to quit: " input
+
+    if [[ "$input" == "q" ]]; then
+        echo "Exiting..."
+    elif [[ "$input" =~ ^[0-9]+$ ]]; then
+        # Get the selected command from history
+        cmd=$(history | tail -n $num_commands | awk '{$1=""; print $0}' | sed -n "${input}p")
+
+        # Echo the selected command
+        if [ -n "$cmd" ]; then
+            echo "Selected command:"
+            echo "$cmd"
+        else
+            echo "Invalid selection. Please try again."
+        fi
+    else
+        echo "Invalid input. Please enter a valid number."
+    fi
+}
+
+# cdrec: "cd recent"
+function cdrec() {
+    max_count=${1:-10}
+
+    echo "Recent directories:"
+    recent_dirs=$(find . -type d -printf '%T@ %p\n' | sort -n -r | head -n "$max_count" | cut -d' ' -f2-)
+
+    # Print the directories with numbers
+    IFS=$'\n'
+    index=1
+    for dir in $recent_dirs; do
+        echo "$index: $dir"
+        ((index++))
+    done
+    unset IFS
+
+    echo "Enter a number (1 to $max_count) to change to that directory, or 'q' to quit:"
+    read input
+
+    if [[ "$input" == "q" ]]; then
+        echo "Quitting."
+    elif [[ "$input" =~ ^[0-9]+$ ]] && [ "$input" -ge 1 ] && [ "$input" -le "$max_count" ]; then
+        selected_dir=$(echo "$recent_dirs" | sed -n "${input}p")
+        cd "$selected_dir" || echo "Failed to change directory to $selected_dir"
+    else
+        echo "Invalid input. Please enter a number between 1 and $max_count."
+    fi
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
