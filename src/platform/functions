@@ -36,11 +36,14 @@ gho() {
     # rm -rf "$CONDA_PREFIX/data"
     # cdi misfit_toys/data
     # python download_data.py marm2
-    cd /home/tyler/Documents/repos/Experiments/iomt/alan
-    local tmp_str="python -W ignore gen_landscape.py ${GHO_ARGS[@]} $@"
-    echo "$tmp_str"
-    eval "$tmp_str"
-    cdo
+    # cd /home/tyler/Documents/repos/Experiments/iomt/alan
+    # local tmp_str="python -W ignore gen_landscape.py ${GHO_ARGS[@]} $@"
+    # echo "$tmp_str"
+    # eval "$tmp_str"
+    # cdo
+    cdf
+    ./nohup.sh $1
+    why 10
 }
 
 # ghh: Another designated current workflow if need two
@@ -375,12 +378,28 @@ cv() {
     cfgv $@
 }
 
-unset GHO_ARGS
-export GHO_ARGS=(
-    "static=elastic_landscape"
-    "src.n_horz=3"
-    "src.n_deep=3"
-)
+why() {
+    sleep $1
+    watch -x -n 5 tac $(pce mrf -n 'stream*' -c 2 | awk '{print $NF}' | sort -r)
+}
 
-unset GHO_SLEEP_TIME
-export GHO_SLEEP_TIME=1
+sca() {
+    cat .hydra/overrides.yaml
+}
+
+wtc() {
+    cdf
+    sleep $1
+    curr_file=$(pce mrf -n "stream.out" | tail -n 1 | awk '{print $NF}')
+    curr_dir=$(dirname $curr_file)
+    echo "Current directory: $curr_dir"
+    watch -n 5 tac "$curr_dir/stream.out" "$curr_dir/stream.err"
+}
+
+gre() {
+    cd $(ls -t | head -n 1)
+}
+
+wth() {
+    watch -n 5 tac stream.out stream.err
+}
