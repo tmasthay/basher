@@ -1,2 +1,8 @@
 export DEFAULT_CMT_MSG="CI server down [skip ci]"
+<<<<<<< Updated upstream
 export FOCUS="/home/tyler/Documents/repos/Experiments/iomt/alan"
+=======
+# export FOCUS="$ISL/misfit_toys/examples/source2"
+export FOCUS="$REPO/Dissertation/structural/Figs/namespace_refactor"
+export GHO_ARGS="case=full"
+>>>>>>> Stashed changes
