@@ -54,3 +54,6 @@ alias blist='mudo $(which python3) $BASHER/src/py_scripts/check_jail.py'
 
 # alias for ". .latest" for IOMT
 alias aa='. .latest'
+
+#qmake
+alias qmake="/home/tyler/miniconda3/envs/qt/lib/qt6/bin/qmake"

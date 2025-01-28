@@ -2308,6 +2308,34 @@ function cdrec() {
     fi
 }
 
+# wdiff: "word diff" -> estimated word count difference in commit -- for latex-based projects
+wdiff(){
+    additions=$(git diff --word-diff=porcelain | grep -E '^\+' | grep -v '^---' | wc -w)
+    deletions=$(git diff --word-diff=porcelain | grep -E '^- ' | grep -v '^---' | wc -w)
+    difference=$((additions - deletions))
+    echo "Additions: $additions"
+    echo "Deletions: $deletions"
+    echo "Difference: $difference"
+}
+
+# tikzit: "tikzit"
+tikzit() {
+    /home/tyler/Software/tikzit/tikzit/bin/tikzit &
+}
+
+# rga: "ripgrep all"
+rga(){
+    if [[ "$1" == "-h" ]]; then
+        rg -i --line-number --color=always "${@:2}"
+    else
+        rg -i --line-number --color=always --no-heading "$@"
+    fi
+}
+
+# cdd: "cd directory"
+cdd(){
+    cd "$(dirname "$1")"
+}
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
