@@ -1,5 +1,13 @@
 #!/bin/bash
-# @VS@ echo "runme.sh: binding for easy injection of commands in VS code. @VS@ X in any of the first 30 lines of code in a file will X with your custom keyboard shortcut!"
+# @VS@ echo "runme.sh: binding for easy injection of commands in VS code. @VS@ X in any of the first 30 lines of code in a file will X with your custom keyboard shortcut!" keybindings.json instructions can found in _file.
+# Add the following to your keybindings.json file in vscode.
+#   {
+#     "key": "ctrl+meta+g",
+#     "command": "workbench.action.terminal.sendSequence",
+#     "args": {
+#       "text": "source $BASHER/src/bash_scripts/runme.sh ${file}\u000D"
+#     }
+#   }
 
 # Ensure the script is being sourced
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
