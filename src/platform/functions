@@ -374,9 +374,9 @@ cfgv() {
 }
 
 # cv: "config view" alias
-cv() {
-    cfgv $@
-}
+# cv() {
+#     cfgv $@
+# }
 
 why() {
     sleep $1

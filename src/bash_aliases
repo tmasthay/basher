@@ -57,3 +57,10 @@ alias aa='. .latest'
 
 #qmake
 alias qmake="/home/tyler/miniconda3/envs/qt/lib/qt6/bin/qmake"
+declare -A cxa=(
+    ['r']="$REPO"
+    ['b']="$BASHER/src"
+    ['i']="$ISL"
+    ['pys']="$BASHER/src/py_scripts"
+    ['pl']="$BASHER/src/platform"
+)

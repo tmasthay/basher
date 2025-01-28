@@ -13,3 +13,4 @@ done
 
 python $BASHER/src/autocomplete/gen_completions.py
 source $BASHER/src/autocomplete/path_complete.sh
+source $BASHER/src/autocomplete/cx_completion.sh

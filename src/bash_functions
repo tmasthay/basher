@@ -2258,6 +2258,8 @@ slh() {
     # Display the most recent $num_commands commands with line numbers
     history | tail -n $num_commands | nl
 
+    return 0
+
     # Ask the user to select a command number or quit
     read -p "Enter a command number to display, or 'q' to quit: " input
 
@@ -2309,7 +2311,7 @@ function cdrec() {
 }
 
 # wdiff: "word diff" -> estimated word count difference in commit -- for latex-based projects
-wdiff(){
+wdiff() {
     additions=$(git diff --word-diff=porcelain | grep -E '^\+' | grep -v '^---' | wc -w)
     deletions=$(git diff --word-diff=porcelain | grep -E '^- ' | grep -v '^---' | wc -w)
     difference=$((additions - deletions))
@@ -2324,7 +2326,7 @@ tikzit() {
 }
 
 # rga: "ripgrep all"
-rga(){
+rga() {
     if [[ "$1" == "-h" ]]; then
         rg -i --line-number --color=always "${@:2}"
     else
@@ -2333,9 +2335,139 @@ rga(){
 }
 
 # cdd: "cd directory"
-cdd(){
+cdd() {
     cd "$(dirname "$1")"
 }
+# override grep with color
+grepc() {
+    grep --color=always "$@"
+}
+
+s() {
+    source "$BASHER/src/$1"
+}
+
+e() {
+    code "$BASHER/src/$1"
+}
+
+# cx: a more general version of cdr, cdf, cdb and so on
+cx() {
+    local alias="$1"
+    alias=$(python -c 'import sys; print(sys.argv[1].split(":")[0])' $alias)
+    shift # Remove the alias from arguments
+    local base_dir="${cxa[$alias]}"
+
+    if [[ -z "$base_dir" ]]; then
+        echo "Error: Unknown alias '$alias'"
+        return 1
+    fi
+
+    cd "$base_dir/$*" || echo "Error: Directory not found"
+}
+
+# pp: "preview paths"
+pp() {
+    for k in "${!cxa[@]}"; do
+        v=${cxa[$k]}
+        echo "$k: $v"
+    done
+}
+
+# cv: forgot what the namign convention here is
+cv() {
+    local pattern="${1:-/}"     # Pattern to match; defaults to '/' if not provided
+    local exact_match="${2:-1}" # Flag to determine if '$' should be appended; defaults to 1 (true)
+    local num_see="${3:-10}"    # Number of entries to display; defaults to 10
+
+    # Append '$' to the pattern if exact_match is set to 1
+    if [[ "$exact_match" -eq 1 ]]; then
+        pattern="${pattern}$"
+    fi
+
+    # Reverse the .cd_history file, filter with grep, and limit the output
+    history=$(tac ~/.cd_history | grep -E "$pattern" | head -n "$num_see")
+
+    # Convert history to an array
+    IFS=$'\n' read -r -d '' -a history_array <<<"$history"
+
+    # Get the number of matching directories
+    match_count=${#history_array[@]}
+
+    # Check if there are no matches
+    if [[ "$match_count" -eq 0 ]]; then
+        echo "No matching directories found."
+        return
+    fi
+
+    # If there's exactly one match or num_see is 1, navigate to it directly
+    if [[ "$match_count" -eq 1 || "$num_see" -eq 1 ]]; then
+        selected_dir="${history_array[0]}"
+        echo "Navigating to: $selected_dir"
+        cd "$selected_dir" || echo "Failed to change directory to $selected_dir"
+        return
+    fi
+
+    # Display the filtered directories with numbering
+    for i in "${!history_array[@]}"; do
+        printf "%2d. %s\n" $((i + 1)) "${history_array[i]}"
+    done
+
+    # Prompt the user to select a directory
+    while true; do
+        read -p "Where to? [1-$match_count] (q to quit): " -r REPLY
+
+        if [[ "$REPLY" == "q" ]]; then
+            break
+        elif [[ "$REPLY" =~ ^[0-9]+$ ]] && ((REPLY >= 1 && REPLY <= match_count)); then
+            selected_dir="${history_array[REPLY - 1]}"
+            echo "Navigating to: $selected_dir"
+            cd "$selected_dir" || echo "Failed to change directory to $selected_dir"
+            break
+        else
+            echo "Invalid input. Please enter a number between 1 and $match_count, or 'q' to quit."
+        fi
+    done
+}
+
+# cl: "cv latest"
+cl() {
+    mode=${2:-0}
+    cv "$1" "$2" 1
+}
+
+# cvs: "cv subdirectory" -- filter all matches from current working directory
+cs() {
+    cv "$(pwd)/.*" 0 "$1"
+}
+
+# tf: "tree -f"
+tf() {
+    tree -f "$@"
+}
+
+# gfh: "git file history"
+gfh() {
+    # Check if a file name was provided
+    if [ -z "$1" ]; then
+        echo "Usage: gfh <file>"
+        return 1
+    fi
+
+    # Get the list of commits affecting the file
+    COMMITS=$(git log --pretty=format:"%h" --follow "$1")
+
+    # Initialize the output
+    echo "HEAD-relative positions for file: $1"
+
+    # Process each commit
+    for COMMIT_HASH in $COMMITS; do
+        # Find the position of this commit relative to HEAD
+        POSITION=$(git rev-list --count "$COMMIT_HASH..HEAD")
+        echo "HEAD~$POSITION $COMMIT_HASH $(git show -s --format='%ad %an %s' --date=iso $COMMIT_HASH)"
+    done
+}
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
