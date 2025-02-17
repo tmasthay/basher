@@ -403,3 +403,7 @@ gre() {
 wth() {
     watch -n 5 tac stream.out stream.err
 }
+
+rgg(){
+    rg --no-heading --glob "*tex" "$@"
+}
