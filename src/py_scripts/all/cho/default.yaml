@@ -1,0 +1,8 @@
+l: rg
+c: code
+a: pbcopy
+
+transform:
+  line: ${l}
+  cmd: ${c}
+  act: ${a}

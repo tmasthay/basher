@@ -27,3 +27,6 @@ else
 fi
 
 source $H/.platform/env_vars
+
+export LATEX_FLAGS=-m
+export LATEX_PROJ=/home/tyler/Documents/repos/Dissertation

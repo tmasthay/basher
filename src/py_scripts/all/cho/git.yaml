@@ -1,0 +1,8 @@
+l: id
+c: null
+a: pbcopy
+
+transform:
+  line: ${l}
+  cmd: ${c}
+  act: ${a}
