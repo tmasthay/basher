@@ -29,14 +29,8 @@ def preprocess_cfg(cfg: DictConfig) -> DotMap:
     c.read_path = c.get('read_path', 'C:\\Users\\tmasthay\\.basher\\.tmp\\no.out')
     return c
 
-def clip(x, run=True):
-    if '.ui' in x:
-        cmd = f"echo {x} ^^^& | clip"
-    else:
-        cmd = f"echo {x} | clip"
-
-    if run:
-        cmd += ' && powershell -Command "My-Paste"'
+def clip(x, run=False):
+    cmd = f"echo {x} | xclip -select clipboard"
     print(cmd)
     os.system(cmd)
 

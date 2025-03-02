@@ -1,6 +1,6 @@
 l: rg
 c: code
-a: pbcopy
+a: clip
 
 transform:
   line: ${l}
