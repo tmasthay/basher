@@ -2478,6 +2478,56 @@ clip(){
     pbcopy "$@"
 }
 
+# nw: "num words"
+nw() {
+  cd /home/tyler/Documents/repos/Dissertation || { echo "Error: Failed to change directory."; return 1; }
+
+  mode=${1:-0}
+  local total=0
+  # If $1 is "1", build array from git diff, else use hardcoded list
+  if [ "$mode" = "0" ]; then
+    # Build array from git diff --name-only HEAD
+    mapfile -t files < <(git diff --name-only HEAD)
+    if [ ${#files[@]} -eq 0 ]; then
+      echo "No diff files with respect to HEAD."
+      cd "$OLDPWD" || return
+      return 0
+    fi
+  else
+    # Hardcoded list of files
+    local files=("chapters/main.tex" "chapters/iomt.tex" "chapters/introduction.tex")
+  fi
+
+  for file in "${files[@]}"; do
+    if [ ! -f "$file" ]; then
+      echo "Error: '$file' does not exist in the working directory."
+      continue
+    fi
+
+    local words_before
+    if ! words_before=$(git show HEAD:"$file" 2>/dev/null | wc -w); then
+      echo "Error: Unable to read '$file' from HEAD."
+      continue
+    fi
+
+    local words_after
+    if ! words_after=$(wc -w < "$file" 2>/dev/null); then
+      echo "Error: Unable to read '$file' from working directory."
+      continue
+    fi
+
+    local net=$((words_after - words_before))
+    # echo "$file: Words before: $words_before, Words after: $words_after, Net difference: $net"
+    total=$((total + net))
+  done
+
+  echo "$total"
+  cd "$OLDPWD" || return
+}
+
+
+
+
 echo "ignore this" >/dev/null
 
 source ~/.platform/functions
