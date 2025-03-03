@@ -2489,7 +2489,7 @@ nw() {
     # Build array from git diff --name-only HEAD
     mapfile -t files < <(git diff --name-only HEAD)
     if [ ${#files[@]} -eq 0 ]; then
-      echo "No diff files with respect to HEAD."
+      echo "0"
       cd "$OLDPWD" || return
       return 0
     fi
@@ -2523,6 +2523,26 @@ nw() {
 
   echo "$total"
   cd "$OLDPWD" || return
+}
+
+# kss: kill subshells
+kss() {
+  current=$$
+  res=$(ps | grep "bash" | grep -v "$current" | grep -v "grep" |  awk '{print $1}')
+  if [ ! -z "$res" ]; then
+    echo $res | xargs kill -9
+else 
+    echo "No subshells to kill"
+fi 
+}
+
+# cpr: "check progress"
+cpr(){
+    if [ -z $1 ]; then
+        pc gprog
+    fi
+    target=$(ls -t /home/tyler/Documents/repos/Dissertation/.progress/*.jpg | head -n 1)
+    code $target
 }
 
 

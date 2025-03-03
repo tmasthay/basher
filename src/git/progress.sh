@@ -2,7 +2,7 @@
 # @VS@ source _file & 
 
 # Interval in minutes
-interval=$(( 60 / 10 ))
+interval=$(( 60 ))
 
 # Change to the repository directory
 cd /home/tyler/Documents/repos/Dissertation || { echo "Error: Unable to change directory."; exit 1; }
@@ -16,7 +16,7 @@ initial_hash=$(git rev-parse HEAD)
 latest=$(find "$progress_dir" -maxdepth 1 -type f -name "*.txt" | wc -l)
 latest=$((latest + 1))
 progress_file="${progress_dir}/${latest}.txt"
-echo "HASH: $initial_hash, $(date)" > "$progress_file"
+echo "$initial_hash,$(date +%s),$(date +"%Y-%m-%d %H:%M")" > "$progress_file"
 
 # Main loop: run nwa every interval, check for hash changes, and update progress file if needed
 while true; do
@@ -32,7 +32,7 @@ while true; do
 
 #   echo "----- $(date) -----, $(date)" >> "$progress_file"
   nw 2>&1 | while IFS= read -r line; do
-    echo "$line, $(date)"
+    echo "$line,$(date +%s),$(date +"%Y-%m-%d %H:%M")"
   done >> "$progress_file"
   
   sleep $interval
