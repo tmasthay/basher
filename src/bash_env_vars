@@ -19,6 +19,7 @@ export SANDBOX="$HOME/.sandbox"
 export ISL_CI_RUN_WORKFLOW="GPU Validation and Docs Deployment Workflow"
 export ISL_CI_RUN_LIMIT="5"
 export ISL_CI_RUN_BRANCHES="all"
+export SCREENSHOTS="$HOME/Pictures/Screenshots"
 
 if command -v code >/dev/null; then
     export GIT_EDITOR="code --wait"

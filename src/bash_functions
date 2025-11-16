@@ -1,6 +1,8 @@
 ~/.secrets/build_souper_secrets.sh
 source ~/.secrets/functions
 
+# @VS@ source _file && itc
+
 # scl: "get_color" -- Set terminal color
 scl() {
     local color_value=$1
@@ -502,6 +504,26 @@ ge() {
     fi
 }
 
+gen_xml(){
+    LMMS_DIR=/home/tyler/Documents/lmms/projects/SpectroGrammys/LMMS
+    $LMMS_DIR/scripts/gen_xml.sh
+}
+
+# gel: git everything for LMMS
+gel() {
+    LMMS_DIR=/home/tyler/Documents/lmms/projects/SpectroGrammys/LMMS
+    $LMMS_DIR/scripts/pre-commit.sh
+    gau
+    if [[ "$1" == 1 ]]; then 
+        git difftool --staged -- "$(git status -suno | grep "[.]xml$" | awk '{print $2}')"
+    fi
+    if ! git commit; then
+        echo "Commit failed, no push."
+    else    
+        git push
+    fi
+}
+
 # gem: "git everything message" - gau; gcm $1; gp
 gem() {
     gau
@@ -975,7 +997,13 @@ cdc() {
 
 # cdr: change directory to repo
 cdr() {
-    cd $REPO/$1
+    local curr=$CURR_REPO
+    if [ ! -z "$curr" ]; then
+        curr="$curr/$1"
+    else
+        curr="$1"
+    fi
+    cd $REPO/$curr
 }
 
 # eplat: edit platform
@@ -2545,8 +2573,131 @@ cpr(){
     code $target
 }
 
+# p: "python"
+p(){
+    base="import sys; ARGS = sys.argv[1:]; "
+    program="$1"
+    shift
+    python -c "$base $program" "$@"
+}
+
+# sbib: "sort bib"
+sbib(){
+    if [ -z "$1" ]; then
+        TARGET="$FOCUS/references.bib"
+    else
+        TARGET="$1"
+    fi
+    bibtool -s -i "$TARGET" -o "/tmp/sorted.bib"
+    mv "/tmp/sorted.bib" "$TARGET"
+}
+
+# msc: "move screenshot"
+msc(){
+    # mv "$(ls -t /home/tyler/Pictures/Screenshots/*.png | head -n 1)" "$name.png"
+    find /home/tyler/Pictures/Screenshots -name "*.png" -exec echo "cp {} ." \; | clip
+}
+
+# fix_spacebar: spacebar -> shift+spacebar for weird remote terminal fix
+# run this on the local machine since it'll just remap the key and should thus fix it on remote if this ahppens
+fix_spacebar(){
+    echo 'xmodmap -e "keycode 65 = space space space space space underscore"' | clip
+    echo "Command should be on clipboard. Run it on LOCAL machine to get it to work."
+}
+
+# itc: "in text citations"
+itc(){
+    cd /home/tyler/Documents/repos/Dissertation
+    appearances=$(rg --only-matching --no-filename --no-line-number --glob "*.tex" -e '\\citensp\{[A-Za-z0-9]*\}' . \
+        | sed 's|.*citensp{\(.*\)}|\1|' | sort | uniq 
+    )
+    all=$(
+        cat references.bib | rg "^@" | sed 's|@[a-zA-Z]*{\([a-zA-Z0-9]*\),|\1|' \
+            | sort  \
+            | uniq
+    )
+    # echo $appearances
+    # echo $all
+
+    total=$(echo "$all" | wc -l)
+    used=$(echo "$appearances" | wc -l)
+    remaining=$((total - used))
+    # echo "Total: $total, Used: $used, Remaining: $remaining"
+    csv_appear=$(echo "$appearances" | tr '\n' ',')
+    csv_all=$(echo "$all" | tr '\n' ',')
+
+    res=$(
+        p 'a = set(e for e in ARGS[0].split(",") if e); b = set(e for e in ARGS[1].split(",") if e); print("\n".join(sorted(b - a)))' "$csv_appear" "$csv_all"
+    )
+    echo $res
+    echo $res > /tmp/remaining.txt
+    code /tmp/remaining.txt
+
+    if [ ! -z "$1" ]; then
+        echo "Total: $total, Used: $used, Remaining: $remaining"
+    fi
+}
+
+# mto: mp3 to ogg
+mto(){
+    ffmpeg -i "$1.mp3" -c:a libopus "$1.ogg"
+    [ "$2" = "1" ] && rm "$1.mp3"
+}
+
+# wto: wav to ogg
+wto(){
+    ffmpeg -i "$1.wav" -c:a libopus "$1.ogg"
+    [ "$2" = "1" ] && rm "$1.wav"
+}
+
+# owt: ogg to wav
+owt(){
+    ffmpeg -i "$1.ogg" -c:a pcm_s16le "$1.wav"
+    [ "$2" = "1" ] && rm "$1.ogg"
+}
+
+# wmf: wav to m4a
+wmf(){
+    ffmpeg -i "$1.wav" -c:a aac "$1.m4a"
+    [ "$2" = "1" ] && rm "$1.wav"
+}
 
 
+# cutogg: cuts a subsample of an ogg file
+cutogg () {
+    local infile="$1"
+    local start="$2"
+    local dur="$3"
+
+    local base="$(basename "$infile")"
+    base="${base//./_}"               # replace all dots with underscores
+    base="${base%_*}"                # drop the final extension part after last underscore
+
+    local end=$(printf "%.3f" "$(echo "$start + $dur" | bc | tr '.' '_')")
+    local outfile="${base}_cut_${start}_${end}.ogg"
+
+    DRY_RUN=0
+    if [[ $DRY_RUN == 1 ]]; then
+        echo ffmpeg -i "$infile" -ss "$start" -t "$dur" -c copy "$outfile"
+    else
+        ffmpeg -i "$infile" -ss "$start" -t "$dur" -c copy "$outfile"
+        ffplay "$outfile"
+    fi
+}
+
+startup_windows(){
+    /home/tyler/Documents/repos/popos_setup/final/simple.sh
+}
+
+statn(){
+    stat -c "%a %U %G %n" "$@"
+}
+
+lmf(){
+    nohup lmms $LMMS_FOCUS &
+}
+
+source /home/tyler/Documents/lmms/projects/SpectroGrammys/LMMS/scripts/sgr.rc /home/tyler/Documents/lmms/projects/SpectroGrammys/LMMS/scripts
 
 echo "ignore this" >/dev/null
 

@@ -60,7 +60,10 @@ reset='\e[0m'
 STARS="${red}$(printf '%.0s*' {1..80})${reset}"
 
 # Execute the command
-echo -e "$STARS"
-echo -e "${green}$run_command${reset}"
-echo -e "$STARS"
+PREVIEW_COMMAND=0
+if [[ $PREVIEW_COMMAND == 1 ]]; then
+    echo -e "$STARS"
+    echo -e "${green}$run_command${reset}"
+    echo -e "$STARS"
+fi
 eval "$run_command"

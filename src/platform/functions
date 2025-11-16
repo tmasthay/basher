@@ -4,16 +4,16 @@ bb() {
 }
 
 # gho: designated for current workflow "gho" == "go"
-n() {
-    cd $REPO/Madagascar.jl
-    if [ "$1" == "j" ]; then
-        jse "Madagascar_jll"
-        sfje pre
-    else
-        jse
-        sfje pre
-    fi
-}
+# n() {
+#     cd $REPO/Madagascar.jl
+#     if [ "$1" == "j" ]; then
+#         jse "Madagascar_jll"
+#         sfje pre
+#     else
+#         jse
+#         sfje pre
+#     fi
+# }
 
 hhsf() {
     cp /home/tyler/Documents/repos/ConversationStarters/cfg/tyler/family/parents/dad.yaml $1.yaml
@@ -41,9 +41,12 @@ gho() {
     # echo "$tmp_str"
     # eval "$tmp_str"
     # cdo
-    cdf
-    ./nohup.sh $1
-    why 10
+    # cdf
+    # ./nohup.sh $1
+    # why 10
+    cd /home/tyler/Documents/repos/Experiments/fb_marketplace
+    python main.py n="$1" --config-name="$2"
+    python main.py n="$1" --config-name="$2" | pbcopy
 }
 
 # ghh: Another designated current workflow if need two

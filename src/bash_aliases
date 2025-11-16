@@ -63,4 +63,7 @@ declare -A cxa=(
     ['i']="$ISL"
     ['pys']="$BASHER/src/py_scripts"
     ['pl']="$BASHER/src/platform"
+    ['n']="/home/tyler/Documents/repos/Dissertation/structural/Figs/namespaceRefactor"
 )
+
+alias sc='rg --no-heading --glob "*.tex"'
